@@ -1,0 +1,86 @@
+#!/bin/bash
+
+# Adjust for OmniGW
+
+if [[ $(hostname) == "OmniGW" ]];
+then
+	echo Using Rclean 2
+	/home/kelinger/Omni/bin/rclean2
+	exit ${?}
+fi
+
+# Uncomment only one line below to choose Rclone version
+
+BETA="current"
+#BETA="beta"
+
+# Load OmniStream settings
+source ${HOME}/.config/omnistream.conf
+
+# Load Omni Functions
+source ~/Omni/bin/omni_functions
+
+# Shut everything down first
+
+omni down
+sudo systemctl daemon-reload
+sudo systemctl stop omni-merger omni-rclone docker
+
+# Update Rclone if possible
+
+/home/kelinger/Omni/bin/update-rclone ${BETA}
+
+# Clear leftovers
+
+sudo rm -r /tmp/Emby-transcode
+
+# Are mounts truly down?
+
+mountpoint ${RCLONEMOUNT} >/dev/null
+CODE=${?}
+mountpoint ${MERGETARGET} >/dev/null
+CODE=$((${CODE} + ${?}))
+
+while [ ${CODE} -lt 1 ]; do
+	echo Waiting on mounts to drop...
+	sleep 5
+	mountpoint ${RCLONEMOUNT} >/dev/null
+	CODE=${?}
+	mountpoint ${MERGETARGET} >/dev/null
+	CODE=$((${CODE} + ${?}))
+done
+
+#sudo rm -r ${RCLONEMOUNT} >/dev/null 2>&1
+sudo rm -r ${MERGETARGET} >/dev/null 2>&1
+rm ${LOGS}/*.? >/dev/null 2>&1
+echo -n >${LOGS}/rclone.log
+
+# Start rclone and MergerFS
+
+sudo systemctl start omni-rclone omni-merger docker
+
+# Are mounts truly up?
+
+mountpoint ${MERGETARGET} >/dev/null 2>&1
+CODE=${?}
+mountpoint ${RCLONEMOUNT} >/dev/null 2>&1
+CODE=$((${CODE} + ${?}))
+
+while [ ${CODE} -ne 0 ]; do
+	echo Waiting on mounts to be created...
+	sleep 5
+	mountpoint ${MERGETARGET} >/dev/null 2>&1
+	CODE=${?}
+	mountpoint ${RCLONEMOUNT} >/dev/null 2>&1
+	CODE=$((${CODE} + ${?}))
+done
+
+# Update and start OmniPlex
+
+${OMNIHOME}/bin/check-dns
+omni update
+
+# Clean Docker leftovers
+
+docker system prune -a -f --volumes
+echo $(date) - Done

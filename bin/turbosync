@@ -1,0 +1,76 @@
+#!/bin/bash
+# shellcheck source=/dev/null
+
+if pidof -o %PPID -x "$(basename "$0")"; then
+	echo Already running!
+	exit 1
+fi
+
+source ~/.bashrc ~/.profile
+
+CDIR=${HOME}/.config
+ENV=${CDIR}/omnistream.conf
+
+# Check to see if anything is scheduled to go to home NAS first.  If yes, send them there so they don't go to Google
+
+/home/kelinger/bin/naspush
+
+# Check to see if anything needs to be cached locally.  Doing this before the sync allows new files to be copied locally first.
+
+#/home/kelinger/Omni/bin/localcache
+
+# Load existing variables and use them as defaults, if available
+
+source "${ENV}"
+sudo chown -R kelinger:kelinger "${UPLOADCACHE}"
+
+AGE=0 # How many minutes old a file must be before copying/deleting
+LOG=${LOGS}/mounter-sync.log
+APILOG=${LOGS}/api.log
+
+TEMPFILE="/tmp/filesmissing"
+
+echo Starting sync at "$(date)" | tee -a "${LOG}"
+
+# Fix dates in the future
+
+find "${UPLOADCACHE}"/ ! -path "*Downloads*" ! -path "*Synology*" -type f -mmin -0 -exec touch "{}" -d "$(date -d "-5 minutes")" \;
+
+# Identify files needing to be copied
+
+find "${UPLOADCACHE}"/ ! -path "*Downloads*" ! -path "*Synology*" -type f -mmin +${AGE} | sed 's|'"${UPLOADCACHE}"'||' | sort >${TEMPFILE}
+
+# Copy files
+
+if [[ -s ${TEMPFILE} ]]; then
+	while IFS= read -r FILE; do
+		rclone rc core/stats --user omnistream --pass pLGdakQNwubWtMbGwr4GRRwW9ReFECuM | jq '.transferring' | grep "${UPLOADCACHE}${FILE}" >/dev/null
+		RUNCHECK=${?}
+		if [[ ${RUNCHECK} -gt 0 ]]; then
+			BYTES=$(du -b "${UPLOADCACHE}${FILE}" | cut -f1)
+			BYTESH=$(du -h "${UPLOADCACHE}${FILE}" | cut -f1)
+			echo "$(date '+%F %H:%M:%S')",START,1,"${BYTES}" "# ${FILE}" >>"${APILOG}"
+			echo Queuing "${FILE}" of size "${BYTESH}"
+			## Fix for Rclone RC creating multiple directories
+			TESTDIR="${RCLONEMOUNT}$(dirname "${FILE}")"
+			if [[ ! -d "${TESTDIR}" ]]; then
+				echo Making "${TESTDIR}"
+				mkdir -p "${TESTDIR}"
+			fi
+			rclone rc operations/movefile _async=true srcFs=Local: srcRemote="${UPLOADCACHE}${FILE}" dstFs="${RCLONESERVICE}": dstRemote="${FILE}" --user omnistream --pass pLGdakQNwubWtMbGwr4GRRwW9ReFECuM >/dev/null
+		else
+			echo Skipping "${FILE}": Already in queue
+		fi
+	done <${TEMPFILE}
+else
+	echo Nothing to queue | tee -a "${LOG}"
+fi
+
+# Cleanup letovers
+
+rm ${TEMPFILE}
+cd "${UPLOADCACHE}"/Media || exit
+find . -type d -empty -delete
+mkdir -p "${UPLOADCACHE}"/Media "${UPLOADCACHE}"/Downloads
+echo Finished at "$(date)" | tee -a "${LOG}"
+echo --------------------------------------------------- | tee -a "${LOG}"

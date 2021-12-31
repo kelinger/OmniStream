@@ -1,0 +1,154 @@
+#!/bin/bash
+
+OMNIHOME=${HOME}/Omni
+CDIR=${HOME}/.config
+ENV=${CDIR}/omnistream.conf
+touch ${ENV}
+
+# Set default variables; will be superceded by ENV file
+
+PROXYNAME=nginx-proxy
+TRAEFIKNAME=traefik
+NETDATANAME=netdata
+ORGANIZRNAME=organizr
+PORTAINERNAME=portainer
+PLEXNAME=plex
+EMBYNAME=emby
+JELLYNAME=emby
+TAUTULLINAME=tautuli
+NEXTCLOUDNAME=nextcloud
+NZBGETNAME=nzbget
+HYDRANAME=hydra
+SABNZBDNAME=sabnzbd
+DELUGENAME=deluge
+QBITNAME=qbit
+TRANSNAME=transmission
+RTORRENTNAME=rtorrent
+RADARRNAME=radarr
+SONARRNAME=sonarr
+LIDARRNAME=lidarr
+MEDUSANAME=medusa
+HEADPHONESNAME=headphones
+JACKETTNAME=jackett
+
+# Since Docker processes " as part of the paths, we don't actually store it in the variables.  However, BASH does require
+#	the " if the string is going to have odd characters.  As a result, we have to load the existing environment line
+#	by line and insert the " around the values.
+
+# Load existing variables and use them as defaults, if available
+
+while IFS='' read -r line || [[ -n "${line}" ]]; do
+	newline=$(echo ${line} | sed 's/=/&\"/g; s/:$//')\"
+	eval ${newline} >/dev/null 2>&1
+done <${ENV}
+
+if [[ ${1,,} != "rebuild" ]]; then
+	clear
+	echo To setup OmniPlex, I need to know a few things...
+	echo
+	read -e -p 'What domain will you be using to access your server (ex: mydomain.com)?  ' -i "${MYDOMAIN}" MYDOMAIN
+	read -e -p 'What is your email address for certificate registration (ex: myname@mydomain.com)  ' -i "${MYEMAIL}" MYEMAIL
+	echo
+	echo For PLEX, we need to know the root of your media directory. This will be available within
+	read -e -p '      PLEX at /data.  (ex: /mnt/Union/Plex):  ' -i "${MEDIA}" MEDIA
+	echo
+	echo
+	echo "That's it.  Creating your personal configuration file..."
+
+fi
+
+cat >${ENV} <<EOF
+
+############################
+#  Environment valriables  #
+#     for OmniStream       #
+############################
+
+ADD_DNS=${ADD_DNS}
+CF_EMAIL=${CF_EMAIL}
+CF_KEY=${CF_KEY}
+CONFIGS=${HOME}/Omni/Configs
+DELETE_DNS=${DELETE_DNS}
+DOWNLOADS=${HOME}/Downloads
+GOOGLE=${HOME}/Omni/mnt/Google
+GPUGIDS=$(getent group video | cut -d: -f3),$(getent group render | cut -d: -f3)
+GROUPID=$(id -g)
+HOME=${HOME}
+LOGS=${HOME}/Omni/Logs
+MEDIA=${GOOGLE}/Media
+MENU=${MENU}
+MERGETARGET=${MERGETARGET}
+MYDOMAIN=${MYDOMAIN}
+MYEMAIL=${MYEMAIL}
+OPW=r$@r3zSuR%WsYE90M
+RCLONEHOME=${HOME}/.config/rclone
+RCLONESERVICE=${RCLONESERVICE}
+RCLONETARGET=${RCLONETARGET}
+RCLONEMOUNT=${HOME}/Omni/mnt/GoogleCrypt
+TIMEZONE=$(cat /etc/timezone)
+UNSYNCED=${UNSYNCED}
+UPLOADCACHE=${UPLOADCACHE}
+USERID=$(id -u)
+
+############################
+#   Container/Host names   #
+#     for OmniStream       #
+#   Most people will not   #
+# need to change anything. #
+############################
+
+PROXYNAME=${PROXYNAME}
+TRAEFIKNAME=${TRAEFIKNAME}
+NETDATANAME=${NETDATANAME}
+ORGANIZRNAME=${ORGANIZRNAME}
+PORTAINERNAME=${PORTAINERNAME}
+PLEXNAME=${PLEXNAME}
+EMBYNAME=${EMBYNAME}
+JELLYNAME=${JELLYNAME}
+TAUTULLINAME=${TAUTULLINAME}
+EMBYSTATNAME=${EMBYSTATNAME}
+NEXTCLOUDNAME=${NEXTCLOUDNAME}
+NZBGETNAME=${NZBGETNAME}
+HYDRANAME=${HYDRANAME}
+SABNZBDNAME=${SABNZBDNAME}
+DELUGENAME=${DELUGENAME}
+QBITNAME=${QBITNAME}
+TRANSNAME=${TRANSNAME}
+RTORRENTNAME=${RTORRENTNAME}
+RADARRNAME=${RADARRNAME}
+SONARRNAME=${SONARRNAME}
+LIDARRNAME=${LIDARRNAME}
+BAZARRNAME=${BAZARRNAME}
+MEDUSANAME=${MEDUSANAME}
+HEADPHONESNAME=${HEADPHONESNAME}
+JACKETTNAME=${JACKETTNAME}
+
+############################
+#     Color Variables      #
+############################
+
+STD="$(echo -en '\033[0m')"
+RED="$(echo -en '\033[00;31m')"
+GREEN="$(echo -en '\033[00;32m')"
+YELLOW="$(echo -en '\033[00;33m')"
+BLUE="$(echo -en '\033[00;34m')"
+MAGENTA="$(echo -en '\033[00;35m')"
+PURPLE="$(echo -en '\033[00;35m')"
+CYAN="$(echo -en '\033[00;36m')"
+LGRAY="$(echo -en '\033[00;37m')"
+LRED="$(echo -en '\033[01;31m')"
+LGREEN="$(echo -en '\033[01;32m')"
+LYELLOW="$(echo -en '\033[01;33m')"
+LBLUE="$(echo -en '\033[01;34m')"
+LMAGENTA="$(echo -en '\033[01;35m')"
+LPURPLE="$(echo -en '\033[01;35m')"
+LCYAN="$(echo -en '\033[01;36m')"
+WHITE="$(echo -en '\033[01;37m')"
+
+EOF
+
+ln -sf ${ENV} ${OMNIHOME}/.env
+
+cat ${OMNIHOME}/enabled/??-* >${OMNIHOME}/docker-compose.yaml
+
+echo done

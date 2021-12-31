@@ -1,0 +1,29 @@
+#
+# Portainer - manages the Docker environment
+#
+  portainer:
+    image: portainer/portainer
+    container_name: ${PORTAINERNAME}
+    hostname: ${PORTAINERNAME}
+    domainname: ${MYDOMAIN}
+    restart: always
+    depends_on:
+      - traefik
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${CONFIGS}/Portainer:/data
+    labels:
+      - "omni=${PORTAINERNAME},${MYDOMAIN},yes,yes,yes"
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.portainer-rtr.entrypoints=https"
+      - "traefik.http.routers.portainer-rtr.rule=Host(`${PORTAINERNAME}.${MYDOMAIN}`)"
+      - "traefik.http.routers.portainer-rtr.tls=true"
+      ## Middlewares
+      - "traefik.http.routers.portainer-rtr.middlewares=chain-no-auth@file"
+      ## HTTP Services
+      - "traefik.http.routers.portainer-rtr.service=portainer-svc"
+      - "traefik.http.services.portainer-svc.loadbalancer.server.port=9000"
+    networks:
+      - OmniNet

@@ -1,0 +1,212 @@
+#!/bin/bash
+# shellcheck source=/dev/null
+
+OMNIHOME=${HOME}/Omni
+source ~/.config/omnistream.conf
+source "${OMNIHOME}"/bin/omni_complete
+
+# Main OMNI function for OmniPlex
+
+omni() {
+	COMMAND=${1,,}
+	CURDIR=$(pwd)
+	case "${COMMAND}" in
+	up | start)
+		cd "${OMNIHOME}" || exit
+		echo -n Rebuilding config file...
+		./bin/make-env rebuild
+		echo
+		"${OMNIHOME}"/bin/check-dns
+		mountpoint "${MERGETARGET}" >/dev/null 2>&1
+		CODE=${?}
+		mountpoint "${RCLONEMOUNT}" >/dev/null 2>&1
+		CODE=$((${CODE} + ${?}))
+		while [ ${CODE} -ne 0 ]; do
+			echo Waiting on mounts to be created...
+			sleep 5
+			mountpoint "${MERGETARGET}" >/dev/null 2>&1
+			CODE=${?}
+			mountpoint "${RCLONEMOUNT}" >/dev/null 2>&1
+			CODE=$((${CODE} + ${?}))
+		done
+		/usr/local/bin/docker-compose up -d --remove-orphans "${@:2}"
+		docker exec -ti sabnzbd /config/extras.sh >/dev/null 2>&1
+		cd "${CURDIR}" || exit
+		;;
+	down | stop)
+		cd "${OMNIHOME}" || exit
+		/usr/local/bin/docker-compose down "${@:2}"
+		echo
+		"${OMNIHOME}"/bin/del-dns
+		cd "${CURDIR}" || exit
+		;;
+	status)
+		cd "${OMNIHOME}" || exit
+		/usr/local/bin/docker-compose ps "${@:2}"
+		cd "${CURDIR}" || exit
+		;;
+	stats)
+		docker stats "${@:2}"
+		;;
+	restart)
+		cd "${OMNIHOME}" || exit
+		/usr/local/bin/docker-compose restart "${@:2}"
+		cd "${CURDIR}" || exit
+		;;
+	services)
+		"${OMNIHOME}"/services
+		;;
+	setup)
+		"${OMNIHOME}"/bin/make-env "${@:2}"
+		;;
+	apps)
+		cd "${OMNIHOME}"/enabled || exit
+		ls
+		;;
+	bin)
+		cd "${OMNIHOME}"/bin || exit
+		ls
+		;;
+	configs)
+		cd "${OMNIHOME}"/Configs || exit
+		ls
+		;;
+	home)
+		cd "${OMNIHOME}" || exit
+		ls
+		;;
+	logs)
+		cd "${OMNIHOME}" || exit
+		/usr/local/bin/docker-compose logs -f "${@:2}"
+		cd "${CURDIR}" || exit
+		;;
+	mounts)
+		cd "${OMNIHOME}"/mnt || exit
+		ls
+		;;
+	rebuild)
+		cd "${OMNIHOME}" || exit
+		"${OMNIHOME}"/bin/make-env rebuild
+		echo
+		"${OMNIHOME}"/bin/check-dns
+		/usr/local/bin/docker-compose up --remove-orphans --build -d
+		docker exec -ti ${SABNZBDNAME} /config/extras.sh >/dev/null 2>&1
+		docker system prune -a -f --volumes
+		cd "${CURDIR}" || exit
+		;;
+	update)
+		cd "${OMNIHOME}" || exit
+		"${OMNIHOME}"/bin/make-env rebuild
+		echo
+		/usr/local/bin/docker-compose pull
+		/usr/local/bin/docker-compose up --remove-orphans --build -d
+		docker exec -ti sabnzbd /config/extras.sh >/dev/null 2>&1
+		docker system prune -a -f --volumes
+		cd "${CURDIR}" || exit
+		;;
+	clean)
+		omni down
+		docker system prune -a -f --volumes
+		;;
+	fullstop)
+		omni down
+		sudo systemctl stop omni-merger omni-rclone
+		;;
+	pull)
+		cd "${OMNIHOME}" || exit
+		/usr/local/bin/docker-compose up --no-start
+		docker exec -ti sabnzbd /config/extras.sh >/dev/null 2>&1
+		cd "${CURDIR}" || exit
+		;;
+	*)
+		echo "Omni commands:"
+		echo "	omni up - bring online all enabled Omni components"
+		echo "	omni down - shutdown all running Omni components"
+		echo "	omni restart - stops and restarts all or specific Omni compoments"
+		echo "		Ex:  omni restart - restarts everything"
+		echo "		Ex:  omni restart nzbget - just restarts nzbGET"
+		echo "	omni logs - shows you logs for all or specific services, scrolling in realtime.  Press control-c to exit"
+		echo "		Ex:  omni logs - shows logs for each service running"
+		echo "		Ex:  omni logs nginx-proxy letsencrypt - shows logs for just the web proxy and certificate services"
+		echo "	omni status - show current state of running Omni components"
+		echo "		Ex:  omni status - shows all running compoments"
+		echo "		Ex:  omni status plex plexpy - shows status of plex and plexpy only"
+		echo "	omni stats - shows stats like CPU and memory usage by component.  Press control-c to exit"
+		echo "		Ex:  omni stats - shows ongoing stats for all Omni components"
+		echo "		Ex:  omni stats sonarr radarr - shows ongoing stats for justSonarr and Radarr"
+		echo "	omni setup - builds (replaces) your Omni configuration.  Allows changing parameters"
+		echo "	omni apps - switches you to the apps (config) local directory"
+		echo "	omni home - switches you to the Omni core files directory"
+		echo
+		;;
+	esac
+}
+
+preload() {
+	SOURCE=${1}
+	source ~/.config/omnistream.conf
+	if [[ -z ${SOURCE} ]]; then
+		cd "${RCLONEMOUNT}"/Media || exit
+	else
+		SOURCEDIR=$(pwd)
+		SOURCE=${SOURCEDIR}/${SOURCE}
+		RELATIVEDIR=$(echo "${SOURCEDIR}" | sed 's|'"${RCLONEMOUNT}"'||')
+		TARGET=${UNSYNCED}/${RELATIVEDIR}
+		mkdir -p "${UNSYNCED}/${RELATIVEDIR}"
+		cp -Rv "${SOURCE}" "${TARGET}"
+	fi
+}
+
+function o+ {
+	CURDIR=$(pwd)
+	cd "${OMNIHOME}"/enabled || exit
+	for i in "$@"; do
+		PARAM=${1}
+		if [[ -z ${PARAM} ]]; then
+			echo Currently enabled components:
+			ls
+			echo
+			echo Available components:
+			ls ../components/*.yaml
+		elif [[ -f ${OMNIHOME}/components/${PARAM} ]]; then
+			ln -sf ../components/"${PARAM}" "${PARAM}"
+			echo "${PARAM}": Enabled
+		else
+			echo Error: "${PARAM}" not found
+			echo
+			echo Please choose from the following components:
+			ls "${OMNIHOME}"/components/*.yaml
+		fi
+		shift
+	done
+	cd "${CURDIR}" || exit
+	source "${OMNIHOME}"/bin/omni_complete
+}
+
+function o-() {
+	CURDIR=$(pwd)
+	cd "${OMNIHOME}"/enabled || exit
+	for i in "$@"; do
+		PARAM=${1}
+		if [[ -z ${PARAM} ]]; then
+			echo Currently enabled components:
+			ls *.yaml
+		elif [[ -f ${OMNIHOME}/enabled/${PARAM} ]]; then
+			rm "${PARAM}"
+			echo "${PARAM}": Disabled
+		else
+			echo Error: "${PARAM}" not found
+			echo
+			echo Please choose from the following components:
+			ls "${OMNIHOME}"/enabled/*.yaml
+		fi
+		shift
+	done
+	cd "${CURDIR}" || exit
+	source "${OMNIHOME}"/bin/omni_complete
+}
+
+O=${OMNIHOME}
+M=${GOOGLE}/Media
+G=${GOOGLE}
+D=${GOOGLE}/Downloads

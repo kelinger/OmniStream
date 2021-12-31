@@ -1,0 +1,49 @@
+#!/bin/bash
+
+source ~/.config/omnistream.conf
+
+# Cloudflare zone is the zone which holds the record
+zone=${MYDOMAIN}
+cloudflare_auth_email=${CF_EMAIL}
+cloudflare_auth_key=${CF_KEY}
+ip=$(curl -s -X GET https://checkip.amazonaws.com)
+echo "Current IP is $ip"
+
+NAMES=$(cat ~/Omni/enabled/* |grep traefik.frontend.rule | sed 's/.*://' | sed 's/\..*$//')
+
+for LOOP in ${NAMES}; do
+  echo Adding ${LOOP}
+  DNSRECORD=${LOOP}.${MYDOMAIN}
+
+  if host ${DNSRECORD} 1.1.1.1 | grep "has address" | grep "$ip"; then
+    echo "${DNSRECORD} is currently set to $ip; no changes needed"
+
+  else
+    # if here, the dns record needs updating
+
+    # get the zone id for the requested zone
+    zoneid=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$zone&status=active" \
+        -H "X-Auth-Email: $cloudflare_auth_email" \
+        -H "X-Auth-Key: $cloudflare_auth_key" \
+      -H "Content-Type: application/json" | jq -r '{"result"}[] | .[0] | .id')
+
+    echo "Zoneid for $zone is $zoneid"
+
+    # get the dns record id
+    dnsrecordid=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zoneid/dns_records?type=A&name=${DNSRECORD}" \
+        -H "X-Auth-Email: $cloudflare_auth_email" \
+        -H "X-Auth-Key: $cloudflare_auth_key" \
+      -H "Content-Type: application/json" | jq -r '{"result"}[] | .[0] | .id')
+
+    echo "DNSrecordid for ${DNSRECORD} is $dnsrecordid"
+
+    # update the record
+    curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$zoneid/dns_records/$dnsrecordid" \
+      -H "X-Auth-Email: $cloudflare_auth_email" \
+      -H "X-Auth-Key: $cloudflare_auth_key" \
+      -H "Content-Type: application/json" \
+      --data "{\"type\":\"A\",\"name\":\"${DNSRECORD}\",\"content\":\"$ip\",\"ttl\":1,\"proxied\":true}" | jq
+
+  fi
+
+done

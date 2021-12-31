@@ -1,0 +1,4 @@
+#/usr/bin/env bash
+complete -W "$(ls ${HOME}/Omni/components)" o+
+complete -W "$(ls ${HOME}/Omni/enabled)" o-
+complete -W "start stop up down status stats restart services setup apps bin home logs mounts rebuild update clean pull help" omni

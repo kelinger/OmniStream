@@ -1,0 +1,11 @@
+#!/bin/bash
+source ~/.config/omnistream.conf
+
+x=$(date --date="${1}" '+%F %H:%M:%S')
+
+echo Since ${x}
+echo -n "Gigabytes:  "
+q -d, "select sum(c4)/1024.0/1024/1024 as GB from ${LOGS}/api.log where c1>'$x' and c2='START'"
+#q -f "1=%4.4f" -d, "select sum(c4)/1024.0/1024/1024 as GB from ${LOGS}/api.log where c1>'$x' and c2='START'"
+echo -n "Files:      "
+q -d, "select sum(c3) as FILES from ${LOGS}/api.log where c1>'$x' and c2='START'"

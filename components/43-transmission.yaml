@@ -1,0 +1,42 @@
+#
+# Deluge - Torrent download engine
+#
+  transmission:
+    image: linuxserver/transmission
+    container_name: ${TRANSNAME}
+    hostname: ${TRANSNAME}
+    domainname: ${MYDOMAIN}
+    restart: unless-stopped
+    depends_on:
+      - traefik
+    environment:
+      - PUID=${USERID}
+      - PGID=${GROUPID}
+      - TZ=${TIMEZONE}
+      - UMASK_SET=022
+    volumes:
+      - ${CONFIGS}/transmission:/config
+      - ${GOOGLE}:/Google
+    labels:
+      - "omni=${TRANSNAME},${MYDOMAIN},yes,yes,yes"
+      - "traefik.enable=true"
+    ## HTTP Routers
+      - "traefik.http.routers.transmission-rtr.entrypoints=https"
+      - "traefik.http.routers.transmission-rtr.rule=Host(`${TRANSNAME}.${MYDOMAIN}`)"
+      - "traefik.http.routers.transmission-rtr.tls=true"
+      ## Middlewares
+      - "traefik.http.routers.transmission-rtr.middlewares=chain-no-auth@file"
+      ## HTTP Services
+      - "traefik.http.routers.transmission-rtr.service=transmission-svc"
+      - "traefik.http.services.transmission-svc.loadbalancer.server.port=9091"
+    ports:
+      - 55955:55955/tcp
+      - 55955:55955/udp
+      - 9091:9091
+    networks:
+      - OmniNet
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -ntlp | grep :9091 && test -f /Google"]
+      interval: 10s
+      timeout: 2s
+      retries: 3

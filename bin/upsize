@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Load Rclone Mount settings
+
+source ~/.config/omnistream.conf
+
+cd ${UPLOADCACHE}
+#sudo find . -type d -empty -delete
+mkdir -p ${UPLOADCACHE}/Media
+
+find ${UPLOADCACHE} ! -path "*Downloads*" -type f -exec ls -sh --color=yes "{}" \; | column |cat -n
+echo ----
+du -sh ${UPLOADCACHE}/Media

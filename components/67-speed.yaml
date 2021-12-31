@@ -1,0 +1,26 @@
+#
+# Speed - Speed test server (web based) for testing server to client speeds
+#					With CloudFlare on, enables testing of CF benefits/drawbacks when
+#					compared to CloudFlare off.
+#
+  speed:
+    image: openspeedtest/latest
+    container_name: speed
+    hostname: speed
+    domainname: ${MYDOMAIN}
+    restart: unless-stopped
+    depends_on:
+      - traefik
+    labels:
+      - "omni=speed,${MYDOMAIN},yes,yes,yes"
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.speed-rtr.entrypoints=https"
+      - "traefik.http.routers.speed-rtr.rule=Host(`speed.${MYDOMAIN}`)"
+      ## Middlewares
+      - "traefik.http.routers.speed-rtr.middlewares=chain-no-auth@file"
+      ## HTTP Services
+      - "traefik.http.routers.speed-rtr.service=speed-svc"
+      - "traefik.http.services.speed-svc.loadbalancer.server.port=3000"
+    networks:
+      - OmniNet

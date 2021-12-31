@@ -1,0 +1,33 @@
+#!/bin/bash
+
+source ~/.config/omnistream.conf
+
+OMNIHOME=${HOME}/Omni
+
+#SHOWPROGRESS='-v' # uncomment this line for progress during copying
+SHOWPROGRESS='' # uncomment this line to keep the system quiet during copying
+OPTIONS="--checkers 5 --fast-list --tpslimit 5 --delete-during --delete-excluded --transfers 8 --local-no-check-updated --drive-chunk-size=16M "${SHOWPROGRESS}
+
+find ${MEDIA} -empty -delete
+
+# This copies a list of selected movies to the local drive so that, in the event of a cloud
+# drive failued (unavailable, API limits reached, etc.) these movies will still be playable
+# from the local media players like Emby and Plex.
+
+# Movies are listed by full folder name in the /home/<user>/Omni/localmovies.txt file
+
+mkdir -p ${UNSYNCED}/Media/Movies
+
+rclone sync ${OPTIONS} --filter-from ${OMNIHOME}/localmovies.txt "${MEDIA}/Movies/" "${UNSYNCED}/Media/Movies"
+
+# This copies a list of selected shows, seasons, or episodes to the local drive similar to
+# the above.  File format contains at least a TV Series listed on each line.  You can also
+# further deliniate subsets of a show by specifying the path to the season directory or even
+# a specific episode.
+
+# TV are listed by full folder name in the /home/<user>/Omni/localtv.txt file
+
+mkdir -p ${UNSYNCED}/Media/TV\ Shows
+
+echo rclone sync ${OPTIONS} --filter-from ${OMNIHOME}/localtv.txt "${MEDIA}/TV Shows/" "${UNSYNCED}/Media/TV Shows"
+rclone sync ${OPTIONS} --filter-from ${OMNIHOME}/localtv.txt "${MEDIA}/TV Shows/" "${UNSYNCED}/Media/TV Shows" -v --stats 20s

@@ -1,0 +1,169 @@
+#!/bin/bash
+
+source ~/.config/omnistream.conf
+
+# Configs variables used (from omnistream.conf)
+
+#	ADD_DNS:  true to enable this script
+#	CF_EMAIL:  email address used to register with CloudFlare
+#	CF_KEY:  API key for CloudFlare account
+#	MYDOMAIN:  Domain registered with CloudFlare
+
+# Additional variables (assigned below)
+
+#	OMNIHOME:  Path to OmniStream install location
+#	IP:  Public IP address of this server
+#	NAMES:  names of components being proxied through Traefik
+
+OMNIHOME=${HOME}/Omni
+#IP="$(curl -s http://ipv4.icanhazip.com)"
+IP="$(dig +short myip.opendns.com @resolver1.opendns.com)"
+
+function zoneid() {
+#	Return ZONEID for managed CloudFlare ZONE
+
+	echo $(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=${MYDOMAIN}&status=active" \
+	-H "X-Auth-Email: ${CF_EMAIL}" \
+	-H "X-Auth-Key: ${CF_KEY}" \
+	-H "Content-Type: application/json" | jq -r '{"result"}[] | .[0] | .id')
+}
+
+function recordid() {
+#	Return the record ID for the requested subdomain
+#		${1} is the ZoneID
+#		${2} is the DNS record to check
+
+	local __ZONEID=${1}
+	local __RECORD=${2}
+
+	echo $(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/${__ZONEID}/dns_records?name=${__RECORD}" \
+	-H "X-Auth-Email: ${CF_EMAIL}" \
+	-H "X-Auth-Key: ${CF_KEY}" \
+	-H "Content-Type: application/json" | jq -r '{"result"}[] | .[0] | .id')
+}
+
+function recordtype() {
+#	Return the record type for the requested subdomain
+#		${1} is the ZoneID
+#		${2} is the DNS record to check
+
+	local __ZONEID=${1}
+	local __RECORD=${2}
+
+	echo $(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/${__ZONEID}/dns_records?name=${__RECORD}" \
+	-H "X-Auth-Email: ${CF_EMAIL}" \
+	-H "X-Auth-Key: ${CF_KEY}" \
+	-H "Content-Type: application/json" | jq -r '{"result"}[] | .[0] | .type')
+}
+
+function createrecord() {
+#	Creates a new CloudFlare DNS A Record for given subdomain
+#		${1} is the ZoneID
+#		${2} is the DNS record to create
+#		${3} is whether it is cached or not
+
+	local __ZONEID=${1}
+	local __RECORD=${2}
+	local __CACHED=${3}
+	PROXY="true"
+
+	if [[ "${__CACHED}" == "NO" ]];
+	then
+		PROXY="false"
+	fi
+
+	RESULT=$(curl -s -X POST "https://api.cloudflare.com/client/v4/zones/${__ZONEID}/dns_records" \
+	-H "X-Auth-Email: ${CF_EMAIL}" \
+	-H "X-Auth-Key: ${CF_KEY}" \
+	-H "Content-Type: application/json" \
+	--data '{"type":"A","name":"'"${__RECORD}"'","content":"'"${IP}"'","proxied":'${PROXY}'}')
+}
+
+function updaterecord() {
+#	Updates an existing CloudFlare DNS A Record for given subdomain a record ID
+#		${1} is the ZoneID
+#		${2} is the DNS record to create (subdomain)
+#		${3} is the CloudFlare DNS record identifier
+
+	local __ZONEID=${1}
+	local __RECORD=${2}
+	local __ID=${3}
+	PROXY="true"
+
+	if [[ "${__RECORD}" == "openvpn" ]];
+	then
+		PROXY="false"
+	fi
+
+	RESULT=$(curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/${__ZONEID}/dns_records/${__ID}" \
+	-H "X-Auth-Email: ${CF_EMAIL}" \
+	-H "X-Auth-Key: ${CF_KEY}" \
+	-H "Content-Type: application/json" \
+	--data '{"type":"A","name":"'"${__RECORD}"'","content":"'"${IP}"'","proxied":'${PROXY}'}')
+}
+
+function deleterecord() {
+#	Deletes a CloudFlare DNS Record for given record ID
+#		${1} is the ZoneID
+#		${2} is the DNS record ID to delete
+
+	local __ZONEID=${1}
+	local __RECORD=${2}
+
+	RESULT=$(curl -s -X DELETE "https://api.cloudflare.com/client/v4/zones/${__ZONEID}/dns_records/${__RECORD}" \
+	-H "X-Auth-Email: ${CF_EMAIL}" \
+	-H "X-Auth-Key: ${CF_KEY}" \
+	-H "Content-Type: application/json")
+}
+
+######################################################
+#	Main Program
+######################################################
+
+if [[ ${ADD_DNS} == false ]]; then
+	echo DNS management is disabled.  No action performed.
+	exit 0
+fi
+
+ZONEID=$(zoneid)
+
+#	Step through each component that uses a subdomain through Traefik proxy
+
+cd ${OMNIHOME}/enabled
+echo Checking DNS entries for Omnistream components
+echo ==============================================
+for LINE in $(cat *.yaml |grep "omni=" |cut -f2 -d'"' | cut -f2 -d'='); do
+	HOST=$(echo ${LINE} | cut -f1 -d',')
+	if [[ "${HOST:0:1}" == "$" ]]; then
+		HOST=$(echo $(eval echo ${HOST}))
+	fi
+	DOMAIN=$(echo ${LINE} | cut -f2 -d',')
+	if [[ "${DOMAIN:0:1}" == "$" ]]; then
+		DOMAIN=$(echo $(eval echo ${DOMAIN}))
+	fi
+	ADD=$(echo ${LINE} | cut -f3 -d',')
+	ADD="${ADD^^}"
+	DEL=$(echo ${LINE} | cut -f4 -d',')
+	DEL="${DEL^^}"
+	CACHE=$(echo ${LINE} | cut -f5 -d',')
+	CACHE="${CACHE^^}"
+	FQDN=${HOST}.${DOMAIN}
+	RECORDID=$(recordid ${ZONEID} ${FQDN})
+	echo -n ${BLUE}
+	printf %-20s "${HOST}" 
+	if [[ ${ADD} == "YES" ]]; then
+		if [[ "${RECORDID}" == "null"  ]]; then
+			createrecord ${ZONEID} ${HOST} ${CACHE}
+			echo -n ${GREEN}"Created ${FQDN} "
+			if [[ ${CACHE} == "YES" ]]; then
+				echo "(cached)"${STD}
+			else
+				echo ${RED}"(uncached)"${STD}
+			fi
+		else
+			echo ${YELLOW}"exists"${STD}
+		fi
+	else
+		echo ${YELLOW}"skipped"${STD}
+	fi
+done

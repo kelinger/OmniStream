@@ -1,0 +1,11 @@
+#!/bin/bash
+
+echo -n Entering ${1}
+SHELL=$(docker exec -ti ${1} which bash)
+if [[ -z ${SHELL} ]]; then
+	echo " with sh"
+	docker exec -ti ${1} sh
+else
+	echo " with bash"
+	docker exec -ti ${1} bash
+fi

@@ -1,0 +1,36 @@
+#
+# Organizr - Default web site
+#
+  Organizr:
+    image: lsiocommunity/organizr:latest
+    container_name: ${ORGANIZRNAME}
+    hostname: ${MENU}
+    domainname: ${MYDOMAIN}
+    restart: always
+    depends_on:
+      - traefik
+    environment:
+      - PUID=${USERID}
+      - PGID=${GROUPID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${CONFIGS}/Organizr:/config
+    labels:
+      - "omni=${ORGANIZRNAME},${MYDOMAIN},yes,yes,yes"
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.menu-rtr.entrypoints=https"
+      - "traefik.http.routers.menu-rtr.rule=Host(`${MENU}.${MYDOMAIN}`)"
+      - "traefik.http.routers.menu-rtr.tls=true"
+      ## Middlewares
+      - "traefik.http.routers.menu-rtr.middlewares=chain-oauth@file"
+      ## HTTP Services
+      - "traefik.http.routers.menu-rtr.service=menu-svc"
+      - "traefik.http.services.menu-svc.loadbalancer.server.port=80"
+    networks:
+      - OmniNet
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -ntlp | grep :80"]
+      interval: 10s
+      timeout: 2s
+      retries: 3

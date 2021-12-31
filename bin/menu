@@ -1,0 +1,226 @@
+#!/bin/bash
+#
+#	This progream sets up Omnistream for the current user.  It can also be used to edit or
+#	review the current settings and enable/disable Omnistream components.  The concept is
+#	to basically talk the user through some of the fine tuning processes to make Omnistream
+#	unique to their personal setup.
+#
+
+# Install any dependencies
+
+hash dialog 2>/dev/null || { echo Installing dialog \(one time\) ; sudo apt update > /dev/null ; sudo apt install dialog -y > /dev/null ; }
+
+# Set default values
+
+HOME=~
+ADD_DNS=true
+CF_EMAIL=
+CF_KEY=
+CONFIGS=${HONE}/Omni/Configs
+DELETE_DNS=true
+DOWNLOADS=${HOME}/Downloads
+GOOGLE=${HOME}/Omni/mnt/Google
+GROUPID=${UID}
+USERID=${UID}
+LOGS=${HOME}/Omni/Logs
+MEDIA=${GOOGLE}/Media
+MERGETARGET=${GOOGLE}
+MYDOMAIN=mydomain.com
+MYEMAIL=me@mydomain.com
+RCLONEHOME=${HOME}/.config/rclone
+RCLONESERVICE=
+RCLONETARGET=
+RCLONEMOUNT=
+TIMEZONE=$(cat /etc/timezone)
+UNSYNCED=${HOME}/Omni/mnt/Unsynced
+UPLOADCACHE=${HOME}/Omni/UploadCache
+
+PROXYNAME=nginx-proxy
+TRAEFIKNAME=traefik
+NETDATANAME=netdata
+ORGANIZRNAME=organizr
+PORTAINERNAME=portainer
+PLEXNAME=plex
+EMBYNAME=emby
+TAUTULLINAME=tautuli
+NZBGETNAME=nzbget
+HYDRANAME=hydra
+SABNZBDNAME=sabnzbd
+DELUGENAME=deluge
+RTORRENTNAME=rtorrent
+RADARRNAME=radarr
+SONARRNAME=sonarr
+MEDUSANAME=medusa
+JACKETTNAME=jackett
+
+# Overwrite default values with user's customizations, if any
+
+touch ${HOME}/.config/omnistream.conf
+source ${HOME}/.config/omnistream.conf
+source ${HOME}/Omni/bin/omni_functions
+
+# temporary file
+TEMP=/tmp/answer${$}
+
+# Get component list
+COMPONENTS="$(ls ${HOME}/Omni/components/*.yaml | sed s/^.*\\/\//)"
+ENABLED="$(ls ${HOME}/Omni/enabled/*.yaml | sed s/^.*\\/\//)"
+
+edit_components() {
+	OPTIONS=""
+	COUNTER=1
+	for i in ${COMPONENTS}
+	do
+		NAME=${i#???}
+		NAME=${NAME%".yaml"}
+		OPTIONS="${OPTIONS}${COUNTER} ${NAME} "
+		STATUS=off
+		for j in ${ENABLED}
+		do
+			if [ ${i} = ${j} ]
+			then
+				STATUS=on
+			fi
+		done
+		OPTIONS="${OPTIONS} ${STATUS} "
+		COUNTER=$((COUNTER+1)) 
+	done
+	dialog --title "Enabled Components" --checklist "Choose which components are active:" 20 60 16 ${OPTIONS} 2>${TEMP}
+
+	if [ "$?" != "0" ] ; then return ; fi
+
+	CHOICE=$(cat ${TEMP})
+	COUNTER=1
+	for i in ${COMPONENTS}
+  	do
+		COMMAND="o- ${i}"
+		for j in ${CHOICE}
+		do
+			if [ ${COUNTER} = ${j} ]
+			then
+				COMMAND="o+ ${i}"
+			fi
+		done
+		eval ${COMMAND} > /dev/null
+		COUNTER=$((COUNTER+1))
+	done
+	"${OMNIHOME}"/bin/omni_complete # Update Auto-complete
+	exit
+}
+
+get_text() {
+	dialog --title "${TITLE}" --clear --no-cancel --inputbox "${DESC}" 16 51 "${DEFAULT}" 2> ${TEMP}-Input
+	VALUE=$(cat ${TEMP}-Input)
+	rm ${TEMP}-Input
+}
+
+get_dir() {
+	dialog --title "${TITLE}" --clear --msgbox "${DESC}\n\nOn the next screen, please choose a directory.  Use the arrow keys and tab to move the cursor and press SPACE to select the highlighted directory and add it to the path at the bottom.  To go into a directory, press SPACE a second time." 16 51
+	dialog --title "${TITLE}" --clear --dselect "${DEFAULT}" 16 51 2> ${TEMP}-Input
+	VALUE=$(cat ${TEMP}-Input)
+	rm ${TEMP}-Input
+}
+
+variable_menu() {
+	dialog --clear --no-cancel \
+		--title "Omnistream Variable Editor" \
+		--menu "Choose an option to modify:"  20 75 16 \
+		"CloudFlare Email" "${CF_EMAIL}" \
+	       	"CloudFlare Key" "${CF_KEY}" \
+	       	"AppData Location" "${CONFIGS}" \
+	       	"Downloads" "${DOWNLOADS}" \
+	       	"Google mount-to" "${GOOGLE}" \
+	       	"Home" "${HOME}" \
+	       	"Logs" "${LOGS}" \
+	       	"Media" "${MEDIA}" \
+	       	"Domain" "${MYDOMAIN}" \
+	       	"Email" "${MYEMAIL}" \
+	       	"Rclone Config" "${RCLONEHOME}" \
+	       	"Rclone Service" "${RCLONESERVICE}" \
+	       	"Rclone Target" "${RCLONETARGET}" \
+		"Rclone Mount-to" "${RCLONEMOUNT}" \
+	       	"Timezone" "${TIMEZONE}" \
+	       	"Unsynced Files" "${UNSYNCED}" \
+	       	"Upload Cache" "${UPLOADCACHE}" \
+	       	"User ID" "${USERID}" \
+	       	"Group ID" "${GROUPID}" \
+		${OPTIONS} 2>${TEMP}-var
+	CHOICE=$(cat ${TEMP}-var)
+	case ${CHOICE} in
+		"CloudFlare Email")
+			TITLE="CloudFlare Email"
+			DESC="This is the email address you used for your CloudFlare accout.  It does not need to be the same as the one used for SSL certificates."
+			DEFAULT="${CF_EMAIL}"
+			get_text
+			CF_EMAIL=${VALUE};;
+		"CloudFlare Key")
+			TITLE="CloudFlare Key"
+			DESC="This is the API key from CloudFlare.  It is used by Omnistream to create, update and delete DNS records when components are created and taken offline."
+			DEFAULT="${CF_KEY}"
+			get_text
+			CF_KEY="${VALUE}";;
+		"AppData Location")
+			TITLE="AppData Location"
+			DESC="This is the location where Omnistream components store their data.  This will be unique per ssytem and contains data such as preferences and customizations.  Each component will create its own unique subdirectory."
+			DEFAULT="${CONFIGS}"
+			get_dir
+			CONFIGS="${VALUE}";;
+		"Domain")
+			TITLE="Personal Domain"
+			DESC="Omnistream can obtain a secure certificate (SSL) to enable each component to run in a separate web space over encrypted HTTPS communication.  Enter the domain name that you own that will be used for obtaining certificates through Let's Encrypt."
+			DEFAULT="${MYDOMAIN}"
+			get_text
+			MYDOMAIN="${VALUE}";;
+		"Email")
+			TITLE="Personal Email"
+			DESC="When obtaining an SSL certificate from Let's Encrypt, Omnistream needs to use your email address to claim the certificate.  This will also be used by Let's Encrypt to send notifications regarding certificate renewal or account issues.  Enter the email address you would like to use for Let's Encrypt notifications."
+			DEFAULT="${MYEMAIL}"
+			get_text
+			MYEMAIL="${VALUE}";;
+		"Timezone")
+			TITLE="Edit Timezone"
+			DESC="The system timezone is shown below.  Change it to your personal timezone so that scheduled tasks within Omnistream components coincide with your own time.  This is most often used if you are using a VPS in a different timezone than where you most often reside."
+			DEFAULT="${TIMEZONE}"
+			get_text
+			TIMEZONE="${VALUE}";;
+		"User ID")
+			TITLE="User ID"
+			DESC="Enter the numerical user ID to be used within components.  This is most often the same as your user ID on the server itself."
+			get_text
+			USERID="${VALUE}";;
+		"Group ID")
+			TITLE="Group ID"
+			DESC="Enter the numerical group ID to be used within components.  This is most often the same as your group ID on the server itself."
+			get_text
+			GROUPID="${VALUE}";;
+	esac
+	#rm ${TEMP}-var
+	echo VARIABLE MENU ENDED! >> ${TEMP}
+}
+
+main_menu() {
+	CHOICE=0
+	while true; do
+		dialog \
+			--no-cancel \
+			--title "Omnistream Configuration Editor" \
+			--menu "Select an option:" 15 60 4 \
+			1 "Edit components" \
+			2 "Edit variables" \
+			3 "Edit hostnames" \
+			8 "Utilities" \
+			9 "Exit" 2>${TEMP}
+
+		CHOICE=$(cat ${TEMP})
+  		case ${CHOICE} in
+			1) edit_components;;
+			2) variable_menu;;
+			8) utilities;;
+			9) rm -f ${TEMP}*
+				exit;;
+		esac
+	done
+}
+
+  main_menu
+  #variable_menu

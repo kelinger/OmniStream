@@ -1,0 +1,50 @@
+#!/bin/bash
+PARAM=${1,,}
+cd /tmp
+
+A=$(rclone --version | head -n 1)
+B=$(curl https://beta.rclone.org/version.txt 2>/dev/null)
+C=$(curl https://downloads.rclone.org/version.txt 2>/dev/null)
+
+case ${PARAM} in
+beta)
+	echo "Installed:  ${A}"
+	echo "     Beta:  ${B}"
+	if [[ ${A} == ${B} ]]; then
+		echo No update available
+		exit 0
+	fi
+	RC="curl https://rclone.org/install.sh | sudo bash -s beta"
+	;;
+current)
+	echo "Installed:  ${A}"
+	echo "  Release:  ${C}"
+	if [[ ${A} == ${C} ]]; then
+		echo No update available
+		exit 0
+	fi
+	RC="curl https://rclone.org/install.sh | sudo bash"
+	;;
+"")
+	echo "Installed:  ${A}"
+	echo "  Release:  ${C}"
+	echo "     Beta:  ${B}"
+	exit 0
+	;;
+*)
+	echo
+	echo "Usage:  rclone-update <option>"
+	echo
+	echo Option:
+	echo "  beta    - Install latest beta"
+	echo "  current - Install latest non-beta release"
+	echo
+	echo "Use no options to just check the versions online and installed."
+	echo
+	;;
+esac
+
+echo Installing newer ${PARAM}
+
+# Install new Rclone
+eval ${RC}

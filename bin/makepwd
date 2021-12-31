@@ -1,0 +1,30 @@
+#!/bin/bash
+
+FILENAME=${1}		# File to create
+USERNAME=${2}		# Username for login to site
+
+try_install() {
+    dpkg -l "$1" | grep -q ^ii && return 1		# Package already installed
+    echo
+    echo Installing ${@}
+    echo
+    sudo apt -y install "$@"
+    return 0
+}
+
+# Check to see if apache2-utils are installed.  If not, then install them.
+
+try_install apache2-utils
+
+echo
+
+if [[ -e ${FILENAME} ]]
+then							# File exists so append with new user
+	echo Updating file ${FILENAME}
+	echo Adding  user ${USERNAME}
+	htpasswd ${FILENAME} ${USERNAME}
+else							# Create file then create first user
+	echo Creating file ${FILENAME}
+	echo Adding user ${USERNAME}
+	htpasswd -c ${FILENAME} ${USERNAME}
+fi

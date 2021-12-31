@@ -1,0 +1,10 @@
+#!/bin/bash
+sudo chmod 777 /dev/dri
+X=$(docker exec plex bash -c "command -v vainfo > /dev/null && echo yes || echo no")
+if [[ ${X} = "no" || ${1} = "force" ]]; then
+	docker exec plex apt update
+	docker exec plex apt install i965-va-driver vainfo -y
+	docker restart plex
+else
+	echo Intel GPU Driver for Plex already installed
+fi

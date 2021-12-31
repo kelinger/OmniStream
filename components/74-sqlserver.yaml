@@ -1,0 +1,30 @@
+  sqlserver:
+    # See https://www.centinosystems.com/blog/sql/updating-sql-server-2017-containers-to-2019-non-root-containers-with-data-volumes/ for permission issues
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver
+    hostname: sqlserver
+    domainname: ${MYDOMAIN}
+    restart: always
+    depends_on:
+      - traefik
+    networks:
+      - OmniNet
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "REDACTED"
+      ACCEPT_EULA: "Y"
+    volumes:
+      #- ${CONFIGS}/sqlserver:/var/opt/mssql
+      - ${CONFIGS}/sqlserver/data:/var/opt/mssql/data
+      - ${CONFIGS}/sqlserver/log:/var/opt/mssql/log
+      - ${CONFIGS}/sqlserver/secrets:/var/opt/mssql/secrets
+      - /etc/localtime:/etc/localtime:ro
+      - /bin/netstat:/bin/netstat:ro
+    labels:
+      - "omni=sqlserver,${MYDOMAIN},yes,yes,no"
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -ntlp | grep :1443"]
+      interval: 10s
+      timeout: 2s
+      retries: 3
