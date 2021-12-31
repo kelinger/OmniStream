@@ -48,3 +48,11 @@ OmniStream is a collection of Docker containers and utilities/commands for build
 * Redis
 
 In almost all cases, each container is not dependent on any others meaning you can pick and choose which of the above (other than core) you would or would not like to use.  Obviously, running something like Tautulli without Plex may be useless but you can still choose to do this (say to configure Tautulli to monitor a Plex installation elsewhere).
+
+...
+
+## Aknowledgements (to be expanded and detailed)
+perPLEXed
+Rclone
+Animosity
+Original app and container developers
