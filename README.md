@@ -52,7 +52,7 @@ In almost all cases, each container is not dependent on any others meaning you c
 ...
 
 ## Aknowledgements (to be expanded and detailed)
-perPLEXed
-Rclone
-Animosity
-Original app and container developers
+* perPLEXed
+* Rclone
+* Animosity
+* Original app and container developers
