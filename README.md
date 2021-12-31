@@ -51,7 +51,7 @@ In almost all cases, each container is not dependent on any others meaning you c
 
 ...
 
-## Aknowledgements (to be expanded and detailed)
+## Acknowledgements (to be expanded and detailed)
 * perPLEXed
 * Rclone
 * Animosity
