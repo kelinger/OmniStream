@@ -32,7 +32,6 @@ sudo apt install -y \
 	pigz \
 	pv \
 	python3-pip \
-	pipx \
 	rsync \
 	software-properties-common \
 	speedometer \
@@ -56,7 +55,7 @@ then
 	echo This is meant to be run on a system that has not yet been setup.  Use the update menu within Omni to bring
 	echo the project up-to-date or clear the /opt/OmniStream directory and rerun setup to start fresh.
 	echo
-	echo This message may also be displayed if the download from GIT failed.  If this is the case (no /opt/OmniStream)
+	echo This message may also be displayed if the download from GIT failed.  If this is the case \(no /opt/OmniStream\)
 	echo then simply rerun the setup.
 	echo
 	exit 2
@@ -93,15 +92,18 @@ sed -zi '/source \/opt\/OmniStream\/bin\/omni_complete/!s/$/\nsource \/opt\/Omni
 
 # Install services
 
-echo Settuping up services
+echo Setting up services
 sudo systemctl start vnstat
 sudo systemctl enable vnstat
 sudo sed -i 's/^#user_allow_other/user_allow_other/g' /etc/fuse.conf
 
-# Set home folders for personalizations
+# Make system Omni-ready
 
 pip3 install --upgrade pip
 pip install --upgrade pip
+mkdir -p /opt/OmniStream/enabled /opt/OmniStream/logs ~/Omni/Configs ~/Omni/mnt
+source /opt/OmniStream/bin/omni_functions
+o+ 01-header.yaml 03-traefik.yaml 99-footer.yaml
 
 # Start setup menu for parameters and help
 
