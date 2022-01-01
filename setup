@@ -8,13 +8,47 @@ then
 	exit 1
 fi
 
-sudo apt update
-sudo apt install git-core
+VERSION=$(lsb_release -si)
+echo Distribution is ${VERSION}
 
+# Install dependencies
+
+echo Installing dependencies
+sudo apt update > /dev/null 2>&1
+sudo apt install -y \
+	acl \
+	apache2-utils \
+	apt-transport-https \
+	at \
+	bc \
+	ca-certificates \
+	curl \
+	dialog \
+	fuse \
+	git-core \
+	htop \
+	jq \
+	parallel \
+	pigz \
+	pv \
+	python3-pip \
+	pipx \
+	rsync \
+	software-properties-common \
+	speedometer \
+	speedtest-cli \
+	unzip \
+	vnstat \
+	wget \
+	> /dev/null 2>&1
+
+# Clone OmniStream to /opt
+
+echo Grabbing OmniStream from GIT
 cd /opt
 sudo mkdir -p OmniStream
 sudo chown -R ${USER}:${USER} OmniStream
-git clone https://github.com/kelinger/OmniStream.git
+git clone https://github.com/kelinger/OmniStream.git > /dev/null 2>&1
 
 if [[ ${?} != 0 ]]
 then
@@ -22,15 +56,57 @@ then
 	echo This is meant to be run on a system that has not yet been setup.  Use the update menu within Omni to bring
 	echo the project up-to-date or clear the /opt/OmniStream directory and rerun setup to start fresh.
 	echo
+	echo This message may also be displayed if the download from GIT failed.  If this is the case (no /opt/OmniStream)
+	echo then simply rerun the setup.
+	echo
 	exit 2
 fi
 
+# Install Docker
+
+echo Installing Docker
+
+curl -fsSL https://get.docker.com | sh > /dev/null 2>&1
+
+# Install Docker Compose
+
+echo Installing Docker Compose
+
+cd /tmp
+curl -s https://api.github.com/repos/docker/compose/releases/latest | grep browser_download_url  | grep docker-compose-linux-x86_64 | cut -d '"' -f 4 | wget -qi -
+chmod +x docker-compose-linux-x86_64
+sudo mv docker-compose-linux-x86_64 /usr/local/bin/docker-compose
+
+# Allow current user to control Docker
+
+echo Granting Docker permissions to ${USER}
+sudo usermod -aG docker ${USER}
+sudo gpasswd -a ${USER} docker
+sudo setfacl -m user:${USER}:rw /var/run/docker.sock
+
 # Modify .bashrc
 
-# Install/update  Docker and Compose
+echo Updating .bashrc
+sed -zi '/source \/opt\/OmniStream\/bin\/omni_aliases/!s/$/\nsource \/opt\/OmniStream\/bin\/omni_aliases\n/' ~/.bashrc
+sed -zi '/source \/opt\/OmniStream\/bin\/omni_functions/!s/$/\nsource \/opt\/OmniStream\/bin\/omni_functions\n/' ~/.bashrc
+sed -zi '/source \/opt\/OmniStream\/bin\/omni_complete/!s/$/\nsource \/opt\/OmniStream\/bin\/omni_complete\n/' ~/.bashrc
 
-# Install SystemD services
+# Install services
+
+echo Settuping up services
+sudo systemctl start vnstat
+sudo systemctl enable vnstat
+sudo sed -i 's/^#user_allow_other/user_allow_other/g' /etc/fuse.conf
 
 # Set home folders for personalizations
 
+pip3 install --upgrade pip
+pip install --upgrade pip
+
 # Start setup menu for parameters and help
+
+### Output results
+
+echo Distribution is ${VERSION}
+docker -v
+docker-compose -v
