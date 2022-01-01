@@ -9,11 +9,10 @@ then
 fi
 
 VERSION=$(lsb_release -si)
-echo Distribution is ${VERSION}
 
 # Install dependencies
 
-echo Installing dependencies
+echo -n Installing dependencies... 
 sudo apt update > /dev/null 2>&1
 sudo apt install -y \
 	acl \
@@ -41,16 +40,26 @@ sudo apt install -y \
 	wget \
 	> /dev/null 2>&1
 
+if [[ ${?} = 0 ]]
+then
+	echo Done
+else
+	echo Failed!
+	exit 11
+fi
+
 # Clone OmniStream to /opt
 
-echo Grabbing OmniStream from GIT
+echo -n Grabbing OmniStream from GIT...
 cd /opt
 sudo mkdir -p OmniStream
 sudo chown -R ${USER}:${USER} OmniStream
 git clone https://github.com/kelinger/OmniStream.git > /dev/null 2>&1
 
-if [[ ${?} != 0 ]]
+if [[ ${?} = 0 ]]
 then
+	echo Done
+else
 	echo
 	echo This is meant to be run on a system that has not yet been setup.  Use the update menu within Omni to bring
 	echo the project up-to-date or clear the /opt/OmniStream directory and rerun setup to start fresh.
@@ -58,23 +67,38 @@ then
 	echo This message may also be displayed if the download from GIT failed.  If this is the case \(no /opt/OmniStream\)
 	echo then simply rerun the setup.
 	echo
-	exit 2
+	exit 12
 fi
 
 # Install Docker
 
-echo Installing Docker
+echo -n Installing Docker...
 
 curl -fsSL https://get.docker.com | sh > /dev/null 2>&1
 
+if [[ ${?} = 0 ]]
+then
+	echo Done
+else
+	echo Failed!
+	exit 13
+fi
+
 # Install Docker Compose
 
-echo Installing Docker Compose
+echo -n Installing Docker Compose...
 
 cd /tmp
 curl -s https://api.github.com/repos/docker/compose/releases/latest | grep browser_download_url  | grep docker-compose-linux-x86_64 | cut -d '"' -f 4 | wget -qi -
-chmod +x docker-compose-linux-x86_64
-sudo mv docker-compose-linux-x86_64 /usr/local/bin/docker-compose
+if [[ ${?} = 0 ]]
+then
+	chmod +x docker-compose-linux-x86_64
+	sudo mv docker-compose-linux-x86_64 /usr/local/bin/docker-compose
+	echo Done
+else
+	echo Failed!
+	exit 14
+fi
 
 # Allow current user to control Docker
 
@@ -99,8 +123,9 @@ sudo sed -i 's/^#user_allow_other/user_allow_other/g' /etc/fuse.conf
 
 # Make system Omni-ready
 
-pip3 install --upgrade pip
-pip install --upgrade pip
+echo Setting up Omni paths and functions
+pip3 install --upgrade pip > /dev/null 2>&1
+pip install --upgrade pip > /dev/null 2>&1
 mkdir -p /opt/OmniStream/enabled /opt/OmniStream/logs ~/Omni/Configs ~/Omni/mnt
 source /opt/OmniStream/bin/omni_functions
 o+ 01-header.yaml 03-traefik.yaml 99-footer.yaml
