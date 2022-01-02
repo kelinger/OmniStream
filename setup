@@ -224,7 +224,7 @@ echo Setting up Omni paths and functions
 pip3 install --upgrade pip > /dev/null 2>&1
 pip install --upgrade pip > /dev/null 2>&1
 mkdir -p /opt/OmniStream/enabled /opt/OmniStream/logs ~/Omni/Configs ~/Omni/mnt
-source /opt/OmniStream/bin/omni_init
+source /opt/OmniStream/bin/omni_init > /dev/null 2>&1
 o+ 001-header.yaml 002-traefik.yaml 999-footer.yaml
 echo Done
 
