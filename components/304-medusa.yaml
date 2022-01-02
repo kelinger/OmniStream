@@ -1,0 +1,42 @@
+#
+# Medusa - TV Show catalog and management
+#
+  medusa:
+    image: binhex/arch-medusa
+    container_name: ${MEDUSANAME}
+    hostname: ${MEDUSANAME}
+    domainname: ${MYDOMAIN}
+    restart: unless-stopped
+    depends_on:
+      - traefik
+    environment:
+      - PGID=${GROUPID}
+      - PUID=${USERID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${CONFIGS}/${MEDUSANAME}:/config
+      - ${HOME}/logs:/config/logs
+      - ${GOOGLE}:/Google
+      - ${TV}:/tv
+      - /bin/netstat:/bin/netstat:ro
+      - /usr/bin/killall:/usr/bin/killall:ro
+    labels:
+      - "omni=${MEDUSANAME},${MYDOMAIN},yes,yes,yes"
+      - "traefik.enable=true"
+    ## HTTP Routers
+      - "traefik.http.routers.medusa-rtr.entrypoints=https"
+      - "traefik.http.routers.medusa-rtr.rule=Host(`${MEDUSANAME}.${MYDOMAIN}`)"
+      - "traefik.http.routers.medusa-rtr.tls=true"
+      ## Middlewares
+      - "traefik.http.routers.medusa-rtr.middlewares=chain-oauth@file"
+      ## HTTP Services
+      - "traefik.http.routers.medusa-rtr.service=medusa-svc"
+      - "traefik.http.services.medusa-svc.loadbalancer.server.port=8081"
+    networks:
+      - OmniNet
+    #healthcheck:
+      #test: ["CMD-SHELL", "netstat -ntlp | grep 8081 && mountpoint /tv"]
+      #interval: 10s
+      #timeout: 2s
+      #retries: 3

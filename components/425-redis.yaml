@@ -1,0 +1,52 @@
+  redis:
+    image: redis:latest
+    container_name: ${REDISNAME}
+    hostname: ${REDISNAME}
+    domainname: ${MYDOMAIN}
+    restart: always
+    depends_on:
+      - traefik
+    networks:
+      - OmniNet
+    ports:
+      - "6379:6379"
+    volumes:
+      - ${CONFIGS}/${REDISNAME}:/data
+      - /etc/localtime:/etc/localtime:ro
+      - /bin/netstat:/bin/netstat:ro
+    labels:
+      - "omni=${REDISNAME},${MYDOMAIN},no,no,no"
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -ntlp | grep :6379"]
+      interval: 10s
+      timeout: 2s
+      retries: 3
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: ${REDISCOMNAME}
+    hostname: ${REDISCOMNAME}
+    domainname: ${MYDOMAIN}
+    restart: always
+    depends_on:
+      - traefik
+    networks:
+      - OmniNet
+    environment:
+    - REDIS_HOSTS=local:${REDISNAME}:6379
+    labels:
+      - "omni=${REDISCOMNAME},${MYDOMAIN},yes,yes,yes"
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.redis-rtr.entrypoints=https"
+      - "traefik.http.routers.redis-rtr.rule=Host(`${REDISCOMNAME}.${MYDOMAIN}`)"
+      ## Middlewares
+      - "traefik.http.routers.redis-rtr.middlewares=chain-oauth@file"
+      ## HTTP Services
+      - "traefik.http.routers.redis-rtr.service=redis-svc"
+      - "traefik.http.services.redis-svc.loadbalancer.server.port=8081"
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -ntlp | grep :8081"]
+      interval: 10s
+      timeout: 2s
+      retries: 3

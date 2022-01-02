@@ -1,0 +1,37 @@
+#
+# Jellyfin - Media streaming server
+#
+  jellyfin:
+    image: jellyfin/jellyfin
+    container_name: ${JELLYNAME}
+    hostname: ${JELLYNAME}
+    domainname: ${MYDOMAIN}
+    restart: unless-stopped
+    depends_on:
+      - traefik
+    environment:
+      - ADVERTISE_IP=https://${JELLYNAME}.${MYDOMAIN}
+      - PUID=${USERID}
+      - PGID=${GROUPID}
+      - TZ=${TIMEZONE}
+      - UMASK_SET=022
+    labels:
+      - "omni=${JELLYNAME},${MYDOMAIN},yes,yes,yes"
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.jellyfin-rtr.entrypoints=https"
+      - "traefik.http.routers.jellyfin-rtr.rule=Host(`${JELLYNAME}.${MYDOMAIN}`)"
+      ## Middlewares
+      - "traefik.http.routers.jellyfin-rtr.middlewares=chain-no-auth@file"
+      ## HTTP Services
+      - "traefik.http.routers.jellyfin-rtr.service=jellyfin-svc"
+      - "traefik.http.services.jellyfin-svc.loadbalancer.server.port=8096"
+    volumes:
+      - ${CONFIGS}/${JELLYNAME}:/config
+      - ${MEDIA}:/mnt/media
+      - /tmp/JellyCache:/cache
+      - /tmp/Jellyfin-transcode:/transcode
+    devices:
+      - /dev/dri:/dev/dri
+    networks:
+      - OmniNet

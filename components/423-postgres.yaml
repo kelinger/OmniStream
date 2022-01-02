@@ -1,0 +1,28 @@
+#
+# PostgreSQL - Postgres database server
+#
+  postgres:
+    image: postgres:latest
+    restart: always
+    container_name: ${POSTGRESNAME}
+    hostname: ${POSTGRESNAME}
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret216
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - ${CONFIGS}/${POSTGRESNAME}:/var/lib/postgresql/data
+      - /etc/localtime:/etc/localtime:ro
+      - /bin/netstat:/bin/netstat:ro
+    labels:
+      - "omni=${POSTGRESNAME},${MYDOMAIN},yes,yes,no"
+    networks:
+      - OmniNet
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -ntlp | grep :5432"]
+      interval: 10s
+      timeout: 2s
+      retries: 3

@@ -1,0 +1,35 @@
+# Guacamole - Remote desktop, SSH, on Telnet on any HTML5 Browser 
+  guac:
+    image: guacamole/guacamole:latest
+    container_name: guac
+    hostname:  guac
+    restart: unless-stopped
+    ports:
+      - target: 8080
+        published: 8080
+        protocol: tcp
+        mode: host
+    networks:
+      - OmniNet
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      GUACD_HOSTNAME: guac
+      MYSQL_HOSTNAME: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: guacamole
+      MYSQL_USER: guacamole
+      MYSQL_PASSWORD: gM0lepw!
+    labels:
+      - "omni=guac,${MYDOMAIN},yes,yes,yes"
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.guacamole-rtr.entrypoints=https"
+      - "traefik.http.routers.guacamole-rtr.rule=Host(`guac.${MYDOMAIN}`)"
+      - "traefik.http.routers.guacamole-rtr.tls=true"
+      ## Middlewares
+      - "traefik.http.routers.guacamole-rtr.middlewares=chain-oauth@file,add-guacamole"
+      - "traefik.http.middlewares.add-guacamole.addPrefix.prefix=/guacamole"
+      ## HTTP Services
+      - "traefik.http.routers.guacamole-rtr.service=guacamole-svc"
+      - "traefik.http.services.guacamole-svc.loadbalancer.server.port=8080"

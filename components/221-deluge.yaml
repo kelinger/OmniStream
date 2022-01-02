@@ -1,0 +1,45 @@
+#
+# Deluge - Torrent download engine
+#
+  deluge:
+    image: linuxserver/deluge:latest #145
+    container_name: ${DELUGENAME}
+    hostname: ${DELUGENAME}
+    domainname: ${MYDOMAIN}
+    restart: unless-stopped
+    depends_on:
+      - traefik
+    environment:
+      - PUID=${USERID}
+      - PGID=${GROUPID}
+      - TZ=${TIMEZONE}
+      - UMASK_SET=022
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /bin/netstat:/bin/netstat:ro
+      - ${CONFIGS}/${DELUGENAME}:/config
+      - ${DOWNLOADS}:/downloads
+      - ${GOOGLE}:/Google
+    ports:
+      - 55955:55955/tcp
+      - 55955:55955/udp
+      - 58846:58846/tcp
+    networks:
+      - OmniNet
+    labels:
+      - "omni=${DELUGENAME},${MYDOMAIN},yes,yes,yes"
+      - "traefik.enable=true"
+    ## HTTP Routers
+      - "traefik.http.routers.deluge-rtr.entrypoints=https"
+      - "traefik.http.routers.deluge-rtr.rule=Host(`${DELUGENAME}.${MYDOMAIN}`)"
+      - "traefik.http.routers.deluge-rtr.tls=true"
+      ## Middlewares
+      - "traefik.http.routers.deluge-rtr.middlewares=chain-no-auth@file"
+      ## HTTP Services
+      - "traefik.http.routers.deluge-rtr.service=deluge-svc"
+      - "traefik.http.services.deluge-svc.loadbalancer.server.port=8112"
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -ntlp | grep :8112"]
+      interval: 10s
+      timeout: 2s
+      retries: 3

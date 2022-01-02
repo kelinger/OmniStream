@@ -1,0 +1,84 @@
+#
+# Traefik - Maps containers to public FQDNs accessable via https with valid certs
+#
+  traefik:
+    image: traefik:latest
+    container_name: ${TRAEFIKNAME}
+    hostname: ${TRAEFIKNAME}
+    domainname: ${MYDOMAIN}
+    restart: unless-stopped
+    command:
+      - --global.checkNewVersion=true
+      - --global.sendAnonymousUsage=true
+      - --entryPoints.http.address=:80
+      - --entryPoints.https.address=:443
+        # Allow these IPs to set the X-Forwarded-* headers - Cloudflare IPs: https://www.cloudflare.com/ips/
+      - --entrypoints.https.forwardedHeaders.trustedIPs=173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/12,172.64.0.0/13,131.0.72.0/22
+      - --entryPoints.traefik.address=:8080
+      - --api=true
+      - --log=true
+      - --log.level=INFO # (Default: error) DEBUG, INFO, WARN, ERROR, FATAL, PANIC
+      - --accessLog=true
+      - --accessLog.filePath=/traefik.log
+      - --accessLog.bufferingSize=100 # Configuring a buffer of 100 lines
+      - --accessLog.filters.statusCodes=400-499
+      - --providers.docker=true
+      - --providers.docker.endpoint=unix:///var/run/docker.sock
+      - --providers.docker.exposedByDefault=false
+      - --entrypoints.https.http.tls.certresolver=dns-cloudflare
+      - --entrypoints.https.http.tls.domains[0].main=${MYDOMAIN}
+      - --entrypoints.https.http.tls.domains[0].sans=*.${MYDOMAIN}
+      - --providers.docker.network=OmniNet
+      - --providers.docker.swarmMode=false
+      - --providers.file.directory=/rules
+      - --providers.file.watch=true
+        #- --certificatesResolvers.dns-cloudflare.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory # LetsEncrypt Staging Server - uncomment when testing
+      - --certificatesResolvers.dns-cloudflare.acme.email=${CF_EMAIL}
+      - --certificatesResolvers.dns-cloudflare.acme.storage=/acme.json
+      - --certificatesResolvers.dns-cloudflare.acme.dnsChallenge.provider=cloudflare
+        #- --certificatesResolvers.dns-cloudflare.acme.dnsChallenge.resolvers=1.1.1.1:53,1.0.0.1:53
+        #- --certificatesResolvers.dns-cloudflare.acme.dnsChallenge.delayBeforeCheck=90 # To delay DNS check and reduce LE hitrate
+
+    ports:
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
+      - target: 443
+        published: 443
+        protocol: tcp
+        mode: host
+    environment:
+      - CF_API_EMAIL=${CF_EMAIL}
+      - CF_API_KEY=${CF_KEY}
+    labels:
+      - "omni=${TRAEFIKNAME},${MYDOMAIN},yes,yes,yes"
+      - "traefik.enable=true"
+      # HTTP-to-HTTPS Redirect
+      - "traefik.http.routers.http-catchall.entrypoints=http"
+      - "traefik.http.routers.http-catchall.rule=HostRegexp(`{host:.+}`)"
+      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      # HTTP Routers
+      - "traefik.http.routers.traefik-rtr.entrypoints=https"
+      - "traefik.http.routers.traefik-rtr.rule=Host(`${TRAEFIKNAME}.${MYDOMAIN}`)"
+      ## Services - API
+      - "traefik.http.routers.traefik-rtr.service=api@internal"
+      ## Middlewares
+      - "traefik.http.routers.traefik-rtr.middlewares=chain-oauth@file"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${CONFIGS}/${TRAEFIKNAME}/rules:/rules
+      - ${CONFIGS}/${TRAEFIKNAME}/acme/acme.json:/acme.json
+      - ${CONFIGS}/${TRAEFIKNAME}/traefik.log:/traefik.log
+      - ${CONFIGS}/${TRAEFIKNAME}/security:/shared/.htpasswd
+      - ${CONFIGS}/healthchecks/traefikcheck:/traefikcheck
+    networks:
+      - OmniNet
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD-SHELL", "/traefikcheck"]
+      interval: 10s
+      timeout: 2s
+      retries: 3

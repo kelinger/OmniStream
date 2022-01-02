@@ -1,0 +1,40 @@
+#
+# SABnzbd - Usenet Downloader
+#
+  sabnzbd:
+    image: linuxserver/sabnzbd
+    container_name: ${SABNZBDNAME}
+    hostname: ${SABNZBDNAME}
+    domainname: ${MYDOMAIN}
+    restart: unless-stopped
+    depends_on:
+      - traefik
+        #condition: service_healthy
+    environment:
+      - PGID=${GROUPID}
+      - PUID=${USERID}
+      - TZ=${TIMEZONE}
+    labels:
+      - "omni=${SABNZBDNAME},${MYDOMAIN},yes,yes,yes"
+      - "traefik.enable=true"
+    ## HTTP Routers
+      - "traefik.http.routers.sabnzbd-rtr.entrypoints=https"
+      - "traefik.http.routers.sabnzbd-rtr.rule=Host(`${SABNZBDNAME}.${MYDOMAIN}`)"
+      - "traefik.http.routers.sabnzbd-rtr.tls=true"
+      ## Middlewares
+      - "traefik.http.routers.sabnzbd-rtr.middlewares=chain-oauth@file"
+      ## HTTP Services
+      - "traefik.http.routers.sabnzbd-rtr.service=sabnzbd-svc"
+      - "traefik.http.services.sabnzbd-svc.loadbalancer.server.port=8080"
+    volumes:
+      - ${CONFIGS}/${SABNZBDNAME}:/config
+      - ${GOOGLE}:/Google
+      - ${LOGS}:/logs
+      - ${CONFIGS}/healthchecks/sabnzbdcheck:/sabnzbdcheck
+    networks:
+      - OmniNet
+    healthcheck:
+      test: ["CMD-SHELL", "/sabnzbdcheck"]
+      interval: 10s
+      timeout: 2s
+      retries: 3

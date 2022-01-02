@@ -1,0 +1,28 @@
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: ${SQLSERVERNAME}
+    hostname: ${SQLSERVERNAME}
+    domainname: ${MYDOMAIN}
+    restart: always
+    depends_on:
+      - traefik
+    networks:
+      - OmniNet
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "REDACTED"
+      ACCEPT_EULA: "Y"
+    volumes:
+      - ${CONFIGS}/${SQLSERVERNAME}/data:/var/opt/mssql/data
+      - ${CONFIGS}/${SQLSERVERNAME}/log:/var/opt/mssql/log
+      - ${CONFIGS}/${SQLSERVERNAME}/secrets:/var/opt/mssql/secrets
+      - /etc/localtime:/etc/localtime:ro
+      - /bin/netstat:/bin/netstat:ro
+    labels:
+      - "omni=${SQLSERVERNAME},${MYDOMAIN},yes,yes,no"
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -ntlp | grep :1443"]
+      interval: 10s
+      timeout: 2s
+      retries: 3

@@ -1,0 +1,26 @@
+  mysql:
+    image: mysql
+    container_name: ${MYSQLNAME}
+    hostname: ${MYSQLNAME}
+    domainname: ${MYDOMAIN}
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: 'omnidb'
+      MYSQL_USER: REDACTED
+      MYSQL_PASSWORD: REDACTED
+      MYSQL_ROOT_PASSWORD: REDACTED
+    ports:
+      - 3306:3306
+    volumes:
+      - ${CONFIGS}/${MYSQLNAME}:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+      - /bin/netstat:/bin/netstat:ro
+    labels:
+      - "omni=${MYSQLNAME},${MYDOMAIN},yes,yes,no"
+    networks:
+      - OmniNet
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -ntlp | grep :3306"]
+      interval: 10s
+      timeout: 2s
+      retries: 3

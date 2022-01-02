@@ -1,0 +1,41 @@
+#
+# Emby - Media streaming server
+#
+  emby:
+    image: emby/embyserver
+    container_name: ${EMBYNAME}
+    hostname: ${EMBYNAME}
+    domainname: ${MYDOMAIN}
+    restart: unless-stopped
+    depends_on:
+      - traefik
+    environment:
+      - ADVERTISE_IP=https://${EMBYNAME}.${MYDOMAIN}
+      - UID=${USERID}
+      - GID=${GROUPID}
+      - GIDLIST=${GPUGIDS}
+    labels:
+      - "omni=${EMBYNAME},${MYDOMAIN},yes,yes,yes"
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.emby-rtr.entrypoints=https"
+      - "traefik.http.routers.emby-rtr.rule=Host(`${EMBYNAME}.${MYDOMAIN}`)"
+      ## Middlewares
+      - "traefik.http.routers.emby-rtr.middlewares=chain-no-auth@file"
+      ## HTTP Services
+      - "traefik.http.routers.emby-rtr.service=emby-svc"
+      - "traefik.http.services.emby-svc.loadbalancer.server.port=8096"
+    volumes:
+      - ${CONFIGS}/${EMBYNAME}:/config
+      - ${MEDIA}:/mnt/media
+      - /etc/localtime:/etc/localtime:ro
+      - /tmp/Emby-transcode:/transcode
+    devices:
+      - /dev/dri:/dev/dri
+    networks:
+      - OmniNet
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -ntlp | grep :8096"]
+      interval: 10s
+      timeout: 2s
+      retries: 3

@@ -1,0 +1,43 @@
+#
+# Deluge - Torrent download engine
+#
+  qbittorrent:
+    image: linuxserver/qbittorrent
+    container_name: ${QBITNAME}
+    hostname: ${QBITNAME}
+    domainname: ${MYDOMAIN}
+    restart: unless-stopped
+    depends_on:
+      - traefik
+    environment:
+      - PUID=${USERID}
+      - PGID=${GROUPID}
+      - TZ=${TIMEZONE}
+      - UMASK_SET=022
+    volumes:
+      - /bin/netstat:/bin/netstat:ro
+      - ${CONFIGS}/${QBITNAME}:/config
+      - ${DOWNLOADS}:/downloads
+      - ${GOOGLE}:/Google
+    labels:
+      - "omni=${QBITNAME},${MYDOMAIN},yes,yes,yes"
+      - "traefik.enable=true"
+    ## HTTP Routers
+      - "traefik.http.routers.qbittorrent-rtr.entrypoints=https"
+      - "traefik.http.routers.qbittorrent-rtr.rule=Host(`${QBITNAME}.${MYDOMAIN}`)"
+      - "traefik.http.routers.qbittorrent-rtr.tls=true"
+      ## Middlewares
+      - "traefik.http.routers.qbittorrent-rtr.middlewares=chain-no-auth@file"
+      ## HTTP Services
+      - "traefik.http.routers.qbittorrent-rtr.service=qbittorrent-svc"
+      - "traefik.http.services.qbittorrent-svc.loadbalancer.server.port=8080"
+    ports:
+      - 55955:55955/tcp
+      - 55955:55955/udp
+    networks:
+      - OmniNet
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -ntlp | grep :8080"]
+      interval: 10s
+      timeout: 2s
+      retries: 3

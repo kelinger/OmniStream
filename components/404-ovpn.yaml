@@ -1,0 +1,39 @@
+  openvpn-as:
+    image: linuxserver/openvpn-as
+    container_name: ${OVPNNAME}
+    hostname: ${OVPNNAME}
+    domainname: ${MYDOMAIN}
+    restart: unless-stopped
+    depends_on:
+      - traefik
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 9443:9443
+      - 1194:1194/udp
+    networks:
+      - OmniNet
+    environment:
+      - PUID=${USERID}
+      - PGID=${GROUPID}
+      - TZ=${TIMEZONE}
+      - INTERFACE=eth0 #optional
+    labels:
+      - "omni=openvpn,${MYDOMAIN},yes,yes,yes"
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.openvpn-rtr.entrypoints=https"
+      - "traefik.http.routers.openvpn-rtr.rule=Host(`${OVPNNAME}.${MYDOMAIN}`)"
+      - "traefik.http.routers.openvpn-rtr.tls=true"
+      ## Middlewares
+      - "traefik.http.routers.openvpn-rtr.middlewares=chain-oauth@file"
+      ## HTTP Services
+      - "traefik.http.routers.openvpn-rtr.service=openvpn-svc"
+      - "traefik.http.services.openvpn-svc.loadbalancer.server.port=943"
+    volumes:
+      - ${CONFIGS}/${OVPNNAME}:/config
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -ntlp | grep :943"]
+      interval: 10s
+      timeout: 2s
+      retries: 3
