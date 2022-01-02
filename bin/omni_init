@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source /opt/OmniStream/bin/omni_aliases
+source /opt/OmniStream/bin/omni_functions
+source /opt/OmniStream/bin/omni_complete

@@ -12,9 +12,9 @@ VERSION=$(lsb_release -si)
 
 # Install dependencies
 
-echo -n Installing dependencies... 
+echo Installing/verifying dependencies... 
 sudo apt update > /dev/null 2>&1
-sudo apt install -y \
+APPLIST=" \
 	acl \
 	apache2-utils \
 	apt-transport-https \
@@ -38,15 +38,18 @@ sudo apt install -y \
 	unzip \
 	vnstat \
 	wget \
-	> /dev/null 2>&1
-
-if [[ ${?} = 0 ]]
-then
-	echo Done
-else
-	echo Failed!
-	exit 11
-fi
+	"
+for i in ${APPLIST}; do
+	echo -n $i...
+	sudo apt install -y $i > /dev/null 2>&1
+	if [[ ${?} = 0 ]]
+	then
+		echo Done
+	else
+		echo Failed!
+		exit 11
+	fi
+done
 
 # Clone OmniStream to /opt
 
@@ -110,9 +113,10 @@ sudo setfacl -m user:${USER}:rw /var/run/docker.sock
 # Modify .bashrc
 
 echo Updating .bashrc
-sed -zi '/source \/opt\/OmniStream\/bin\/omni_aliases/!s/$/\nsource \/opt\/OmniStream\/bin\/omni_aliases\n/' ~/.bashrc
-sed -zi '/source \/opt\/OmniStream\/bin\/omni_functions/!s/$/\nsource \/opt\/OmniStream\/bin\/omni_functions\n/' ~/.bashrc
-sed -zi '/source \/opt\/OmniStream\/bin\/omni_complete/!s/$/\nsource \/opt\/OmniStream\/bin\/omni_complete\n/' ~/.bashrc
+#sed -zi '/source \/opt\/OmniStream\/bin\/omni_aliases/!s/$/\nsource \/opt\/OmniStream\/bin\/omni_aliases\n/' ~/.bashrc
+#sed -zi '/source \/opt\/OmniStream\/bin\/omni_functions/!s/$/\nsource \/opt\/OmniStream\/bin\/omni_functions\n/' ~/.bashrc
+#sed -zi '/source \/opt\/OmniStream\/bin\/omni_complete/!s/$/\nsource \/opt\/OmniStream\/bin\/omni_complete\n/' ~/.bashrc
+sed -zi '/source \/opt\/OmniStream\/bin\/omni_init/!s/$/\nsource \/opt\/OmniStream\/bin\/omni_init\n/' ~/.bashrc
 
 # Install services
 
@@ -127,13 +131,20 @@ echo Setting up Omni paths and functions
 pip3 install --upgrade pip > /dev/null 2>&1
 pip install --upgrade pip > /dev/null 2>&1
 mkdir -p /opt/OmniStream/enabled /opt/OmniStream/logs ~/Omni/Configs ~/Omni/mnt
-source /opt/OmniStream/bin/omni_functions
 o+ 001-header.yaml 002-traefik.yaml 999-footer.yaml
 
 # Start setup menu for parameters and help
 
+echo
+/opt/OmniStream/bin/make-env
+
 ### Output results
 
+source /opt/OmniStream/bin/omni_init
+source /opt/OmniStream/.env
 echo Distribution is ${VERSION}
 docker -v
 docker-compose -v
+echo Customizations in ${ENV}
+echo
+echo Now would be a really good time to reboot your server
