@@ -1,35 +1,59 @@
 #!/bin/bash
 
-OMNIHOME=${HOME}/Omni
+# These are default values for required parameters.  Do not change here in this
+# script.  They are overwritten by the values stored in the user's config (ENV).
+
+OMNIHOME=/opt/OmniStream
 CDIR=${HOME}/.config
 ENV=${CDIR}/omnistream.conf
+CONFIGS=${HOME}/Omni/Configs
+DOWNLOADS=${HOME}/Downloads
+LOGS=${OMNIHOME}/logs
+ADD_DNS=false
+DELETE_DNS=false
+
 touch ${ENV}
 
 # Set default variables; will be superceded by ENV file
 
-PROXYNAME=nginx-proxy
-TRAEFIKNAME=traefik
-NETDATANAME=netdata
-ORGANIZRNAME=organizr
-PORTAINERNAME=portainer
-PLEXNAME=plex
+APACHENAME=apache
+BAZARRNAME=bazarr
+DELUGENAME=deluge
 EMBYNAME=emby
+EMBYSTATNAME=embystat
+HEALNAME=autoheal
+HYDRANAME=hydra
+JACKETTNAME=jackett
 JELLYNAME=emby
-TAUTULLINAME=tautuli
+LIDARRNAME=lidarr
+MARIADBNAME=mariadb
+MEDUSANAME=medusa
+MENU=www
+MYSQLNAME=mysql
+NETDATANAME=netdata
 NEXTCLOUDNAME=nextcloud
 NZBGETNAME=nzbget
-HYDRANAME=hydra
-SABNZBDNAME=sabnzbd
-DELUGENAME=deluge
+OAUTHNAME=oauth
+ORGANIZRNAME=organizr
+OVPNNAME=ovpn
+PLEXNAME=plex
+PORTAINERNAME=portainer
+POSTGRESNAME=postgres
 QBITNAME=qbit
-TRANSNAME=transmission
-RTORRENTNAME=rtorrent
 RADARRNAME=radarr
+REDISCOMNAME=redis-commander
+REDISNAME=redis
+RTORRENTNAME=rtorrent
+SABNZBDNAME=sabnzbd
 SONARRNAME=sonarr
-LIDARRNAME=lidarr
-MEDUSANAME=medusa
-HEADPHONESNAME=headphones
-JACKETTNAME=jackett
+SPEEDNAME=speed
+SQLSERVERNAME=sqlserver
+TAUTULLINAME=tautuli
+TRAEFIKNAME=traefik
+TRANSNAME=transmission
+WATCHNAME=watchtower
+#GOOGLE
+#TV
 
 # Since Docker processes " as part of the paths, we don't actually store it in the variables.  However, BASH does require
 #	the " if the string is going to have odd characters.  As a result, we have to load the existing environment line
@@ -44,14 +68,10 @@ done <${ENV}
 
 if [[ ${1,,} != "rebuild" ]]; then
 	clear
-	echo To setup OmniPlex, I need to know a few things...
+	echo To setup OmniStream, I need to know a few things...
 	echo
 	read -e -p 'What domain will you be using to access your server (ex: mydomain.com)?  ' -i "${MYDOMAIN}" MYDOMAIN
 	read -e -p 'What is your email address for certificate registration (ex: myname@mydomain.com)  ' -i "${MYEMAIL}" MYEMAIL
-	echo
-	echo For PLEX, we need to know the root of your media directory. This will be available within
-	read -e -p '      PLEX at /data.  (ex: /mnt/Union/Plex):  ' -i "${MEDIA}" MEDIA
-	echo
 	echo
 	echo "That's it.  Creating your personal configuration file..."
 
@@ -67,25 +87,24 @@ cat >${ENV} <<EOF
 ADD_DNS=${ADD_DNS}
 CF_EMAIL=${CF_EMAIL}
 CF_KEY=${CF_KEY}
-CONFIGS=${HOME}/Omni/Configs
+CONFIGS=${CONFIGS}
 DELETE_DNS=${DELETE_DNS}
-DOWNLOADS=${HOME}/Downloads
+DOWNLOADS=${DOWNLOADS}
 GOOGLE=${HOME}/Omni/mnt/Google
 GPUGIDS=$(getent group video | cut -d: -f3),$(getent group render | cut -d: -f3)
 GROUPID=$(id -g)
 HOME=${HOME}
-LOGS=${HOME}/Omni/Logs
+LOGS=${LOGS}
 MEDIA=${GOOGLE}/Media
-MENU=${MENU}
 MERGETARGET=${MERGETARGET}
 MYDOMAIN=${MYDOMAIN}
 MYEMAIL=${MYEMAIL}
-OPW=r$@r3zSuR%WsYE90M
 RCLONEHOME=${HOME}/.config/rclone
 RCLONESERVICE=${RCLONESERVICE}
 RCLONETARGET=${RCLONETARGET}
 RCLONEMOUNT=${HOME}/Omni/mnt/GoogleCrypt
 TIMEZONE=$(cat /etc/timezone)
+TV="\"${MEDIA}/TV Shows\""
 UNSYNCED=${UNSYNCED}
 UPLOADCACHE=${UPLOADCACHE}
 USERID=$(id -u)
@@ -97,31 +116,42 @@ USERID=$(id -u)
 # need to change anything. #
 ############################
 
-PROXYNAME=${PROXYNAME}
-TRAEFIKNAME=${TRAEFIKNAME}
-NETDATANAME=${NETDATANAME}
-ORGANIZRNAME=${ORGANIZRNAME}
-PORTAINERNAME=${PORTAINERNAME}
-PLEXNAME=${PLEXNAME}
+APACHENAME=${APACHENAME}
+BAZARRNAME=${BAZARRNAME}
+DELUGENAME=${DELUGENAME}
 EMBYNAME=${EMBYNAME}
-JELLYNAME=${JELLYNAME}
-TAUTULLINAME=${TAUTULLINAME}
 EMBYSTATNAME=${EMBYSTATNAME}
+HEALNAME=${HEALNAME}
+HYDRANAME=${HYDRANAME}
+JACKETTNAME=${JACKETTNAME}
+JELLYNAME=${JELLYNAME}
+LIDARRNAME=${LIDARRNAME}
+MARIADBNAME=${MARIADBNAME}
+MEDUSANAME=${MEDUSANAME}
+MENU=${MENU}
+MYSQLNAME=${MYSQLNAME}
+NETDATANAME=${NETDATANAME}
 NEXTCLOUDNAME=${NEXTCLOUDNAME}
 NZBGETNAME=${NZBGETNAME}
-HYDRANAME=${HYDRANAME}
-SABNZBDNAME=${SABNZBDNAME}
-DELUGENAME=${DELUGENAME}
+OAUTHNAME=${OAUTHNAME}
+ORGANIZRNAME=${ORGANIZRNAME}
+OVPNNAME=${OVPNNAME}
+PLEXNAME=${PLEXNAME}
+PORTAINERNAME=${PORTAINERNAME}
+POSTGRESNAME=${POSTGRESNAME}
 QBITNAME=${QBITNAME}
-TRANSNAME=${TRANSNAME}
-RTORRENTNAME=${RTORRENTNAME}
 RADARRNAME=${RADARRNAME}
+REDISCOMNAME=${REDISCOMNAME}
+REDISNAME=${REDISNAME}
+RTORRENTNAME=${RTORRENTNAME}
+SABNZBDNAME=${SABNZBDNAME}
 SONARRNAME=${SONARRNAME}
-LIDARRNAME=${LIDARRNAME}
-BAZARRNAME=${BAZARRNAME}
-MEDUSANAME=${MEDUSANAME}
-HEADPHONESNAME=${HEADPHONESNAME}
-JACKETTNAME=${JACKETTNAME}
+SPEEDNAME=${SPEEDNAME}
+SQLSERVERNAME=${SQLSERVERNAME}
+TAUTULLINAME=${TAUTULLINAME}
+TRAEFIKNAME=${TRAEFIKNAME}
+TRANSNAME=${TRANSNAME}
+WATCHNAME=${WATCHNAME}
 
 ############################
 #     Color Variables      #
@@ -149,6 +179,6 @@ EOF
 
 ln -sf ${ENV} ${OMNIHOME}/.env
 
-cat ${OMNIHOME}/enabled/??-* >${OMNIHOME}/docker-compose.yaml
+cat ${OMNIHOME}/enabled/???-* >${OMNIHOME}/docker-compose.yaml
 
 echo done
