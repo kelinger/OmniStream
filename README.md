@@ -41,7 +41,6 @@ WARNING - Most code is written; this is being ported into a GIT project and it i
 ### Utilities and extras
 * NextCloud
 * NetData - server and container statistics and monitoring
-* Guacamole
 * Portainer - Full stack Docker management
 * OVPN - OpenVPN server
 * Apache
@@ -51,7 +50,7 @@ WARNING - Most code is written; this is being ported into a GIT project and it i
 * MariaDB
 * Postgre
 * MS SQL Server
-* Redis
+* Redis + Redis Commander
 
 In almost all cases, each container is not dependent on any others meaning you can pick and choose which of the above (other than core) you would or would not like to use.  Obviously, running something like Tautulli without Plex may be useless but you can still choose to do this (say to configure Tautulli to monitor a Plex installation elsewhere).
 

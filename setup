@@ -75,9 +75,35 @@ fi
 
 # Install Docker
 
-echo -n Installing Docker...
+echo -n Grabbing Docker install script...
 
-curl -fsSL https://get.docker.com | sh > /dev/null 2>&1
+# This command historically fails when something is wrong on Docker's side.  It almost always works correctly when
+# run a second time.  Thus, make 3 attempts.
+
+curl -fsSL get.docker.com -o /tmp/get-docker.sh > /dev/null 2>&1
+while [[ ${?} -ne 0 ]]
+do
+	echo -n download failed...waiting...
+	sleep 15
+	echo -n retrying...
+	curl -fsSL get.docker.com -o /tmp/get-docker.sh > /dev/null 2>&1
+done
+
+if [[ ${?} != 0 ]]
+	echo Failed!
+	exit 13
+fi
+
+echo -n Installing Docker...
+sed -i 's/sleep.../sleep 1/' /tmp/get-docker.sh
+sudo sh /tmp/get-docker.sh > /dev/null 2>&1
+while [[ ${?} -ne 0 ]]
+do
+	echo -n failed...waiting...
+	sleep 15
+	echo -n retrying...
+	sudo sh /tmp/get-docker.sh > /dev/null 2>&1
+done
 
 if [[ ${?} = 0 ]]
 then
@@ -93,6 +119,14 @@ echo -n Installing Docker Compose...
 
 cd /tmp
 curl -s https://api.github.com/repos/docker/compose/releases/latest | grep browser_download_url  | grep docker-compose-linux-x86_64 | cut -d '"' -f 4 | wget -qi -
+while [[ ${?} -ne 0 ]]
+do
+	echo -n failed...waiting...
+	sleep 15
+	echo -n retrying...
+	curl -s https://api.github.com/repos/docker/compose/releases/latest | grep browser_download_url  | grep docker-compose-linux-x86_64 | cut -d '"' -f 4 | wget -qi -
+done
+
 if [[ ${?} = 0 ]]
 then
 	chmod +x docker-compose-linux-x86_64
@@ -105,25 +139,26 @@ fi
 
 # Allow current user to control Docker
 
-echo Granting Docker permissions to ${USER}
+echo -n Granting Docker permissions to ${USER}...
 sudo usermod -aG docker ${USER}
 sudo gpasswd -a ${USER} docker
 sudo setfacl -m user:${USER}:rw /var/run/docker.sock
+echo Done
 
 # Modify .bashrc
 
-echo Updating .bashrc
-#sed -zi '/source \/opt\/OmniStream\/bin\/omni_aliases/!s/$/\nsource \/opt\/OmniStream\/bin\/omni_aliases\n/' ~/.bashrc
-#sed -zi '/source \/opt\/OmniStream\/bin\/omni_functions/!s/$/\nsource \/opt\/OmniStream\/bin\/omni_functions\n/' ~/.bashrc
-#sed -zi '/source \/opt\/OmniStream\/bin\/omni_complete/!s/$/\nsource \/opt\/OmniStream\/bin\/omni_complete\n/' ~/.bashrc
+echo -n Updating .bashrc...
 sed -zi '/source \/opt\/OmniStream\/bin\/omni_init/!s/$/\nsource \/opt\/OmniStream\/bin\/omni_init\n/' ~/.bashrc
+echo Done
 
 # Install services
 
-echo Setting up services
+echo -n Setting up services...
 sudo systemctl start vnstat
 sudo systemctl enable vnstat
 sudo sed -i 's/^#user_allow_other/user_allow_other/g' /etc/fuse.conf
+/opt/OmniStream/bin/update-rclone > /dev/null 2>&1
+echo Done
 
 # Make system Omni-ready
 
@@ -133,6 +168,7 @@ pip install --upgrade pip > /dev/null 2>&1
 mkdir -p /opt/OmniStream/enabled /opt/OmniStream/logs ~/Omni/Configs ~/Omni/mnt
 source /opt/OmniStream/bin/omni_init
 o+ 001-header.yaml 002-traefik.yaml 999-footer.yaml
+echo Done
 
 # Start setup menu for parameters and help
 
@@ -142,9 +178,24 @@ echo
 ### Output results
 
 source /opt/OmniStream/.env
+echo
+echo
+echo
+echo
 echo Distribution is ${VERSION}
 docker -v
 docker-compose -v
-echo Customizations in ${HOME}/.config/omnistream.conf
+update-rclone
 echo
+echo
+echo
+echo
+echo Rclone can be setup via the \"rclone config\" command.
+echo or by restoring your configuration to the file:
+echo ${HOME}/.config/rclone/rclone.conf
+echo
+echo Customizations are in ${HOME}/.config/omnistream.conf
+echo
+echo =====================================================
 echo Now would be a really good time to reboot your server
+echo =====================================================
