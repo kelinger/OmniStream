@@ -4,5 +4,4 @@ source /opt/OmniStream/bin/omni_aliases
 source /opt/OmniStream/bin/omni_functions
 source /opt/OmniStream/bin/omni_complete
 
-[[ ":$PATH:" != *":${HOME}/.local/bin:"* ]] && PATH="${HOME}/.local/bin:${PATH}"
 [[ ":$PATH:" != *":/opt/OmniStream/bin:"* ]] && PATH="/opt/OmniStream/bin:${PATH}"

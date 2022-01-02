@@ -198,9 +198,9 @@ fi
 # Allow current user to control Docker
 
 echo -n Granting Docker permissions to ${USER}...
-sudo usermod -aG docker ${USER}
-sudo gpasswd -a ${USER} docker
-sudo setfacl -m user:${USER}:rw /var/run/docker.sock
+sudo usermod -aG docker ${USER} > /dev/null 2>&1
+sudo gpasswd -a ${USER} docker > /dev/null 2>&1
+sudo setfacl -m user:${USER}:rw /var/run/docker.sock > /dev/null 2>&1
 echo Done
 
 # Modify .bashrc
@@ -215,7 +215,7 @@ echo -n Setting up services...
 sudo systemctl start vnstat > /dev/null 2>&1
 sudo systemctl enable vnstat > /dev/null 2>&1
 sudo sed -i 's/^#user_allow_other/user_allow_other/g' /etc/fuse.conf
-/opt/OmniStream/bin/update-rclone > /dev/null 2>&1
+/opt/OmniStream/bin/update-rclone current > /dev/null 2>&1
 echo Done
 
 # Make system Omni-ready
