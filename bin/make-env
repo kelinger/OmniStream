@@ -67,13 +67,13 @@ while IFS='' read -r line || [[ -n "${line}" ]]; do
 done <${ENV}
 
 if [[ ${1,,} != "rebuild" ]]; then
-	clear
+	echo
 	echo To setup OmniStream, I need to know a few things...
 	echo
 	read -e -p 'What domain will you be using to access your server (ex: mydomain.com)?  ' -i "${MYDOMAIN}" MYDOMAIN
 	read -e -p 'What is your email address for certificate registration (ex: myname@mydomain.com)  ' -i "${MYEMAIL}" MYEMAIL
 	echo
-	echo "That's it.  Creating your personal configuration file..."
+	echo -n "That's it.  Creating your personal configuration file..."
 
 fi
 
@@ -180,5 +180,6 @@ EOF
 ln -sf ${ENV} ${OMNIHOME}/.env
 
 cat ${OMNIHOME}/enabled/???-* >${OMNIHOME}/docker-compose.yaml
+mkdir -p ${CONFIGS} ${DOWNLOADS} ${LOGS}
 
 echo done
