@@ -128,7 +128,7 @@ pip3 install --upgrade pip > /dev/null 2>&1
 pip install --upgrade pip > /dev/null 2>&1
 mkdir -p /opt/OmniStream/enabled /opt/OmniStream/logs ~/Omni/Configs ~/Omni/mnt
 source /opt/OmniStream/bin/omni_functions
-o+ 01-header.yaml 03-traefik.yaml 99-footer.yaml
+o+ 001-header.yaml 002-traefik.yaml 999-footer.yaml
 
 # Start setup menu for parameters and help
 
