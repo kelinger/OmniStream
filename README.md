@@ -9,7 +9,8 @@ WARNING - Most code is written; this is being ported into a GIT project and it i
 ---
 
 ## TD;DR
-Download and install on a fresh Debian-like system with `wget tinyurl.com/omniSetup -O /tmp/setup && chmod 700 /tmp/setup && /tmp/setup`
+Download and install on a fresh Debian-like system with
+`wget tinyurl.com/omniSetup -O /tmp/setup && chmod 700 /tmp/setup && /tmp/setup`
 
 ## Currently supported containers (included in OmniStream setup)
 ### Core components
