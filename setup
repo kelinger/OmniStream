@@ -131,6 +131,7 @@ echo Setting up Omni paths and functions
 pip3 install --upgrade pip > /dev/null 2>&1
 pip install --upgrade pip > /dev/null 2>&1
 mkdir -p /opt/OmniStream/enabled /opt/OmniStream/logs ~/Omni/Configs ~/Omni/mnt
+source /opt/OmniStream/bin/omni_init
 o+ 001-header.yaml 002-traefik.yaml 999-footer.yaml
 
 # Start setup menu for parameters and help
@@ -140,11 +141,10 @@ echo
 
 ### Output results
 
-source /opt/OmniStream/bin/omni_init
 source /opt/OmniStream/.env
 echo Distribution is ${VERSION}
 docker -v
 docker-compose -v
-echo Customizations in ${ENV}
+echo Customizations in ${HOME}/.config/omnistream.conf
 echo
 echo Now would be a really good time to reboot your server

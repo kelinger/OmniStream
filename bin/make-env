@@ -6,7 +6,7 @@
 OMNIHOME=/opt/OmniStream
 CDIR=${HOME}/.config
 ENV=${CDIR}/omnistream.conf
-CONFIGS=${HOME}/Omni/Configs
+CONFIGS=${HOME}/OmniStream/Configs
 DOWNLOADS=${HOME}/Downloads
 LOGS=${OMNIHOME}/logs
 ADD_DNS=false
