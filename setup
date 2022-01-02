@@ -1,14 +1,71 @@
 #!/bin/bash
 
+VERSION=$(lsb_release -si)
+
 # Run as USER, not root/sudo
 
-if [ $(id -u) = "0" ]
+if [[ $(id -u) = "0" ]]
 then
-	echo Omni Setup needs to be run as the user, not root.  SUDO will be used for root-level access where applicable.
+	echo Omni Setup needs to be run as a user, not root.  SUDO will be used for root-level access where applicable.
+	echo Would you like to create a user now?
+	read -p "Y for YES or Q to QUIT: " -n1 REPLY
+	echo
+	if [[ ${REPLY} =~ ^[Yy]$ ]]
+	then
+		read -e -p "Desired username: " -i "yourname" PU
+		# Create user
+		adduser ${PU}
+		# Grant sudo
+		usermod -a -G sudo ${PU}
+		# Allow sudo without password
+		echo -e "${PU}\tALL=(ALL)\tNOPASSWD:ALL" > /etc/sudoers.d/${PU}
+		# Secure file
+		chmod 0440 /etc/sudoers.d/${PU}
+		echo
+		echo Setup is now stopping.  Please login as \"${PU}\" and rerun without sudo.
+	fi
 	exit 1
 fi
 
-VERSION=$(lsb_release -si)
+# Detect if Omni already installed
+
+if [[ -d "/opt/OmniStream" ]]
+then
+	echo OmniStream appears to already be installed.  If you continue, OmniStream will be removed from
+	echo /opt but your existing personalizations will remain.  You will still have to enable your services.
+	echo Do you want to remove the downloaded OmniStream and start fresh?
+	read -p "Y for YES or Q to QUIT: " -n1 REPLY
+	echo
+	if [[ ${REPLY} =~ ^[Yy]$ ]]
+	then
+		sudo rm -r /opt/OmniStream
+	else
+		exit 1
+	fi
+fi
+
+# Detect if Docker is already installed
+
+X=$(which docker)
+if [[ ${?} = 0 ]]
+then
+	echo Docker appears to already be installed.  Since there are multiple methods for installing Docker,
+	echo the install script will now exit.  Please uninstall Docker.  It will be reinstalled when you
+	echo rerun \"setup\" afterwards and will then be able to be updated via other processes installed here.
+	echo
+	exit 1
+fi
+
+X=$(which docker-compose)
+if [[ ${?} = 0 ]]
+then
+	echo Docker-compose  appears to already be installed.  Since there are multiple methods for installing
+	echo docker-compose, the install script will now exit.  Please uninstall docker-compose.  It will be
+	echo reinstalled when you rerun \"setup\" afterwards and will then be able to be updated via other
+	echo processes installed here.
+	echo
+	exit 1
+fi
 
 # Install dependencies
 
@@ -90,6 +147,7 @@ do
 done
 
 if [[ ${?} != 0 ]]
+then
 	echo Failed!
 	exit 13
 fi
@@ -154,8 +212,8 @@ echo Done
 # Install services
 
 echo -n Setting up services...
-sudo systemctl start vnstat
-sudo systemctl enable vnstat
+sudo systemctl start vnstat > /dev/null 2>&1
+sudo systemctl enable vnstat > /dev/null 2>&1
 sudo sed -i 's/^#user_allow_other/user_allow_other/g' /etc/fuse.conf
 /opt/OmniStream/bin/update-rclone > /dev/null 2>&1
 echo Done
@@ -182,9 +240,15 @@ echo
 echo
 echo
 echo
+echo =====================================================
+echo OmniStream initial setup complete.  Please review.
+echo =====================================================
+echo
 echo Distribution is ${VERSION}
 docker -v
 docker-compose -v
+echo
+echo Rclone:
 update-rclone
 echo
 echo
