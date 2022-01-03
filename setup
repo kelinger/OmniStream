@@ -28,8 +28,8 @@ then
 		chmod 0440 /etc/sudoers.d/${PU}
 		echo
 		echo Setup is now stopping.  Please login as \"${PU}\" and rerun without sudo.
-		rm ${0}
 	fi
+	rm ${0}
 	exit 1
 fi
 
