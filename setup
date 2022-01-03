@@ -132,35 +132,22 @@ fi
 
 # Install Docker
 
-echo -n Grabbing Docker install script...
+echo -n Installing Docker...
 
-# This command historically fails when something is wrong on Docker's side.  It almost always works correctly when
-# run a second time.  Thus, make 3 attempts.
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg > /dev/null 2>&1
 
-curl -fsSL get.docker.com -o /tmp/get-docker.sh > /dev/null 2>&1
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null 2>&1
+
+sudo apt update > /dev/null 2>&1
+sudo apt install -y docker-ce docker-ce-cli containerd.io > /dev/null 2>&1
+
 while [[ ${?} -ne 0 ]]
 do
 	echo -n download failed...waiting...
 	sleep 15
 	echo -n retrying...
-	curl -fsSL get.docker.com -o /tmp/get-docker.sh > /dev/null 2>&1
-done
-
-if [[ ${?} != 0 ]]
-then
-	echo Failed!
-	exit 13
-fi
-
-echo -n Installing Docker...
-sed -i 's/sleep.../sleep 1/' /tmp/get-docker.sh
-sudo sh /tmp/get-docker.sh > /dev/null 2>&1
-while [[ ${?} -ne 0 ]]
-do
-	echo -n failed...waiting...
-	sleep 15
-	echo -n retrying...
-	sudo sh /tmp/get-docker.sh > /dev/null 2>&1
+	#curl -fsSL get.docker.com -o /tmp/get-docker.sh > /dev/null 2>&1
+	sudo apt install -y docker-ce docker-ce-cli containerd.io > /dev/null 2>&1
 done
 
 if [[ ${?} = 0 ]]
