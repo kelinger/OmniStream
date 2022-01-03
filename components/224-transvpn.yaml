@@ -24,9 +24,9 @@
       - DROP_DEFAULT_ROUTE=true
       - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
       - TRANSMISSION_PORT_FORWARDING_ENABLED=true
-      - TRANSMISSION_DOWNLOAD_DIR=/Google/Downloads/complete
+      - TRANSMISSION_DOWNLOAD_DIR=/cloud/Downloads/complete
       - TRANSMISSION_DOWNLOAD_QUEUE_SIZE=50
-      - TRANSMISSION_INCOMPLETE_DIR=/Google/Downloads/incomplete
+      - TRANSMISSION_INCOMPLETE_DIR=/cloud/Downloads/incomplete
       - TRANSMISSION_LPD_ENABLED=true
       - TRANSMISSION_MAX_PEERS_GLOBAL=500
       - TRANSMISSION_PEER_LIMIT_GLOBAL=500
@@ -42,7 +42,7 @@
       - ${CONFIGS}/${TRANSNAME}/privado:/etc/openvpn/custom/
       - /etc/localtime:/etc/localtime:ro
       - /bin/netstat:/bin/netstat:ro
-      - ${GOOGLE}:/Google
+      - ${MERGETARGET}:/cloud
     labels:
       - "omni=${TRANSNAME},${MYDOMAIN},yes,yes,yes"
       - "traefik.enable=true"

@@ -52,8 +52,6 @@ TAUTULLINAME=tautuli
 TRAEFIKNAME=traefik
 TRANSNAME=transmission
 WATCHNAME=watchtower
-#GOOGLE
-#TV
 
 # Since Docker processes " as part of the paths, we don't actually store it in the variables.  However, BASH does require
 #	the " if the string is going to have odd characters.  As a result, we have to load the existing environment line
@@ -90,24 +88,28 @@ CF_KEY=${CF_KEY}
 CONFIGS=${CONFIGS}
 DELETE_DNS=${DELETE_DNS}
 DOWNLOADS=${DOWNLOADS}
-GOOGLE=${HOME}/Omni/mnt/Google
 GPUGIDS=$(getent group video | cut -d: -f3),$(getent group render | cut -d: -f3)
 GROUPID=$(id -g)
 HOME=${HOME}
 LOGS=${LOGS}
-MEDIA=${GOOGLE}/Media
-MERGETARGET=${MERGETARGET}
 MYDOMAIN=${MYDOMAIN}
 MYEMAIL=${MYEMAIL}
+TIMEZONE=$(cat /etc/timezone)
+USERID=$(id -u)
+
+############################
+#     Mount Variables      #
+############################
+
+MERGETARGET=${MERGETARGET}
 RCLONEHOME=${HOME}/.config/rclone
 RCLONESERVICE=${RCLONESERVICE}
 RCLONETARGET=${RCLONETARGET}
 RCLONEMOUNT=${HOME}/Omni/mnt/GoogleCrypt
-TIMEZONE=$(cat /etc/timezone)
 TV="\"${MEDIA}/TV Shows\""
 UNSYNCED=${UNSYNCED}
 UPLOADCACHE=${UPLOADCACHE}
-USERID=$(id -u)
+MEDIA=${MERGETARGET}/Media
 
 ############################
 #   Container/Host names   #

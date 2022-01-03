@@ -28,11 +28,11 @@
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/${BAZARRNAME}:/config
-      - ${GOOGLE}:/Google
+      - ${MERGETARGET}:/cloud
     networks:
       - OmniNet
     healthcheck:
-      test: ["CMD-SHELL", "netstat -ntlp | grep :6767 && mountpoint /Google"]
+      test: ["CMD-SHELL", "netstat -ntlp | grep :6767 && mountpoint /cloud"]
       interval: 10s
       timeout: 2s
       retries: 3

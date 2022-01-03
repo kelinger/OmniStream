@@ -27,7 +27,7 @@
       - "traefik.http.services.hydra-svc.loadbalancer.server.port=5075"
     volumes:
       - ${CONFIGS}/${HYDRANAME}:/config
-      - ${GOOGLE}:/Google
+      - ${MERGETARGET}:/cloud
       - /etc/localtime:/etc/localtime:ro
     networks:
       - OmniNet

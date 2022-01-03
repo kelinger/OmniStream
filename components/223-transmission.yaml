@@ -16,7 +16,7 @@
       - UMASK_SET=022
     volumes:
       - ${CONFIGS}/${TRANSNAME}:/config
-      - ${GOOGLE}:/Google
+      - ${MERGETARGET}:/cloud
     labels:
       - "omni=${TRANSNAME},${MYDOMAIN},yes,yes,yes"
       - "traefik.enable=true"
@@ -36,7 +36,7 @@
     networks:
       - OmniNet
     healthcheck:
-      test: ["CMD-SHELL", "netstat -ntlp | grep :9091 && test -f /Google"]
+      test: ["CMD-SHELL", "netstat -ntlp | grep :9091 && test -f /cloud"]
       interval: 10s
       timeout: 2s
       retries: 3

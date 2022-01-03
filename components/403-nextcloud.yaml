@@ -30,7 +30,7 @@
       - "traefik.http.services.nextcloud-svc.loadbalancer.server.port=80"
     volumes:
       - ${CONFIGS}/${NEXTCLOUDNAME}:/var/www/html
-      - ${GOOGLE}:/Google
+      - ${MERGETARGET}:/cloud
       - /etc/localtime:/etc/localtime:ro
       - /bin/netstat:/bin/netstat:ro
     networks:
