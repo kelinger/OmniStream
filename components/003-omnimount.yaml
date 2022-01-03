@@ -1,0 +1,24 @@
+  omnimount:
+    image: kelinger/omnimount
+    container_name: omnimount
+    hostname: omnimount
+    restart: unless-stopped
+    environment:
+      - USERID=${USERID}
+      - GROUPID=${GROUPID}
+      - MERGETARGET=${MERGETARGET}
+      - RCLONESERVICE=${RCLONESERVICE}
+      - RCLONETARGET=${RCLONETARGET}
+      - UNSYNCED=${UNSYNCED}
+      - UPLOADCACHE=${UPLOADCACHE}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${CONFIGS}/omnimount:/config
+      - type: bind
+        source: ${HOME}/OmniStream/mnt
+        target: /mnt
+        bind:
+          propagation: shared
+    privileged: true
+    devices:
+      - '/dev/fuse'
