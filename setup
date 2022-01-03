@@ -97,8 +97,8 @@ APPLIST=" \
 	wget \
 	"
 for i in ${APPLIST}; do
-	echo -n $i...
-	sudo apt install -y $i > /dev/null 2>&1
+	echo -n "	"${i}...
+	sudo apt install -y ${i} > /dev/null 2>&1
 	if [[ ${?} = 0 ]]
 	then
 		echo Done
