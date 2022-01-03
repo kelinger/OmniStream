@@ -37,14 +37,14 @@ fi
 if [[ ${OMNI} = 0 ]]
 then
 	cd /opt/OmniStream
-	git pull
+	git pull > /dev/null 2>&1
 	if [[ ${?} = 0 ]]
 	then
 		echo Omnistream already installed and up-to-date
 		echo
 	else
 		echo OmniStream appears to already be installed.  If you continue, OmniStream will be removed from
-		echo /opt but any existing personalizations will remain.  You will still have to enable your services.
+		echo \/opt but any existing personalizations will remain.  You will still have to enable your services.
 		echo Do you want to remove the downloaded OmniStream and start fresh?
 		read -p "Y for YES or Q to QUIT: " -n1 REPLY
 		echo
@@ -105,8 +105,10 @@ cd /opt
 sudo mkdir -p OmniStream ${HOME}/.config
 sudo chown -R ${USER}:${USER} OmniStream ${HOME}/.config
 
-if [[ ${OMNI} = 1 ]]
+if [[ ${OMNI} = 0 ]]
 then
+	echo Skipping OmniStream download
+else
 	echo -n Grabbing OmniStream from GIT...
 	git clone https://github.com/kelinger/OmniStream.git > /dev/null 2>&1
 
@@ -229,7 +231,7 @@ echo
 echo
 echo
 echo =========================================================================
-echo "         OmniStream initial setup complete.  Please review."
+echo "         OmniStream initial setup complete.  Please review!"
 echo =========================================================================
 echo
 echo Distribution is ${VERSION}
@@ -242,18 +244,23 @@ echo
 if [[ ${DOCKER} = 0 ]]
 then
 	echo Docker appears to already be installed.  Since there are multiple methods for installing Docker,
-	echo the install script did not reinstall Docker.  Please make sure your Docker is up-to-date.
+	echo the install script did not reinstall it.  Please make sure your Docker is up-to-date.
 	echo
 fi
 
 if [[ ${COMPOSE} = 0 ]]
 then
 	echo Docker-compose appears to already be installed.  Since there are multiple methods for installing
-	echo docker-compose, the install script did not reinstall docker-compose.  Please make sure your
-	echo installation of docker-compose is up-to-date.
+	echo docker-compose, the install script did not reinstall it.  Please make sure your installation
+	echo of docker-compose is up-to-date.
 	echo
 fi
-echo
+if [[ ${OMNI} = 0 ]]
+then
+	echo OmniStream was already downloaded on this system.  It was checked and updated to the latest
+	echo version, if applicable.
+	echo
+fi
 echo
 echo
 echo Rclone can be setup via the \"rclone config\" command.
