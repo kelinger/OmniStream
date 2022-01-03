@@ -1,6 +1,11 @@
 #!/bin/bash
 
+# Detect previous installs
+
 VERSION=$(lsb_release -si)
+DOCKER=$(which docker > /dev/null ; echo ${?})
+COMPOSE=$(which docker-compose > /dev/null ; echo ${?})
+OMNI=$(test -d /opt/OmniStream ; echo ${?})
 
 # Run as USER, not root/sudo
 
@@ -29,47 +34,33 @@ fi
 
 # Detect if Omni already installed
 
-if [[ -d "/opt/OmniStream" ]]
+if [[ ${OMNI} = 0 ]]
 then
-	echo OmniStream appears to already be installed.  If you continue, OmniStream will be removed from
-	echo /opt but your existing personalizations will remain.  You will still have to enable your services.
-	echo Do you want to remove the downloaded OmniStream and start fresh?
-	read -p "Y for YES or Q to QUIT: " -n1 REPLY
-	echo
-	if [[ ${REPLY} =~ ^[Yy]$ ]]
+	cd /opt/OmniStream
+	git pull
+	if [[ ${?} = 0 ]]
 	then
-		sudo rm -r /opt/OmniStream
+		echo Omnistream already installed and up-to-date
+		echo
 	else
-		exit 1
+		echo OmniStream appears to already be installed.  If you continue, OmniStream will be removed from
+		echo /opt but any existing personalizations will remain.  You will still have to enable your services.
+		echo Do you want to remove the downloaded OmniStream and start fresh?
+		read -p "Y for YES or Q to QUIT: " -n1 REPLY
+		echo
+		if [[ ${REPLY} =~ ^[Yy]$ ]]
+		then
+			sudo rm -r /opt/OmniStream
+			OMNI=1
+		else
+			exit 1
+		fi
 	fi
-fi
-
-# Detect if Docker is already installed
-
-X=$(which docker)
-if [[ ${?} = 0 ]]
-then
-	echo Docker appears to already be installed.  Since there are multiple methods for installing Docker,
-	echo the install script will now exit.  Please uninstall Docker.  It will be reinstalled when you
-	echo rerun \"setup\" afterwards and will then be able to be updated via other processes installed here.
-	echo
-	exit 1
-fi
-
-X=$(which docker-compose)
-if [[ ${?} = 0 ]]
-then
-	echo Docker-compose  appears to already be installed.  Since there are multiple methods for installing
-	echo docker-compose, the install script will now exit.  Please uninstall docker-compose.  It will be
-	echo reinstalled when you rerun \"setup\" afterwards and will then be able to be updated via other
-	echo processes installed here.
-	echo
-	exit 1
 fi
 
 # Install dependencies
 
-echo Installing/verifying dependencies... 
+echo Installing/verifying dependencies...
 sudo apt update > /dev/null 2>&1
 APPLIST=" \
 	acl \
@@ -110,76 +101,86 @@ done
 
 # Clone OmniStream to /opt
 
-echo -n Grabbing OmniStream from GIT...
 cd /opt
-sudo mkdir -p OmniStream
-sudo chown -R ${USER}:${USER} OmniStream
-git clone https://github.com/kelinger/OmniStream.git > /dev/null 2>&1
+sudo mkdir -p OmniStream ${HOME}/.config
+sudo chown -R ${USER}:${USER} OmniStream ${HOME}/.config
 
-if [[ ${?} = 0 ]]
+if [[ ${OMNI} = 1 ]]
 then
-	echo Done
-else
-	echo
-	echo This is meant to be run on a system that has not yet been setup.  Use the update menu within Omni to bring
-	echo the project up-to-date or clear the /opt/OmniStream directory and rerun setup to start fresh.
-	echo
-	echo This message may also be displayed if the download from GIT failed.  If this is the case \(no /opt/OmniStream\)
-	echo then simply rerun the setup.
-	echo
-	exit 12
+	echo -n Grabbing OmniStream from GIT...
+	git clone https://github.com/kelinger/OmniStream.git > /dev/null 2>&1
+
+	if [[ ${?} = 0 ]]
+	then
+		echo Done
+	else
+		echo Download of OmniStream from GIT failed.  Please check \/opt\/OmniStream and remove any files leftover.
+		echo Then, simply rerun the setup.
+		echo
+		exit 12
+	fi
 fi
 
 # Install Docker
 
-echo -n Installing Docker...
-
-curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg > /dev/null 2>&1
-
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null 2>&1
-
-sudo apt update > /dev/null 2>&1
-sudo apt install -y docker-ce docker-ce-cli containerd.io > /dev/null 2>&1
-
-while [[ ${?} -ne 0 ]]
-do
-	echo -n download failed...waiting...
-	sleep 15
-	echo -n retrying...
-	#curl -fsSL get.docker.com -o /tmp/get-docker.sh > /dev/null 2>&1
-	sudo apt install -y docker-ce docker-ce-cli containerd.io > /dev/null 2>&1
-done
-
-if [[ ${?} = 0 ]]
+if [[ ${DOCKER} = 0 ]]
 then
-	echo Done
+	echo Skipping Docker installation
 else
-	echo Failed!
-	exit 13
+	echo -n Installing Docker...
+
+	curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg > /dev/null 2>&1
+
+	echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null 2>&1
+
+	sudo apt update > /dev/null 2>&1
+	sudo apt install -y docker-ce docker-ce-cli containerd.io > /dev/null 2>&1
+
+	while [[ ${?} -ne 0 ]]
+	do
+		echo -n download failed...waiting...
+		sleep 15
+		echo -n retrying...
+	#curl -fsSL get.docker.com -o /tmp/get-docker.sh > /dev/null 2>&1
+		sudo apt install -y docker-ce docker-ce-cli containerd.io > /dev/null 2>&1
+	done
+
+	if [[ ${?} = 0 ]]
+	then
+		echo Done
+	else
+		echo Failed!
+		exit 13
+	fi
 fi
 
 # Install Docker Compose
 
-echo -n Installing Docker Compose...
-
-cd /tmp
-curl -s https://api.github.com/repos/docker/compose/releases/latest | grep browser_download_url  | grep docker-compose-linux-x86_64 | cut -d '"' -f 4 | wget -qi -
-while [[ ${?} -ne 0 ]]
-do
-	echo -n failed...waiting...
-	sleep 15
-	echo -n retrying...
-	curl -s https://api.github.com/repos/docker/compose/releases/latest | grep browser_download_url  | grep docker-compose-linux-x86_64 | cut -d '"' -f 4 | wget -qi -
-done
-
-if [[ ${?} = 0 ]]
+if [[ ${COMPOSE} = 0 ]]
 then
-	chmod +x docker-compose-linux-x86_64
-	sudo mv docker-compose-linux-x86_64 /usr/local/bin/docker-compose
-	echo Done
+	echo Skipping Docker-Compose installation
 else
-	echo Failed!
-	exit 14
+	echo -n Installing Docker Compose...
+
+	cd /tmp
+	curl -s https://api.github.com/repos/docker/compose/releases/latest | grep browser_download_url  | grep docker-compose-linux-x86_64 | cut -d '"' -f 4 | wget -qi -
+	while [[ ${?} -ne 0 ]]
+	do
+		echo -n failed...waiting...
+		sleep 15
+		echo -n retrying...
+		curl -s https://api.github.com/repos/docker/compose/releases/latest | grep browser_download_url  | grep docker-compose-linux-x86_64 | cut -d '"' -f 4 | wget -qi -
+	done
+
+	if [[ ${?} = 0 ]]
+	then
+		chmod +x docker-compose-linux-x86_64
+		sudo mv docker-compose-linux-x86_64 /usr/local/bin/docker-compose
+		echo Done
+	else
+		echo Failed!
+		exit 14
+	fi
 fi
 
 # Allow current user to control Docker
@@ -227,9 +228,9 @@ echo
 echo
 echo
 echo
-echo =====================================================
-echo OmniStream initial setup complete.  Please review.
-echo =====================================================
+echo =========================================================================
+echo "         OmniStream initial setup complete.  Please review."
+echo =========================================================================
 echo
 echo Distribution is ${VERSION}
 docker -v
@@ -238,6 +239,20 @@ echo
 echo Rclone:
 update-rclone
 echo
+if [[ ${DOCKER} = 0 ]]
+then
+	echo Docker appears to already be installed.  Since there are multiple methods for installing Docker,
+	echo the install script did not reinstall Docker.  Please make sure your Docker is up-to-date.
+	echo
+fi
+
+if [[ ${COMPOSE} = 0 ]]
+then
+	echo Docker-compose appears to already be installed.  Since there are multiple methods for installing
+	echo docker-compose, the install script did not reinstall docker-compose.  Please make sure your
+	echo installation of docker-compose is up-to-date.
+	echo
+fi
 echo
 echo
 echo
@@ -247,6 +262,6 @@ echo ${HOME}/.config/rclone/rclone.conf
 echo
 echo Customizations are in ${HOME}/.config/omnistream.conf
 echo
-echo =====================================================
-echo Now would be a really good time to reboot your server
-echo =====================================================
+echo =========================================================================
+echo "        Now would be a really good time to reboot your server"
+echo =========================================================================
