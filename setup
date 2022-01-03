@@ -28,6 +28,7 @@ then
 		chmod 0440 /etc/sudoers.d/${PU}
 		echo
 		echo Setup is now stopping.  Please login as \"${PU}\" and rerun without sudo.
+		rm ${0}
 	fi
 	exit 1
 fi
@@ -213,7 +214,7 @@ echo Done
 echo Setting up Omni paths and functions
 pip3 install --upgrade pip > /dev/null 2>&1
 pip install --upgrade pip > /dev/null 2>&1
-mkdir -p /opt/OmniStream/enabled /opt/OmniStream/logs ~/Omni/Configs ~/Omni/mnt
+mkdir -p /opt/OmniStream/enabled /opt/OmniStream/logs ~/OmniStream/Configs ~/OmniStream/mnt
 source /opt/OmniStream/bin/omni_init > /dev/null 2>&1
 o+ 001-header.yaml 002-traefik.yaml 999-footer.yaml
 echo Done
