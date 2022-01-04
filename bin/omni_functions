@@ -17,18 +17,6 @@ omni() {
 		./bin/make-env rebuild
 		echo
 		"${OMNIHOME}"/bin/check-dns
-		mountpoint "${MERGETARGET}" >/dev/null 2>&1
-		CODE=${?}
-		mountpoint "${RCLONEMOUNT}" >/dev/null 2>&1
-		CODE=$((${CODE} + ${?}))
-		while [ ${CODE} -ne 0 ]; do
-			echo Waiting on mounts to be created...
-			sleep 5
-			mountpoint "${MERGETARGET}" >/dev/null 2>&1
-			CODE=${?}
-			mountpoint "${RCLONEMOUNT}" >/dev/null 2>&1
-			CODE=$((${CODE} + ${?}))
-		done
 		/usr/local/bin/docker-compose up -d --remove-orphans "${@:2}"
 		docker exec -ti sabnzbd /config/extras.sh >/dev/null 2>&1
 		cd "${CURDIR}" || exit
