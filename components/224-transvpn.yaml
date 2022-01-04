@@ -42,7 +42,7 @@
       - ${CONFIGS}/${TRANSNAME}/privado:/etc/openvpn/custom/
       - /etc/localtime:/etc/localtime:ro
       - /bin/netstat:/bin/netstat:ro
-      - ${MERGETARGET}:/cloud
+      - ${MERGEMOUNT}:/cloud
     labels:
       - "omni=${TRANSNAME},${MYDOMAIN},yes,yes,yes"
       - "traefik.enable=true"

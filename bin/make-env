@@ -29,7 +29,7 @@ LIDARRNAME=lidarr
 MARIADBNAME=mariadb
 MEDUSANAME=medusa
 MENU=www
-MERGETARGET=${HOME}/OmniStream/mnt/Cloud
+MERGEMOUNT=${HOME}/OmniStream/mnt/Cloud
 MYSQLNAME=mysql
 NETDATANAME=netdata
 NEXTCLOUDNAME=nextcloud
@@ -52,6 +52,8 @@ SQLSERVERNAME=sqlserver
 TAUTULLINAME=tautuli
 TRAEFIKNAME=traefik
 TRANSNAME=transmission
+UNSYNCED=${HOME}/OmniStream/mnt/Unsynced
+UPLOADCACHE=${HOME}/OmniStream/mnt/UploadCache
 WATCHNAME=watchtower
 
 # Since Docker processes " as part of the paths, we don't actually store it in the variables.  However, BASH does require
@@ -102,15 +104,14 @@ USERID=$(id -u)
 #     Mount Variables      #
 ############################
 
-MERGETARGET=${MERGETARGET}
+MERGEMOUNT=${MERGEMOUNT}
 RCLONEHOME=${HOME}/.config/rclone
 RCLONESERVICE=${RCLONESERVICE}
-RCLONETARGET=${RCLONETARGET}
 RCLONEMOUNT=${RCLONEMOUNT}
 TV="\"${MEDIA}/TV Shows\""
 UNSYNCED=${UNSYNCED}
 UPLOADCACHE=${UPLOADCACHE}
-MEDIA=${MERGETARGET}/Media
+MEDIA=${MERGEMOUNT}/Media
 
 ############################
 #   Container/Host names   #

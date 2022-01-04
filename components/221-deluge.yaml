@@ -19,7 +19,7 @@
       - /bin/netstat:/bin/netstat:ro
       - ${CONFIGS}/${DELUGENAME}:/config
       - ${DOWNLOADS}:/downloads
-      - ${MERGETARGET}:/cloud
+      - ${MERGEMOUNT}:/cloud
     ports:
       - 55955:55955/tcp
       - 55955:55955/udp

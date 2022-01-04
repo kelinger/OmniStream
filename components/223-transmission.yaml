@@ -16,7 +16,7 @@
       - UMASK_SET=022
     volumes:
       - ${CONFIGS}/${TRANSNAME}:/config
-      - ${MERGETARGET}:/cloud
+      - ${MERGEMOUNT}:/cloud
     labels:
       - "omni=${TRANSNAME},${MYDOMAIN},yes,yes,yes"
       - "traefik.enable=true"

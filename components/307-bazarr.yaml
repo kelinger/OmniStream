@@ -28,7 +28,7 @@
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/${BAZARRNAME}:/config
-      - ${MERGETARGET}:/cloud
+      - ${MERGEMOUNT}:/cloud
     networks:
       - OmniNet
     healthcheck:

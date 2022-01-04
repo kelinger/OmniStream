@@ -18,7 +18,7 @@
       - /bin/netstat:/bin/netstat:ro
       - ${CONFIGS}/${QBITNAME}:/config
       - ${DOWNLOADS}:/downloads
-      - ${MERGETARGET}:/cloud
+      - ${MERGEMOUNT}:/cloud
     labels:
       - "omni=${QBITNAME},${MYDOMAIN},yes,yes,yes"
       - "traefik.enable=true"

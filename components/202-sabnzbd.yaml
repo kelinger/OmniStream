@@ -28,7 +28,7 @@
       - "traefik.http.services.sabnzbd-svc.loadbalancer.server.port=8080"
     volumes:
       - ${CONFIGS}/${SABNZBDNAME}:/config
-      - ${MERGETARGET}:/cloud
+      - ${MERGEMOUNT}:/cloud
       - ${LOGS}:/logs
       - ${CONFIGS}/healthchecks/sabnzbdcheck:/sabnzbdcheck
     networks:

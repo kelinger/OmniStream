@@ -31,7 +31,7 @@
       - "traefik.http.services.rtorrent-svc.loadbalancer.server.port=8080"
     volumes:
       - ${CONFIGS}/${RTORRENTNAME}:/data
-      - ${MERGETARGET}:/cloud
+      - ${MERGEMOUNT}:/cloud
     networks:
       - OmniNet
     env_file:
