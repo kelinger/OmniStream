@@ -231,6 +231,7 @@ echo Done
 
 echo
 ${OMNIHOME}/bin/make-env
+cls
 
 ### Output results
 
@@ -243,7 +244,7 @@ echo =========================================================================
 echo "         OmniStream initial setup complete.  Please review!"
 echo =========================================================================
 echo
-echo Distribution is ${VERSION}
+echo Linux distribution is ${VERSION}
 docker -v
 docker-compose -v
 echo

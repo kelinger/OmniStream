@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Make sure the dialog command is installed
+hash dialog 2>/dev/null || { echo Installing dialog \(one time\) ; sudo apt update > /dev/null ; sudo apt install dialog -y > /dev/null ; }
+
 # These are default values for required parameters.  Do not change here in this
 # script.  They are overwritten by the values stored in the user's config (ENV).
 
@@ -11,6 +14,7 @@ DOWNLOADS=${HOME}/Downloads
 LOGS=${OMNIHOME}/logs
 ADD_DNS=false
 DELETE_DNS=false
+TEMP=/tmp/answer${$}
 
 touch ${ENV}
 
@@ -67,15 +71,23 @@ while IFS='' read -r line || [[ -n "${line}" ]]; do
 	eval ${newline} >/dev/null 2>&1
 done <${ENV}
 
-if [[ ${1,,} != "rebuild" ]]; then
-	echo
-	echo To setup OmniStream, I need to know a few things...
-	echo
-	read -e -p 'What domain will you be using to access your server (ex: mydomain.com)?  ' -i "${MYDOMAIN}" MYDOMAIN
-	read -e -p 'What is your email address for certificate registration (ex: myname@mydomain.com)  ' -i "${MYEMAIL}" MYEMAIL
-	echo
-	echo -n "That's it.  Creating your personal configuration file..."
+get_text() {
+        dialog --title "${TITLE}" --clear --no-cancel --inputbox "${DESC}" 16 51 "${DEFAULT}" 2> ${TEMP}-Input
+        VALUE=$(cat ${TEMP}-Input)
+        rm ${TEMP}-Input
+}
 
+if [[ ${1,,} != "rebuild" ]]; then
+	TITLE="Personal Domain"
+	DESC="Omnistream can obtain a secure certificate (SSL) to enable each component to run in a separate web space over encrypted HTTPS communication.  Enter the domain name that you own that will be used for obtaining certificates through Let's Encrypt."
+	DEFAULT="${MYDOMAIN}"
+	get_text
+	MYDOMAIN="${VALUE}"
+	TITLE="Personal Email"
+	DESC="When obtaining an SSL certificate from Let's Encrypt, Omnistream needs to use your email address to claim the certificate.  This will also be used by Let's Encrypt to send notifications regarding certificate renewal or account issues.  Enter the email address you would like to use for Let's Encrypt notifications."
+	DEFAULT="${MYEMAIL}"
+	get_text
+	MYEMAIL="${VALUE}"
 fi
 
 cat >${ENV} <<EOF
