@@ -46,7 +46,7 @@ then
 		echo
 	else
 		echo OmniStream appears to already be installed.  If you continue, OmniStream will be removed from
-		echo \/opt but any existing personalizations will remain.  You will still have to enable your services.
+		echo your system completely and you will be starting from scratch.
 		echo Do you want to remove the downloaded OmniStream and start fresh?
 		read -p "Y for YES or Q to QUIT: " -n1 REPLY
 		echo
@@ -101,9 +101,9 @@ for i in ${APPLIST}; do
 	fi
 done
 
-# Clone OmniStream to /opt
+# Clone OmniStream to HOME
 
-cd /opt
+cd ~
 sudo mkdir -p OmniStream ${HOME}/.config
 sudo chown -R ${USER}:${USER} OmniStream ${HOME}/.config
 
@@ -118,7 +118,7 @@ else
 	then
 		echo Done
 	else
-		echo Download of OmniStream from GIT failed.  Please check \/opt\/OmniStream and remove any files leftover.
+		echo Download of OmniStream from GIT failed.  Please check ~\/OmniStream and remove any files leftover.
 		echo Then, simply rerun the setup.
 		echo
 		exit 12
@@ -198,7 +198,7 @@ echo Done
 # Modify .bashrc
 
 echo -n Updating .bashrc...
-sed -zi '/source \/opt\/OmniStream\/bin\/omni_init/!s/$/\nsource \/opt\/OmniStream\/bin\/omni_init\n/' ~/.bashrc
+sed -zi '/source ~\/OmniStream\/bin\/omni_init/!s/$/\nsource ~\/OmniStream\/bin\/omni_init\n/' ~/.bashrc
 echo Done
 
 # Install services
