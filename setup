@@ -5,7 +5,8 @@
 VERSION=$(lsb_release -si)
 DOCKER=$(which docker > /dev/null ; echo ${?})
 COMPOSE=$(which docker-compose > /dev/null ; echo ${?})
-OMNI=$(test -d /opt/OmniStream ; echo ${?})
+OMNIHOME=${HOME}/OmniStream
+OMNI=$(test -d ${OMNIHOME} ; echo ${?})
 
 # Run as USER, not root/sudo
 
@@ -37,7 +38,7 @@ fi
 
 if [[ ${OMNI} = 0 ]]
 then
-	cd /opt/OmniStream
+	cd ${OMNIHOME}
 	git pull > /dev/null 2>&1
 	if [[ ${?} = 0 ]]
 	then
@@ -51,7 +52,7 @@ then
 		echo
 		if [[ ${REPLY} =~ ^[Yy]$ ]]
 		then
-			sudo rm -r /opt/OmniStream
+			sudo rm -r ${OMNIHOM}
 			OMNI=1
 		else
 			exit 1
@@ -206,7 +207,7 @@ echo -n Setting up services...
 sudo systemctl start vnstat > /dev/null 2>&1
 sudo systemctl enable vnstat > /dev/null 2>&1
 sudo sed -i 's/^#user_allow_other/user_allow_other/g' /etc/fuse.conf
-/opt/OmniStream/bin/update-rclone current > /dev/null 2>&1
+${OMNIHOME}/bin/update-rclone current > /dev/null 2>&1
 docker network create \
 	--driver=bridge \
 	-o "com.docker.network.bridge.enable_ip_masquerade"="true" \
@@ -221,19 +222,19 @@ echo Done
 echo Setting up Omni paths and functions
 pip3 install --upgrade pip > /dev/null 2>&1
 pip install --upgrade pip > /dev/null 2>&1
-mkdir -p /opt/OmniStream/enabled /opt/OmniStream/logs ~/OmniStream/Configs ~/OmniStream/mnt
-source /opt/OmniStream/bin/omni_init > /dev/null 2>&1
+mkdir -p ${OMNIHOME}/enabled ${OMNIHOME}/logs ~/OmniStream/Configs ~/OmniStream/mnt
+source ${OMNIHOME}/bin/omni_init > /dev/null 2>&1
 o+ 001-header.yaml 002-traefik.yaml 003-omnimount.yaml 999-footer.yaml
 echo Done
 
 # Start setup menu for parameters and help
 
 echo
-/opt/OmniStream/bin/make-env
+${OMNIHOME}/bin/make-env
 
 ### Output results
 
-source /opt/OmniStream/.env
+source ${OMNIHOME}/.env
 echo
 echo
 echo

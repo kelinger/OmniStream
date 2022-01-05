@@ -3,7 +3,7 @@
 # These are default values for required parameters.  Do not change here in this
 # script.  They are overwritten by the values stored in the user's config (ENV).
 
-OMNIHOME=/opt/OmniStream
+OMNIHOME=${HOME}/OmniStream
 CDIR=${HOME}/.config
 ENV=${CDIR}/omnistream.conf
 CONFIGS=${HOME}/OmniStream/Configs
