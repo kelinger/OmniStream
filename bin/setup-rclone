@@ -69,7 +69,7 @@ else
 	then
 		clear
 		rclone config
-		if [[ !-f ${RCLONEHOME}/rclone.conf ]]
+		if [[ ! -f ${RCLONEHOME}/rclone.conf ]]
 		then
 			quit
 		fi
