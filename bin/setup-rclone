@@ -20,6 +20,13 @@ msgbox() {
 	VALUE=${?}
 }
 
+quit() {
+	clear
+	echo Rclone setup canceled.  No files have been changed.  To restart rclone setup, run \"set-rclone\" from the shell.
+	echo
+	exit
+}
+
 TITLE="Rclone Configuration"
 DESC="Do you already have an rclone.conf file you would like to use?  If so, you will be able to paste it into the terminal.
 
@@ -34,7 +41,11 @@ then
 	then
 		TITLE="Paste rclone.conf below"
 		echo -n > /tmp/rclone.conf
-		dialog --title "${TITLE}" --backtitle "Rclone.conf" --editbox /tmp/rclone.conf 0 0 2>/tmp/rclone.conf
+		dialog \
+			--title "${TITLE}" \
+			--backtitle "Rclone.conf" \
+			--editbox /tmp/rclone.conf \
+			0 0 2>/tmp/rclone.conf
 		VALUE=${?}
 		clear
 		if [[ ${VALUE} = 0 ]]
@@ -42,22 +53,14 @@ then
 			mkdir -p ${RCLONEHOME}
 			mv /tmp/rclone.conf ${RCLONEHOME}
 		else
-			clear
-			echo Rclone setup canceled.  No files have been changed.  To restart rclone setup, run \"set-rclone\" from the shell.
-			echo
-			exit
+			quit
 		fi
 	else
-		clear
-		echo Rclone setup canceled.  No files have been changed.  To restart rclone setup, run \"set-rclone\" from the shell.
-		echo
-		exit
+		quit
 	fi
 elif [[ ${VALUE} = 255 ]]
 then
-	clear
-	echo Rclone setup canceled.  No files have been changed.  To restart rclone setup, run \"set-rclone\" from the shell.
-	echo
+	quit
 else
 	TITLE="Instructions"
 	DESC="After clicking OK, you will be taken to the rclone setup process.  Instructions for rclone can be found at https://rclone.org."
@@ -66,9 +69,52 @@ else
 	then
 		clear
 		rclone config
+		if [[ !-f ${RCLONEHOME}/rclone.conf ]]
+		then
+			quit
+		fi
 	else
-		clear
-		echo Rclone setup canceled.  No files have been changed.  To restart rclone setup, run \"set-rclone\" from the shell.
-		echo
+		quit
 	fi
 fi
+
+# Choice Rclone service to use
+
+declare -a ENDPOINT
+
+i=1
+j=1
+
+while read line
+do
+	ENDPOINT[ $i ]=$j
+	(( j++ ))
+	ENDPOINT[ ($i + 1) ]=$line
+	(( i=($i+2) ))
+done < <(grep "\[" ~/.config/rclone/rclone.conf | sort | sed 's/[][]//g')
+
+TERMINAL=$(tty)
+
+CHOICE=$(dialog --clear \
+	--backtitle "Rclone Setup" \
+	--title "Rclone Endpoints" \
+	--menu "Please select which entry from your rclone.conf corresponds to the cloud service you'd like to mount into OmniStream:"
+	0 0 0 \
+	"${ENDPOINT[@]}" \
+	2>&1 >${TERMINAL})
+if [[ ${?} != 0 ]]
+then
+	echo Canceled
+	exit
+fi
+
+RCLONESERVICE=${ENDPOINT[ ${CHOICE}*2 ]}
+RCLONEMOUNT=${RCLONESERVICE}
+sed -i 's/.*RCLONESERVICE=.*/RCLONESERVICE='${RCLONESERVICE}'/' ~/.config/omnistream.conf
+sed -i 's/.*RCLONEMOUNT=.*/RCLONEMOUNT='${RCLONEMOUNT}'/' ~/.config/omnistream.conf
+
+# Create/update omnimount configuration
+
+mkdir -p ${CONFIGS}/omnimount
+cp ${RCLONEHOME}/rclone.conf ${CONFIGS}/omnimount/
+

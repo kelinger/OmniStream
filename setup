@@ -38,6 +38,7 @@ fi
 
 if [[ ${OMNI} = 0 ]]
 then
+	omni stop 2>/dev/null
 	cd ${OMNIHOME}
 	git pull > /dev/null 2>&1
 	if [[ ${?} = 0 ]]
@@ -45,14 +46,14 @@ then
 		echo Omnistream already installed and up-to-date
 		echo
 	else
-		echo OmniStream appears to already be installed.  If you continue, OmniStream will be removed from
-		echo your system completely and you will be starting from scratch.
-		echo Do you want to remove the downloaded OmniStream and start fresh?
+		echo OmniStream appears to already be installed but appears to be different from the repo.
+		echo If you continue, OmniStream will be removed from your system completely and you will be
+		echo startig from scratch.  Do you want to remove the downloaded OmniStream and start fresh?
 		read -p "Y for YES or Q to QUIT: " -n1 REPLY
 		echo
 		if [[ ${REPLY} =~ ^[Yy]$ ]]
 		then
-			sudo rm -r ${OMNIHOM}
+			sudo rm -r ${OMNIHOME}
 			OMNI=1
 		else
 			exit 1
