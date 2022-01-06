@@ -98,7 +98,7 @@ TERMINAL=$(tty)
 CHOICE=$(dialog --clear \
 	--backtitle "Rclone Setup" \
 	--title "Rclone Endpoints" \
-	--menu "Please select which entry from your rclone.conf corresponds to the cloud service you'd like to mount into OmniStream:"
+	--menu "Please select which entry from your rclone.conf corresponds to the cloud service you'd like to mount into OmniStream:" \
 	0 0 0 \
 	"${ENDPOINT[@]}" \
 	2>&1 >${TERMINAL})
@@ -117,4 +117,6 @@ sed -i 's/.*RCLONEMOUNT=.*/RCLONEMOUNT='${RCLONEMOUNT}'/' ~/.config/omnistream.c
 
 mkdir -p ${CONFIGS}/omnimount
 cp ${RCLONEHOME}/rclone.conf ${CONFIGS}/omnimount/
+
+clear
 
