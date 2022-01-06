@@ -107,25 +107,26 @@ omni() {
 		cd "${CURDIR}" || exit
 		;;
 	*)
-		echo "Omni commands:"
-		echo "	omni up - bring online all enabled Omni components"
-		echo "	omni down - shutdown all running Omni components"
-		echo "	omni restart - stops and restarts all or specific Omni compoments"
-		echo "		Ex:  omni restart - restarts everything"
-		echo "		Ex:  omni restart nzbget - just restarts nzbGET"
-		echo "	omni logs - shows you logs for all or specific services, scrolling in realtime.  Press control-c to exit"
-		echo "		Ex:  omni logs - shows logs for each service running"
-		echo "		Ex:  omni logs nginx-proxy letsencrypt - shows logs for just the web proxy and certificate services"
-		echo "	omni status - show current state of running Omni components"
-		echo "		Ex:  omni status - shows all running compoments"
-		echo "		Ex:  omni status plex plexpy - shows status of plex and plexpy only"
-		echo "	omni stats - shows stats like CPU and memory usage by component.  Press control-c to exit"
-		echo "		Ex:  omni stats - shows ongoing stats for all Omni components"
-		echo "		Ex:  omni stats sonarr radarr - shows ongoing stats for justSonarr and Radarr"
-		echo "	omni setup - builds (replaces) your Omni configuration.  Allows changing parameters"
-		echo "	omni apps - switches you to the apps (config) local directory"
-		echo "	omni home - switches you to the Omni core files directory"
-		echo
+		echo ${YELLOW}"OmniStream commands:"
+		echo ${GREEN}"	omni up "${YELLOW}"- bring online all enabled OmniStream components"
+		echo ${GREEN}"	omni down "${YELLOW}"- shutdown all running OmniStream components"
+		echo ${GREEN}"	omni restart "${YELLOW}"- stops and restarts all or specific OmniStream compoments"
+		echo ${BLUE}"		Ex:  omni restart - restarts everything"
+		echo ${BLUE}"		Ex:  omni restart emby - just restarts emby"
+		echo ${GREEN}"	omni logs "${YELLOW}"- shows you logs for all or specific services, scrolling in realtime.  Press control-c to exit"
+		echo ${BLUE}"		Ex:  omni logs - shows logs for all services running"
+		echo ${BLUE}"		Ex:  omni logs plex emby - shows logs for just the plex and emby services"
+		echo ${GREEN}"	omni status "${YELLOW}"- show current state of running OmniStream components"
+		echo ${BLUE}"		Ex:  omni status - shows all running compoments"
+		echo ${BLUE}"		Ex:  omni status plex tautulli - shows status of plex and tautulli only"
+		echo ${GREEN}"	omni stats "${YELLOW}"- shows stats like CPU and memory usage by component.  Press control-c to exit"
+		echo ${BLUE}"		Ex:  omni stats - shows ongoing stats for all OmniStream components"
+		echo ${BLUE}"		Ex:  omni stats sonarr radarr - shows ongoing stats for just Sonarr and Radarr"
+		echo ${GREEN}"	omni setup "${YELLOW}"- builds (replaces) your OmniStream configuration.  Allows changing parameters"
+		echo ${GREEN}"	omni apps "${YELLOW}"- switches you to the components (enabled) local directory"
+		echo ${GREEN}"	omni configs "${YELLOW}"- switches you to the configs directory"
+		echo ${GREEN}"	omni home "${YELLOW}"- switches you to the OmniStream core files directory"
+		echo ${STD}
 		;;
 	esac
 }
