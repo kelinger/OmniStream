@@ -1,0 +1,74 @@
+#!/bin/bash
+
+source ~/.config/omnistream.conf
+
+TEMP=/tmp/answer${$}
+
+get_text() {
+        dialog --title "${TITLE}" --clear --no-cancel --inputbox "${DESC}" 16 51 "${DEFAULT}" 2> ${TEMP}-Input
+        VALUE=$(cat ${TEMP}-Input)
+        rm ${TEMP}-Input
+}
+
+yesno() {
+        dialog --title "${TITLE}" --clear --yesno "${DESC}" 16 51
+        VALUE=${?}
+} 
+
+msgbox() {
+	dialog --title "${TITLE}" --clear --msgbox "${DESC}" 0 0
+	VALUE=${?}
+}
+
+TITLE="Rclone Configuration"
+DESC="Do you already have an rclone.conf file you would like to use?  If so, you will be able to paste it into the terminal.
+
+If not, we can call the rclone setup process for you to create one."
+yesno
+if [[ ${VALUE} = 0 ]]
+then
+	TITLE="Instructions"
+	DESC="After clicking OK, you may paste your rclone.conf in plain-text from your computer.  Simply open a copy of a valid rclone.conf file from another installation, select the entire text, and copy it.  Then, switch back to your terminal and use the terminal's \"paste\" menu option to paste it into the next screen.  Press OK to continue."
+	msgbox
+	if [[ ${VALUE} = 0 ]]
+	then
+		TITLE="Paste rclone.conf below"
+		echo -n > /tmp/rclone.conf
+		dialog --title "${TITLE}" --backtitle "Rclone.conf" --editbox /tmp/rclone.conf 0 0 2>/tmp/rclone.conf
+		VALUE=${?}
+		clear
+		if [[ ${VALUE} = 0 ]]
+		then
+			mkdir -p ${RCLONEHOME}
+			mv /tmp/rclone.conf ${RCLONEHOME}
+		else
+			clear
+			echo Rclone setup canceled.  No files have been changed.  To restart rclone setup, run \"set-rclone\" from the shell.
+			echo
+			exit
+		fi
+	else
+		clear
+		echo Rclone setup canceled.  No files have been changed.  To restart rclone setup, run \"set-rclone\" from the shell.
+		echo
+		exit
+	fi
+elif [[ ${VALUE} = 255 ]]
+then
+	clear
+	echo Rclone setup canceled.  No files have been changed.  To restart rclone setup, run \"set-rclone\" from the shell.
+	echo
+else
+	TITLE="Instructions"
+	DESC="After clicking OK, you will be taken to the rclone setup process.  Instructions for rclone can be found at https://rclone.org."
+	msgbox
+	if [[ ${VALUE} = 0 ]]
+	then
+		clear
+		rclone config
+	else
+		clear
+		echo Rclone setup canceled.  No files have been changed.  To restart rclone setup, run \"set-rclone\" from the shell.
+		echo
+	fi
+fi
