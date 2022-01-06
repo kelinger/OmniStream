@@ -231,7 +231,9 @@ echo Done
 
 echo
 ${OMNIHOME}/bin/make-env
-cls
+clear
+${OMNIHOME}/bin/setup-rclone
+clear
 
 ### Output results
 
@@ -250,6 +252,8 @@ docker-compose -v
 echo
 echo Rclone:
 update-rclone
+echo
+echo Rclone settings:  ${RCLONEHOME}/rclone.conf
 echo
 if [[ ${DOCKER} = 0 ]]
 then
@@ -280,5 +284,5 @@ echo
 echo Customizations are in ${HOME}/.config/omnistream.conf
 echo
 echo =========================================================================
-echo "        Now would be a really good time to reboot your server"
+echo "  Please log out and back into your server for changes to take affect"
 echo =========================================================================

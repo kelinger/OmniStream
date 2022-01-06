@@ -63,15 +63,15 @@ source ${HOME}/Omni/bin/omni_functions
 TEMP=/tmp/answer${$}
 
 # Get component list
-COMPONENTS="$(ls ${HOME}/Omni/components/*.yaml | sed s/^.*\\/\//)"
-ENABLED="$(ls ${HOME}/Omni/enabled/*.yaml | sed s/^.*\\/\//)"
+COMPONENTS="$(ls ${HOME}/OmniStream/components/*.yaml | sed s/^.*\\/\//)"
+ENABLED="$(ls ${HOME}/OmniStream/enabled/*.yaml | sed s/^.*\\/\//)"
 
 edit_components() {
 	OPTIONS=""
 	COUNTER=1
 	for i in ${COMPONENTS}
 	do
-		NAME=${i#???}
+		NAME=${i#????}
 		NAME=${NAME%".yaml"}
 		OPTIONS="${OPTIONS}${COUNTER} ${NAME} "
 		STATUS=off
