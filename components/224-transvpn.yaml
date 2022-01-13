@@ -44,17 +44,11 @@
       - /bin/netstat:/bin/netstat:ro
       - ${MERGEMOUNT}:/cloud
     labels:
-      - "omni=${TRANSNAME},${MYDOMAIN},yes,yes,yes"
-      - "traefik.enable=true"
-      ## HTTP Routers
-      - "traefik.http.routers.transvpn-rtr.entrypoints=https"
-      - "traefik.http.routers.transvpn-rtr.rule=Host(`${TRANSNAME}.${MYDOMAIN}`)"
-      - "traefik.http.routers.transvpn-rtr.tls=true"
-      ## Middlewares
-      - "traefik.http.routers.transvpn-rtr.middlewares=chain-no-auth@file"
-      ## HTTP Services
-      - "traefik.http.routers.transvpn-rtr.service=transvpn-svc"
-      - "traefik.http.services.transvpn-svc.loadbalancer.server.port=9091"
+      - traefik.enable=true
+      - traefik.http.routers.transvpn.rule=Host(`${TRANSNAME}.${MYDOMAIN}`)
+      - traefik.http.routers.transvpn.tls=true
+      - traefik.http.routers.transvpn.tls.certresolver=lets-encrypt
+      - traefik.port=9091
     networks:
       - OmniNet
     dns:

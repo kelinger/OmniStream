@@ -18,17 +18,11 @@
       - TZ=${TIMEZONE}
       - UMASK_SET=022
     labels:
-      - "omni=${RTORRENTNAME},${MYDOMAIN},yes,yes,yes"
-      - "traefik.enable=true"
-      ## HTTP Routers
-      - "traefik.http.routers.rtorrent-rtr.entrypoints=https"
-      - "traefik.http.routers.rtorrent-rtr.rule=Host(`${RTORRENTNAME}.${MYDOMAIN}`)"
-      - "traefik.http.routers.rtorrent-rtr.tls=true"
-      ## Middlewares
-      - "traefik.http.routers.rtorrent-rtr.middlewares=chain-basic-auth@file"
-      ## HTTP Services
-      - "traefik.http.routers.rtorrent-rtr.service=rtorrent-svc"
-      - "traefik.http.services.rtorrent-svc.loadbalancer.server.port=8080"
+      - traefik.enable=true
+      - traefik.http.routers.rtorrent.rule=Host(`${RTORRENTNAME}.${MYDOMAIN}`)
+      - traefik.http.routers.rtorrent.tls=true
+      - traefik.http.routers.rtorrent.tls.certresolver=lets-encrypt
+      - traefik.port=8080
     volumes:
       - ${CONFIGS}/${RTORRENTNAME}:/data
       - ${MERGEMOUNT}:/cloud

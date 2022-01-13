@@ -15,16 +15,11 @@
       - GID=${GROUPID}
       - GIDLIST=${GPUGIDS}
     labels:
-      - "omni=${EMBYNAME},${MYDOMAIN},yes,yes,yes"
-      - "traefik.enable=true"
-      ## HTTP Routers
-      - "traefik.http.routers.emby-rtr.entrypoints=https"
-      - "traefik.http.routers.emby-rtr.rule=Host(`${EMBYNAME}.${MYDOMAIN}`)"
-      ## Middlewares
-      - "traefik.http.routers.emby-rtr.middlewares=chain-no-auth@file"
-      ## HTTP Services
-      - "traefik.http.routers.emby-rtr.service=emby-svc"
-      - "traefik.http.services.emby-svc.loadbalancer.server.port=8096"
+      - traefik.enable=true
+      - traefik.http.routers.emby.rule=Host(`${EMBYNAME}.${MYDOMAIN}`)
+      - traefik.http.routers.emby.tls=true
+      - traefik.http.routers.emby.tls.certresolver=lets-encrypt
+      - traefik.port=8096
     volumes:
       - ${CONFIGS}/${EMBYNAME}:/config
       - ${MEDIA}:/mnt/media

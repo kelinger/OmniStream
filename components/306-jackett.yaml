@@ -20,17 +20,11 @@
       - ${CONFIGS}/${JACKETTNAME}:/config
       - ${MERGEMOUNT}:/cloud
     labels:
-      - "omni=${JACKETTNAME},${MYDOMAIN},yes,yes,yes"
-      - "traefik.enable=true"
-    ## HTTP Routers
-      - "traefik.http.routers.jackett-rtr.entrypoints=https"
-      - "traefik.http.routers.jackett-rtr.rule=Host(`${JACKETTNAME}.${MYDOMAIN}`)"
-      - "traefik.http.routers.jackett-rtr.tls=true"
-      ## Middlewares
-      - "traefik.http.routers.jackett-rtr.middlewares=chain-oauth@file"
-      ## HTTP Services
-      - "traefik.http.routers.jackett-rtr.service=jackett-svc"
-      - "traefik.http.services.jackett-svc.loadbalancer.server.port=9117"
+      - traefik.enable=true
+      - traefik.http.routers.jackett.rule=Host(`${JACKETTNAME}.${MYDOMAIN}`)
+      - traefik.http.routers.jackett.tls=true
+      - traefik.http.routers.jackett.tls.certresolver=lets-encrypt
+      - traefik.port=9117
     networks:
       - OmniNet
     healthcheck:

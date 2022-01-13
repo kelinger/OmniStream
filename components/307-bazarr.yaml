@@ -14,17 +14,11 @@
       - PUID=${USERID}
       - TZ=${TIMEZONE}
     labels:
-      - "omni=${BAZARRNAME},${MYDOMAIN},yes,yes,yes"
-      - "traefik.enable=true"
-      ## HTTP Routers
-      - "traefik.http.routers.bazarr-rtr.entrypoints=https"
-      - "traefik.http.routers.bazarr-rtr.rule=Host(`${BAZARRNAME}.${MYDOMAIN}`)"
-      - "traefik.http.routers.bazarr-rtr.tls=true"
-      ## Middlewares
-      - "traefik.http.routers.bazarr-rtr.middlewares=chain-oauth@file"
-      ## HTTP Services
-      - "traefik.http.routers.bazarr-rtr.service=bazarr-svc"
-      - "traefik.http.services.bazarr-svc.loadbalancer.server.port=6767"
+      - traefik.enable=true
+      - traefik.http.routers.bazarr.rule=Host(`${BAZARRNAME}.${MYDOMAIN}`)
+      - traefik.http.routers.bazarr.tls=true
+      - traefik.http.routers.bazarr.tls.certresolver=lets-encrypt
+      - traefik.port=6767
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/${BAZARRNAME}:/config

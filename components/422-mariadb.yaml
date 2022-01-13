@@ -23,7 +23,7 @@
       - PGID=${GROUPID}
       - TZ=${TIMEZONE}
     labels:
-      - "omni=mariadb,${MYDOMAIN},yes,yes,no"
+      - traefik.enable=false
     healthcheck:
       test: ["CMD-SHELL", "netstat -ntlp | grep :3306"]
       interval: 10s

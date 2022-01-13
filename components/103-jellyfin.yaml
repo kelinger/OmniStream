@@ -16,16 +16,11 @@
       - TZ=${TIMEZONE}
       - UMASK_SET=022
     labels:
-      - "omni=${JELLYNAME},${MYDOMAIN},yes,yes,yes"
-      - "traefik.enable=true"
-      ## HTTP Routers
-      - "traefik.http.routers.jellyfin-rtr.entrypoints=https"
-      - "traefik.http.routers.jellyfin-rtr.rule=Host(`${JELLYNAME}.${MYDOMAIN}`)"
-      ## Middlewares
-      - "traefik.http.routers.jellyfin-rtr.middlewares=chain-no-auth@file"
-      ## HTTP Services
-      - "traefik.http.routers.jellyfin-rtr.service=jellyfin-svc"
-      - "traefik.http.services.jellyfin-svc.loadbalancer.server.port=8096"
+      - traefik.enable=true
+      - traefik.http.routers.jellyfin.rule=Host(`${JELLYNAME}.${MYDOMAIN}`)
+      - traefik.http.routers.jellyfin.tls=true
+      - traefik.http.routers.jellyfin.tls.certresolver=lets-encrypt
+      - traefik.port=8096
     volumes:
       - ${CONFIGS}/${JELLYNAME}:/config
       - ${MEDIA}:/mnt/media

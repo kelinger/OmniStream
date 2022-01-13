@@ -25,13 +25,8 @@
       DEFAULT_ACTION: auth
       DEFAULT_PROVIDER: google
     labels:
-      - "omni=${OAUTHNAME},${MYDOMAIN},yes,yes,yes"
-      - "traefik.enable=true"
-      ## HTTP Routers
-      - "traefik.http.routers.oauth-rtr.entrypoints=https"
-      - "traefik.http.routers.oauth-rtr.rule=Host(`${OAUTHNAME}.${MYDOMAIN}`)"
-      ## Middlewares
-      - "traefik.http.routers.oauth-rtr.middlewares=chain-oauth@file" 
-      ## HTTP Services
-      - "traefik.http.routers.oauth-rtr.service=oauth-svc"
-      - "traefik.http.services.oauth-svc.loadbalancer.server.port=4181"
+      - traefik.enable=true
+      - traefik.http.routers.oauth.rule=Host(`${OAUTHNAME}.${MYDOMAIN}`)
+      - traefik.http.routers.oauth.tls=true
+      - traefik.http.routers.oauth.tls.certresolver=lets-encrypt
+      - traefik.port=4181

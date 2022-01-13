@@ -20,17 +20,11 @@
       - ${DOWNLOADS}:/downloads
       - ${MERGEMOUNT}:/cloud
     labels:
-      - "omni=${QBITNAME},${MYDOMAIN},yes,yes,yes"
-      - "traefik.enable=true"
-    ## HTTP Routers
-      - "traefik.http.routers.qbittorrent-rtr.entrypoints=https"
-      - "traefik.http.routers.qbittorrent-rtr.rule=Host(`${QBITNAME}.${MYDOMAIN}`)"
-      - "traefik.http.routers.qbittorrent-rtr.tls=true"
-      ## Middlewares
-      - "traefik.http.routers.qbittorrent-rtr.middlewares=chain-no-auth@file"
-      ## HTTP Services
-      - "traefik.http.routers.qbittorrent-rtr.service=qbittorrent-svc"
-      - "traefik.http.services.qbittorrent-svc.loadbalancer.server.port=8080"
+      - traefik.enable=true
+      - traefik.http.routers.qbit.rule=Host(`${QBITNAME}.${MYDOMAIN}`)
+      - traefik.http.routers.qbit.tls=true
+      - traefik.http.routers.qbit.tls.certresolver=lets-encrypt
+      - traefik.port=8080
     ports:
       - 55955:55955/tcp
       - 55955:55955/udp

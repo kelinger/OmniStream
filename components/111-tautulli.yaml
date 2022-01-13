@@ -14,17 +14,11 @@
       - PGID=${GROUPID}
       - TZ=${TIMEZONE}
     labels:
-      - "omni=${TAUTULLINAME},${MYDOMAIN},yes,yes,yes"
-      - "traefik.enable=true"
-      ## HTTP Routers
-      - "traefik.http.routers.tautulli-rtr.entrypoints=https"
-      - "traefik.http.routers.tautulli-rtr.rule=Host(`${TAUTULLINAME}.${MYDOMAIN}`)"
-      - "traefik.http.routers.tautulli-rtr.tls=true"
-      ## Middlewares
-      - "traefik.http.routers.tautulli-rtr.middlewares=chain-oauth@file"
-      ## HTTP Services
-      - "traefik.http.routers.tautulli-rtr.service=tautulli-svc"
-      - "traefik.http.services.tautulli-svc.loadbalancer.server.port=8181"
+      - traefik.enable=true
+      - traefik.http.routers.tautulli.rule=Host(`${TAUTULLINAME}.${MYDOMAIN}`)
+      - traefik.http.routers.tautulli.tls=true
+      - traefik.http.routers.tautulli.tls.certresolver=lets-encrypt
+      - traefik.port=8181
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/${TAUTULLINAME}:/config

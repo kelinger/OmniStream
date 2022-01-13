@@ -12,15 +12,10 @@
     depends_on:
       - traefik
     labels:
-      - "omni=${SPEEDNAME},${MYDOMAIN},yes,yes,yes"
-      - "traefik.enable=true"
-      ## HTTP Routers
-      - "traefik.http.routers.speed-rtr.entrypoints=https"
-      - "traefik.http.routers.speed-rtr.rule=Host(`speed.${MYDOMAIN}`)"
-      ## Middlewares
-      - "traefik.http.routers.speed-rtr.middlewares=chain-no-auth@file"
-      ## HTTP Services
-      - "traefik.http.routers.speed-rtr.service=speed-svc"
-      - "traefik.http.services.speed-svc.loadbalancer.server.port=3000"
+      - traefik.enable=true
+      - traefik.http.routers.speed.rule=Host(`${SPEEDNAME}.${MYDOMAIN}`)
+      - traefik.http.routers.speed.tls=true
+      - traefik.http.routers.speed.tls.certresolver=lets-encrypt
+      - traefik.port=3000
     networks:
       - OmniNet

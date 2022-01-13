@@ -14,17 +14,11 @@
       - PGID=${GROUPID}
       - TZ=${TIMEZONE}
     labels:
-      - "omni=${EMBYSTATNAME},${MYDOMAIN},yes,yes,yes"
-      - "traefik.enable=true"
-      ## HTTP Routers
-      - "traefik.http.routers.embystat-rtr.entrypoints=https"
-      - "traefik.http.routers.embystat-rtr.rule=Host(`${EMBYSTATNAME}.${MYDOMAIN}`)"
-      - "traefik.http.routers.embystat-rtr.tls=true"
-      ## Middlewares
-      - "traefik.http.routers.embystat-rtr.middlewares=chain-oauth@file"
-      ## HTTP Services
-      - "traefik.http.routers.embystat-rtr.service=embystat-svc"
-      - "traefik.http.services.embystat-svc.loadbalancer.server.port=6555"
+      - traefik.enable=true
+      - traefik.http.routers.embystat.rule=Host(`${EMBYSTATNAME}.${MYDOMAIN}`)
+      - traefik.http.routers.embystat.tls=true
+      - traefik.http.routers.embystat.tls.certresolver=lets-encrypt
+      - traefik.port=6555
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /bin/netstat:/bin/netstat:ro

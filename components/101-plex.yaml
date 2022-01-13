@@ -17,16 +17,11 @@
       - VERSION=latest
       - UMASK_SET=022
     labels:
-      - "omni=${PLEXNAME},${MYDOMAIN},yes,yes,yes"
-      - "traefik.enable=true"
-      ## HTTP Routers
-      - "traefik.http.routers.plex-rtr.entrypoints=https"
-      - "traefik.http.routers.plex-rtr.rule=Host(`${PLEXNAME}.${MYDOMAIN}`)"
-      ## Middlewares
-      - "traefik.http.routers.plex-rtr.middlewares=chain-no-auth@file"
-      ## HTTP Services
-      - "traefik.http.routers.plex-rtr.service=plex-svc"
-      - "traefik.http.services.plex-svc.loadbalancer.server.port=32400"
+      - traefik.enable=true
+      - traefik.http.routers.plex.rule=Host(`${PLEXNAME}.${MYDOMAIN}`)
+      - traefik.http.routers.plex.tls=true
+      - traefik.http.routers.plex.tls.certresolver=lets-encrypt
+      - traefik.port=32400
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/${PLEXNAME}:/config

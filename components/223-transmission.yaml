@@ -18,17 +18,11 @@
       - ${CONFIGS}/${TRANSNAME}:/config
       - ${MERGEMOUNT}:/cloud
     labels:
-      - "omni=${TRANSNAME},${MYDOMAIN},yes,yes,yes"
-      - "traefik.enable=true"
-    ## HTTP Routers
-      - "traefik.http.routers.transmission-rtr.entrypoints=https"
-      - "traefik.http.routers.transmission-rtr.rule=Host(`${TRANSNAME}.${MYDOMAIN}`)"
-      - "traefik.http.routers.transmission-rtr.tls=true"
-      ## Middlewares
-      - "traefik.http.routers.transmission-rtr.middlewares=chain-no-auth@file"
-      ## HTTP Services
-      - "traefik.http.routers.transmission-rtr.service=transmission-svc"
-      - "traefik.http.services.transmission-svc.loadbalancer.server.port=9091"
+      - traefik.enable=true
+      - traefik.http.routers.transmission.rule=Host(`${TRANSNAME}.${MYDOMAIN}`)
+      - traefik.http.routers.transmission.tls=true
+      - traefik.http.routers.transmission.tls.certresolver=lets-encrypt
+      - traefik.port=9091
     ports:
       - 55955:55955/tcp
       - 55955:55955/udp

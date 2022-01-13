@@ -15,17 +15,11 @@
       - PUID=${USERID}
       - TZ=${TIMEZONE}
     labels:
-      - "omni=${SABNZBDNAME},${MYDOMAIN},yes,yes,yes"
-      - "traefik.enable=true"
-    ## HTTP Routers
-      - "traefik.http.routers.sabnzbd-rtr.entrypoints=https"
-      - "traefik.http.routers.sabnzbd-rtr.rule=Host(`${SABNZBDNAME}.${MYDOMAIN}`)"
-      - "traefik.http.routers.sabnzbd-rtr.tls=true"
-      ## Middlewares
-      - "traefik.http.routers.sabnzbd-rtr.middlewares=chain-oauth@file"
-      ## HTTP Services
-      - "traefik.http.routers.sabnzbd-rtr.service=sabnzbd-svc"
-      - "traefik.http.services.sabnzbd-svc.loadbalancer.server.port=8080"
+      - traefik.enable=true
+      - traefik.http.routers.sabnzbd.rule=Host(`${SABNZBDNAME}.${MYDOMAIN}`)
+      - traefik.http.routers.sabnzbd.tls=true
+      - traefik.http.routers.sabnzbd.tls.certresolver=lets-encrypt
+      - traefik.port=8080
     volumes:
       - ${CONFIGS}/${SABNZBDNAME}:/config
       - ${MERGEMOUNT}:/cloud

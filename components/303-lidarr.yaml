@@ -20,17 +20,11 @@
       - ${MERGEMOUNT}:/cloud
       - /bin/netstat:/bin/netstat:ro
     labels:
-      - "omni=${LIDARRNAME},${MYDOMAIN},yes,yes,yes"
-      - "traefik.enable=true"
-    ## HTTP Routers
-      - "traefik.http.routers.lidarr-rtr.entrypoints=https"
-      - "traefik.http.routers.lidarr-rtr.rule=Host(`${LIDARRNAME}.${MYDOMAIN}`)"
-      - "traefik.http.routers.lidarr-rtr.tls=true"
-      ## Middlewares
-      - "traefik.http.routers.lidarr-rtr.middlewares=chain-oauth@file"
-      ## HTTP Services
-      - "traefik.http.routers.lidarr-rtr.service=lidarr-svc"
-      - "traefik.http.services.lidarr-svc.loadbalancer.server.port=8686"
+      - traefik.enable=true
+      - traefik.http.routers.lidarr.rule=Host(`${LIDARRNAME}.${MYDOMAIN}`)
+      - traefik.http.routers.lidarr.tls=true
+      - traefik.http.routers.lidarr.tls.certresolver=lets-encrypt
+      - traefik.port=8686
     networks:
       - OmniNet
     healthcheck:
