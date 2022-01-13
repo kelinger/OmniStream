@@ -6,7 +6,7 @@ mkdir -p ${CONFIGS}/${TRAEFIKNAME}/acme
 touch ${CONFIGS}/${TRAEFIKNAME}/acme/acme.json
 chmod 600 ${CONFIGS}/${TRAEFIKNAME}/acme/acme.json
 
-AUTH=$(htpasswd -nb admin MyPassw0rd)
+AUTH="$(htpasswd -nb admin MyPassw0rd)"
 
 cat > ${CONFIGS}/${TRAEFIKNAME}/traefik.toml << EOF
 [entryPoints]
@@ -36,7 +36,7 @@ EOF
 cat > ${CONFIGS}/${TRAEFIKNAME}/traefik_secure.toml << EOF
 [http.middlewares.simpleAuth.basicAuth]
   users = [
-    "${AUTh}"
+    "${AUTH}"
   ]
 
 [http.routers.api]
