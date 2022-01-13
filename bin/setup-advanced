@@ -1,0 +1,118 @@
+#!/bin/bash
+
+source ~/.config/omnistream.conf
+
+TEMP=/tmp/answer${$}
+
+get_text() {
+        dialog --title "${TITLE}" --clear --no-cancel --inputbox "${DESC}" 0 0 "${DEFAULT}" 2> ${TEMP}-Input
+        VALUE=$(cat ${TEMP}-Input)
+        rm ${TEMP}-Input
+}
+
+yesno() {
+        dialog --title "${TITLE}" --clear --yesno "${DESC}" 0 0
+        VALUE=${?}
+}
+
+msgbox() {
+	dialog --title "${TITLE}" --clear --msgbox "${DESC}" 0 0
+	VALUE=${?}
+}
+
+passwordbox() {
+        dialog --title "${TITLE}" --clear --insecure --passwordbox "${DESC}" 0 0 "${DEFAULT}" 2> ${TEMP}-Input
+        VALUE="$(cat ${TEMP}-Input)"
+        rm ${TEMP}-Input
+}
+
+quit() {
+	clear
+	echo Advanced setup exited.  All changes have been saved.  To restart the advanced setup, run \"setup-advanced\" from the shell.  To load your changes, run \"source ~/.config/omnistream.conf\".
+	echo
+	exit
+}
+
+TITLE="Advanced Setup"
+DESC="OmniStream defaults to using host and configs named after their services.  For example, Plex's configuration is stored in .../Configs/plex and uses plex.mydomain.com as it's hostname.  Most people will not want to change this.  However, there are some particular use cases which this is necessary.  Select \"No\" unless you know what you're doing.
+
+Do you wish to run the advanced setup?"
+yesno
+if [[ ${VALUE} != 0 ]]
+then
+	quit
+fi
+
+while true
+do
+	declare -a VAR
+
+	i=1
+	j=1
+
+	VARS="APACHENAME
+		BAZARRNAME
+		DELUGENAME
+		EMBYNAME
+		EMBYSTATNAME
+		HEALNAME
+		HYDRANAME
+		JACKETTNAME
+		JELLYNAME
+		LIDARRNAME
+		MARIADBNAME
+		MEDUSANAME
+		MENU
+		MYSQLNAME
+		NETDATANAME
+		NEXTCLOUDNAME
+		NZBGETNAME
+		OAUTHNAME
+		ORGANIZRNAME
+		OVPNNAME
+		PLEXNAME
+		PORTAINERNAME
+		POSTGRESNAME
+		QBITNAME
+		RADARRNAME
+		REDISCOMNAME
+		REDISNAME
+		RTORRENTNAME
+		SABNZBDNAME
+		SONARRNAME
+		SPEEDNAME
+		SQLSERVERNAME
+		TAUTULLINAME
+		TRAEFIKNAME
+		TRANSNAME
+		WATCHNAME
+	"
+	for k in ${VARS}
+	do
+		VAR[ $i ]=${k}
+		(( j++ ))
+		VAR[ ($i + 1) ]=${!k}
+		(( i=($i+2) ))
+	done
+
+	TERMINAL=$(tty)
+
+	CHOICE=$(dialog --clear \
+		--backtitle "Advanced Setup" \
+		--title "Container Names" \
+		--menu "Please edit the names you would like to use.  Press cancel when you have finished editing:" \
+		0 0 0 \
+		"${VAR[@]}" \
+		2>&1 >${TERMINAL})
+	if [[ ${?} != 0 ]]
+	then
+		quit
+	fi
+	TITLE="Edit ${CHOICE}"
+	DEFAULT=${!CHOICE}
+	DESC="Please enter the text (one word) value for ${CHOICE}:"
+	get_text
+	eval "${CHOICE}=${VALUE}"
+	sed -i 's/.*'${CHOICE}'=.*/'${CHOICE}'='${VALUE}'/' ~/.config/omnistream.conf
+	echo $CHOICE=${!CHOICE}
+done

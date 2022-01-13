@@ -10,6 +10,8 @@ OMNI=$(test -d ${OMNIHOME} ; echo ${?})
 
 # Run as USER, not root/sudo
 
+clear
+
 if [[ $(id -u) = "0" ]]
 then
 	echo Omni Setup needs to be run as a user, not root.  SUDO will be used for root-level access where applicable.
@@ -33,6 +35,14 @@ then
 	rm ${0}
 	exit 1
 fi
+
+if [[ ! -f ~/.selected_editor ]] 
+then
+	echo You do not yet have a default editor.
+	/usr/bin/select-editor
+fi
+
+source ~/.selected-editor
 
 # Detect if Omni already installed
 

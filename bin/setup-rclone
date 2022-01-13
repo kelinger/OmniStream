@@ -28,33 +28,36 @@ quit() {
 }
 
 TITLE="Rclone Configuration"
-DESC="Do you already have an rclone.conf file you would like to use?  If so, you will be able to paste it into the terminal.
+DESC="Would you like to run the \"rclone config\" process to setup a new rclone configurations for our cloud storage services?  Select \"yes\" to launch this process.
 
-If not, we can call the rclone setup process for you to create one."
+Select \"no\" to open your editor in order to paste a configuration into a new file."
 yesno
-if [[ ${VALUE} = 0 ]]
+if [[ ${VALUE} = 1 ]]
 then
 	TITLE="Instructions"
 	DESC="After clicking OK, you may paste your rclone.conf in plain-text from your computer.  Simply open a copy of a valid rclone.conf file from another installation, select the entire text, and copy it.  Then, switch back to your terminal and use the terminal's \"paste\" menu option to paste it into the next screen.  Press OK to continue."
 	msgbox
 	if [[ ${VALUE} = 0 ]]
 	then
-		TITLE="Paste rclone.conf below"
-		echo -n > /tmp/rclone.conf
-		dialog \
-			--title "${TITLE}" \
-			--backtitle "Rclone.conf" \
-			--editbox /tmp/rclone.conf \
-			0 0 2>/tmp/rclone.conf
-		VALUE=${?}
-		clear
-		if [[ ${VALUE} = 0 ]]
-		then
-			mkdir -p ${RCLONEHOME}
-			mv /tmp/rclone.conf ${RCLONEHOME}
-		else
-			quit
-		fi
+		${SELECTED_EDITOR} /tmp/rclone.conf
+		mkdir -p ${RCLONEHOME}
+		mv /tmp/rclone.conf ${RCLONEHOME}
+		#TITLE="Paste rclone.conf below"
+		#echo -n > /tmp/rclone.conf
+		#dialog \
+			#--title "${TITLE}" \
+			#--backtitle "Rclone.conf" \
+			#--editbox /tmp/rclone.conf \
+			#0 0 2>/tmp/rclone.conf
+		#VALUE=${?}
+		#clear
+		#if [[ ${VALUE} = 0 ]]
+		#then
+			#mkdir -p ${RCLONEHOME}
+			#mv /tmp/rclone.conf ${RCLONEHOME}
+		#else
+			#quit
+		#fi
 	else
 		quit
 	fi
