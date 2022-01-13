@@ -29,14 +29,14 @@ quit() {
 }
 
 TITLE="Rclone Configuration"
-DESC="Would you like to run the \"rclone config\" process to setup a new rclone configurations for our cloud storage services?  Select \"yes\" to launch this process.
+DESC="Would you like to run the \"rclone config\" process to setup a new rclone configuration for our cloud storage services?  Select \"yes\" to launch this process.
 
 Select \"no\" to open your editor in order to paste a configuration into a new file."
 yesno
 if [[ ${VALUE} = 1 ]]
 then
 	TITLE="Instructions"
-	DESC="After clicking OK, you may paste your rclone.conf in plain-text from your computer.  Simply open a copy of a valid rclone.conf file from another installation, select the entire text, and copy it.  Then, switch back to your terminal and use the terminal's \"paste\" menu option to paste it into the next screen.  Press OK to continue."
+	DESC="After clicking OK, you may paste your rclone.conf in plain-text from your computer.  Simply open a copy of a valid rclone.conf file from another installation, select the entire text, and copy it.  Then, switch back to your terminal and use the terminal's \"paste\" menu option to paste it into the editor.  Press OK to continue."
 	msgbox
 	if [[ ${VALUE} = 0 ]]
 	then
@@ -62,10 +62,10 @@ else
 		fi
 	else
 		quit
-	fi
+	f
 fi
 
-# Choice Rclone service to use
+# Choice
 
 declare -a ENDPOINT
 
@@ -74,10 +74,10 @@ j=1
 
 while read line
 do
-	ENDPOINT[ $i ]=$j
+
 	(( j++ ))
 	ENDPOINT[ ($i + 1) ]=$line
-	(( i=($i+2) ))
+
 done < <(grep "\[" ~/.config/rclone/rclone.conf | sort | sed 's/[][]//g')
 
 TERMINAL=$(tty)

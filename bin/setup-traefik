@@ -38,9 +38,8 @@ touch ${CONFIGS}/${TRAEFIKNAME}/acme/acme.json
 chmod 600 ${CONFIGS}/${TRAEFIKNAME}/acme/acme.json
 
 TITLE="Traefik Configuration"
-DESC="Traefik is used to route web requests from the Internet to the proper servers within OmniStream.  For example, differentiating plex.mydomain.com from radarr.mydomain.com to the proper running containers.  If you are restoring from backup, you do not need (nor likely want) to setup Traefik again.
-
-Do you wish to continue with the Traefik setup?"
+DESC="Do you wish to continue with the Traefik setup?  Select \"yes\" to continue.
+Select \"\no\" only if you are going to restore from a backup."
 yesno
 if [[ ${VALUE} != 0 ]]
 then
@@ -50,9 +49,7 @@ fi
 while true
 do
 	TITLE="Set Traefik Admin Password"
-	DESC="Traefik includes a console for viewing the virtual routers and paths that are setup.  In most cases, you may never use this.  However, it is a good test site to verify connectivity to your domain and should be password protected.  We will set a default username of \"admin\" and a password of your choosing.  The password will be encrypted and stored in a private directory and no clear-text version of your password will exist once setup is finished.  Press \"cancel\" to exit the setup without making changes.
-
-	Please enter the admin password you would like to use:"
+	DESC="Please enter the password you would like to use to secure the Traefik console\'s admin account."
 	passwordbox
 
 	PW1="${VALUE}"
@@ -78,16 +75,6 @@ do
 done
 
 AUTH="$(htpasswd -nb admin ${PW1})"
-
-TITLE="Traefik Name"
-DESC="All servers running inside OmniStream need to have unique names.  By default, these match the name of the server (eg., \"plex\" for Plex, \"radarr\" for Radarr, etc.)  The reason you may NOT want to do this is if you are running multiple instances of OmniStream, such as in a test environment or on multiple VPCs in which case you might want to use something like \"plex2\" and so on.
-
-Please enter the name you would like to use for your Traefik server:"
-
-DEFAULT=${TRAEFIKNAME}
-get_text
-TRAEFIKNAME=${VALUE}
-sed -i 's/.*TRAEFIKNAME=.*/TRAEFIKNAME='${TRAEFIKNAME}'/' ~/.config/omnistream.conf
 
 cat > ${CONFIGS}/${TRAEFIKNAME}/traefik.toml << EOF
 [entryPoints]

@@ -79,12 +79,12 @@ get_text() {
 
 if [[ ${1,,} != "rebuild" ]]; then
 	TITLE="Personal Domain"
-	DESC="Omnistream can obtain a secure certificate (SSL) to enable each component to run in a separate web space over encrypted HTTPS communication.  Enter the domain name that you own that will be used for obtaining certificates through Let's Encrypt."
+	DESC="Enter the domain name you wish to use with OmniStream."
 	DEFAULT="${MYDOMAIN}"
 	get_text
 	MYDOMAIN="${VALUE}"
 	TITLE="Personal Email"
-	DESC="When obtaining an SSL certificate from Let's Encrypt, Omnistream needs to use your email address to claim the certificate.  This will also be used by Let's Encrypt to send notifications regarding certificate renewal or account issues.  Enter the email address you would like to use for Let's Encrypt notifications."
+	DESC="Enter the email address you wish to use for the Let's Encrypt SSL certificate."
 	DEFAULT="${MYEMAIL}"
 	get_text
 	MYEMAIL="${VALUE}"
