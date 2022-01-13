@@ -243,11 +243,8 @@ echo Done
 
 echo
 ${OMNIHOME}/bin/make-env
-clear
 ${OMNIHOME}/bin/setup-rclone
-clear
 ${OMNIHOME}/bin/setup-advanced
-clear
 ${OMNIHOME}/bin/setup-traefik
 clear
 

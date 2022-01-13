@@ -36,9 +36,9 @@ quit() {
 TITLE="Advanced Setup"
 DESC="OmniStream defaults to using host and configs named after their services.  For example, Plex's configuration is stored in .../Configs/plex and uses plex.mydomain.com as it's hostname.  Most people will not want to change this.  However, there are some particular use cases which this is necessary.  Select \"No\" unless you know what you're doing.
 
-Do you wish to run the advanced setup?"
+Do you wish to skip the advanced setup?"
 yesno
-if [[ ${VALUE} != 0 ]]
+if [[ ${VALUE} = 0 ]] || [[ ${VALUE} = 255 ]]
 then
 	quit
 fi
