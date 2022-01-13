@@ -1,0 +1,130 @@
+#!/bin/bash
+
+source ~/.config/omnistream.conf
+
+TEMP=/tmp/answer${$}
+
+get_text() {
+        dialog --title "${TITLE}" --clear --no-cancel --inputbox "${DESC}" 0 0 "${DEFAULT}" 2> ${TEMP}-Input
+        VALUE=$(cat ${TEMP}-Input)
+        rm ${TEMP}-Input
+}
+
+yesno() {
+        dialog --title "${TITLE}" --clear --yesno "${DESC}" 0 0
+        VALUE=${?}
+}
+
+msgbox() {
+	dialog --title "${TITLE}" --clear --msgbox "${DESC}" 0 0
+	VALUE=${?}
+}
+
+passwordbox() {
+        dialog --title "${TITLE}" --clear --insecure --passwordbox "${DESC}" 0 0 "${DEFAULT}" 2> ${TEMP}-Input
+        VALUE="$(cat ${TEMP}-Input)"
+        rm ${TEMP}-Input
+}
+
+quit() {
+	clear
+	echo Traefik setup canceled.  No files have been changed.  To restart Traefik setup, run \"setup-traefik\" from the shell.
+	echo
+	exit
+}
+
+mkdir -p ${CONFIGS}/${TRAEFIKNAME}/acme
+touch ${CONFIGS}/${TRAEFIKNAME}/acme/acme.json
+chmod 600 ${CONFIGS}/${TRAEFIKNAME}/acme/acme.json
+
+TITLE="Traefik Configuration"
+DESC="Traefik is used to route web requests from the Internet to the proper servers within OmniStream.  For example, differentiating plex.mydomain.com from radarr.mydomain.com to the proper running containers.  If you are restoring from backup, you do not need (nor likely want) to setup Traefik again.
+
+Do you wish to continue with the Traefik setup?"
+yesno
+if [[ ${VALUE} != 0 ]]
+then
+	quit
+fi
+
+while true
+do
+	TITLE="Set Traefik Admin Password"
+	DESC="Traefik includes a console for viewing the virtual routers and paths that are setup.  In most cases, you may never use this.  However, it is a good test site to verify connectivity to your domain and should be password protected.  We will set a default username of \"admin\" and a password of your choosing.  The password will be encrypted and stored in a private directory and no clear-text version of your password will exist once setup is finished.  Press \"cancel\" to exit the setup without making changes.
+
+	Please enter the admin password you would like to use:"
+	passwordbox
+
+	PW1="${VALUE}"
+
+	DESC="Just to be sure, please enter it one more time:"
+	passwordbox
+	PW2="${VALUE}"
+
+	if [[ "${PW1}" != "${PW2}" ]]
+	then
+		TITLE="Password Mismatch!"
+		DESC="Your two passwords do not match.  Please make sure you enter the same password both times.
+
+		Do you want to try again?"
+		yesno
+		if [[ ${VALUE} != 0 ]]
+		then
+			quit
+		fi
+	else
+		break
+	fi
+done
+
+AUTH="$(htpasswd -nb admin ${PW1})"
+
+TITLE="Traefik Name"
+DESC="All servers running inside OmniStream need to have unique names.  By default, these match the name of the server (eg., \"plex\" for Plex, \"radarr\" for Radarr, etc.)  The reason you may NOT want to do this is if you are running multiple instances of OmniStream, such as in a test environment or on multiple VPCs in which case you might want to use something like \"plex2\" and so on.
+
+Please enter the name you would like to use for your Traefik server:"
+
+DEFAULT=${TRAEFIKNAME}
+get_text
+TRAEFIKNAME=${VALUE}
+sed -i 's/.*TRAEFIKNAME=.*/TRAEFIKNAME='${TRAEFIKNAME}'/' ~/.config/omnistream.conf
+
+cat > ${CONFIGS}/${TRAEFIKNAME}/traefik.toml << EOF
+[entryPoints]
+  [entryPoints.web]
+    address = ":80"
+    [entryPoints.web.http.redirections.entryPoint]
+      to = "websecure"
+      scheme = "https"
+  [entryPoints.websecure]
+    address = ":443"
+
+[api]
+  dashboard = true
+[certificatesResolvers.lets-encrypt.acme]
+  email = "${MYEMAIL}"
+  storage = "acme.json"
+  [certificatesResolvers.lets-encrypt.acme.tlsChallenge]
+
+[providers.docker]
+  watch = true
+  network = "web"
+
+[providers.file]
+  filename = "traefik_secure.toml"
+EOF
+
+cat > ${CONFIGS}/${TRAEFIKNAME}/traefik_secure.toml << EOF
+[http.middlewares.simpleAuth.basicAuth]
+  users = [
+    "${AUTH}"
+  ]
+
+[http.routers.api]
+  rule = "Host(\`${TRAEFIKNAME}.${MYDOMAIN}\`)"
+  entrypoints = ["websecure"]
+  middlewares = ["simpleAuth"]
+  service = "api@internal"
+  [http.routers.api.tls]
+    certResolver = "lets-encrypt"
+EOF

@@ -1,3 +1,5 @@
+.env
 Configs/
 enabled/
 components/8??*.yaml
+docker-compose.yaml

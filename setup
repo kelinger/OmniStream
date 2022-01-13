@@ -235,6 +235,8 @@ ${OMNIHOME}/bin/make-env
 clear
 ${OMNIHOME}/bin/setup-rclone
 clear
+${OMNIHOME}/bin/setup-traefik
+clear
 
 ### Output results
 
@@ -255,6 +257,9 @@ echo Rclone:
 update-rclone
 echo
 echo Rclone settings:  ${RCLONEHOME}/rclone.conf
+echo
+echo OmniStream Config Files:  ${CONFIGS}
+echo Traefik URL:  ${TRAEFIKNAME}.${MYDOMAIN}
 echo
 if [[ ${DOCKER} = 0 ]]
 then
@@ -278,7 +283,7 @@ then
 fi
 echo
 echo
-echo Rclone can be setup via the \"rclone config\" command.
+echo Rclone can be configured via the \"rclone config\" command.
 echo or by restoring your configuration to the file:
 echo ${HOME}/.config/rclone/rclone.conf
 echo
