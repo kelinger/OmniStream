@@ -1,0 +1,26 @@
+  apache:
+    image: bitnami/apache:latest
+    container_name: ${APACHENAME}
+    hostname: ${APACHENAME}
+    domainname: ${MYDOMAIN}
+    restart: always
+    depends_on:
+      - traefik
+    networks:
+      - OmniNet
+    volumes:
+      - ${CONFIGS}/${APACHENAME}:/app
+      - /etc/localtime:/etc/localtime:ro
+      - /bin/netstat:/bin/netstat:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.apache.rule=Host(`${APACHENAME}.${MYDOMAIN}`)
+      - traefik.http.routers.apache.tls=true
+      - traefik.http.routers.apache.tls.certresolver=lets-encrypt
+      - traefik.port=8080
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -ntlp | grep :8080"]
+      interval: 10s
+      timeout: 2s
+      retries: 3
+

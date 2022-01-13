@@ -1,5 +1,6 @@
 .env
 Configs/
 enabled/
-components/8??*.yaml
 docker-compose.yaml
+components/[89]*.yaml
+!components/99[0-9]*.yaml
