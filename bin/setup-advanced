@@ -43,6 +43,8 @@ then
 	quit
 fi
 
+CHOICE=1
+
 while true
 do
 	declare -a VAR
@@ -100,6 +102,7 @@ do
 	CHOICE=$(dialog --clear \
 		--backtitle "Advanced Setup" \
 		--title "Container Names" \
+		--default-item "${CHOICE}" \
 		--menu "Please edit the names you would like to use.  Press cancel when you have finished editing:" \
 		0 0 0 \
 		"${VAR[@]}" \
