@@ -2,58 +2,48 @@
 
 source ~/.config/omnistream.conf
 
-mkdir -p ${CONFIGS}/traefik/acme
-touch ${CONFIGS}/traefik/acme/acme.json
-chmod 600 ${CONFIGS}/traefik/acme/acme.json
+mkdir -p ${CONFIGS}/${TRAEFIKNAME}/acme
+touch ${CONFIGS}/${TRAEFIKNAME}/acme/acme.json
+chmod 600 ${CONFIGS}/${TRAEFIKNAME}/acme/acme.json
 
-cat > ${CONFIGS}/traefik/traefik.toml << EOF
+AUTH=$(htpasswd -nb admin MyPassw0rd)
 
-#debug = true
-
-logLevel = "ERROR" #DEBUG, INFO, WARN, ERROR, FATAL, PANIC
-InsecureSkipVerify = true 
-defaultEntryPoints = ["https", "http"]
-
-# WEB interface of Traefik - it will show web page with overview of frontend and backend configurations 
-[web]
-  entryPoint = "traefik"
-  dashboard = true
-  address = ":8080"
-  usersFile = "/etc/traefik/security"
-
-# Force HTTPS
+cat > ${CONFIGS}/${TRAEFIKNAME}/traefik.toml << EOF
 [entryPoints]
-  [entryPoints.http]
-  address = ":80"
-    [entryPoints.http.redirect]
-    entryPoint = "https"
-  [entryPoints.https]
-  address = ":443"
-    [entryPoints.https.tls]
+  [entryPoints.web]
+    address = ":80"
+    [entryPoints.web.http.redirections.entryPoint]
+      to = "websecure"
+      scheme = "https"
+  [entryPoints.websecure]
+    address = ":443"
 
-[file]
+[api]
+  dashboard = true
+[certificatesResolvers.lets-encrypt.acme]
+  email = "${MYEMAIL}"
+  storage = "acme.json"
+  [certificatesResolvers.lets-encrypt.acme.tlsChallenge]
+
+[providers.docker]
   watch = true
-  filename = "/etc/traefik/rules.toml"
+  network = "web"
 
-# Let's encrypt configuration
-[acme]
-email = "${MYEMAIL}"
-storage="/etc/traefik/acme/acme.json"
-entryPoint = "https"
-acmeLogging=true 
-onDemand = false #create certificate when container is created
-[acme.dnsChallenge]
-  provider = "cloudflare"
-  delayBeforeCheck = 0
-[[acme.domains]]
-   main = "${MYDOMAIN}"
-[[acme.domains]]
-   main = "*.${MYDOMAIN}"
-   
-# Connection to docker host system (docker.sock)
-[docker]
-endpoint = "unix:///var/run/docker.sock"
-domain = "${MYDOMAIN}"
-watch = true
-exposedbydefault = true
+[providers.file]
+  filename = "traefik_secure.toml"
+EOF
+
+cat > ${CONFIGS}/${TRAEFIKNAME}/traefik_secure.toml << EOF
+[http.middlewares.simpleAuth.basicAuth]
+  users = [
+    "${AUTh}"
+  ]
+
+[http.routers.api]
+  rule = "Host(`${TRAEFIKNAME}.${MYDOMAIN}`)"
+  entrypoints = ["websecure"]
+  middlewares = ["simpleAuth"]
+  service = "api@internal"
+  [http.routers.api.tls]
+    certResolver = "lets-encrypt"
 EOF
