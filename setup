@@ -7,6 +7,7 @@ DOCKER=$(which docker > /dev/null ; echo ${?})
 COMPOSE=$(which docker-compose > /dev/null ; echo ${?})
 OMNIHOME=${HOME}/OmniStream
 OMNI=$(test -d ${OMNIHOME} ; echo ${?})
+source ~/.selected_editor > /dev/null 2>&1
 
 # Run as USER, not root/sudo
 
@@ -36,13 +37,13 @@ then
 	exit 1
 fi
 
-if [[ ! -f ~/.selected_editor ]] 
+if [[ ${SELECTED_EDITOR} = "" ]]
 then
 	echo You do not yet have a default editor.
 	/usr/bin/select-editor
 fi
 
-source ~/.selected-editor
+source ~/.selected_editor > /dev/null 2>&1
 
 # Detect if Omni already installed
 
