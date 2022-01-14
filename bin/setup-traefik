@@ -39,6 +39,7 @@ chmod 600 ${CONFIGS}/${TRAEFIKNAME}/acme/acme.json
 
 TITLE="Traefik Configuration"
 DESC="Do you wish to continue with the Traefik setup?  Select YES to continue.
+
 Select NO only if you are going to restore from a backup."
 yesno
 if [[ ${VALUE} != 0 ]]
@@ -49,7 +50,7 @@ fi
 while true
 do
 	TITLE="Set Traefik Admin Password"
-	DESC="Please enter the password you would like to use to secure the Traefik console\'s admin account."
+	DESC="Please enter the password you would like to use to secure the Traefik console's admin account."
 	passwordbox
 
 	PW1="${VALUE}"

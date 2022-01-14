@@ -39,7 +39,7 @@ then
 elif [[ ${VALUE} = 1 ]]
 then
 	TITLE="Instructions"
-	DESC="After clicking OK, you may paste your rclone.conf in plain-text from your computer.  Simply open a copy of a valid rclone.conf file from another installation, select the entire text, and copy it.  Then, switch back to your terminal and use the terminal\'s \"paste\" menu option to paste it into the editor.  Press OK to continue."
+	DESC="After clicking OK, you may paste your rclone.conf in plain-text from your computer.  Simply open a copy of a valid rclone.conf file from another installation, select the entire text, and copy it.  Then, switch back to your terminal and use the terminal's \"paste\" menu option to paste it into the editor.  Press OK to continue."
 	msgbox
 	if [[ ${VALUE} = 0 ]]
 	then
@@ -85,7 +85,7 @@ TERMINAL=$(tty)
 CHOICE=$(dialog --clear \
 	--backtitle "Rclone Setup" \
 	--title "Rclone Endpoints" \
-	--menu "Please select which entry from your rclone.conf corresponds to the cloud service you\'d like to mount into OmniStream:" \
+	--menu "Please select which entry from your rclone.conf corresponds to the cloud service you'd like to mount into OmniStream:" \
 	0 0 0 \
 	"${ENDPOINT[@]}" \
 	2>&1 >${TERMINAL})
