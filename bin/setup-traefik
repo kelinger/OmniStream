@@ -38,8 +38,8 @@ touch ${CONFIGS}/${TRAEFIKNAME}/acme/acme.json
 chmod 600 ${CONFIGS}/${TRAEFIKNAME}/acme/acme.json
 
 TITLE="Traefik Configuration"
-DESC="Do you wish to continue with the Traefik setup?  Select \"yes\" to continue.
-Select \"\no\" only if you are going to restore from a backup."
+DESC="Do you wish to continue with the Traefik setup?  Select YES to continue.
+Select NO only if you are going to restore from a backup."
 yesno
 if [[ ${VALUE} != 0 ]]
 then
