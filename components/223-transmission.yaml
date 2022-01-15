@@ -23,7 +23,7 @@
       - traefik.http.routers.transmission.rule=Host(`${TRANSNAME}.${MYDOMAIN}`)
       - traefik.http.routers.transmission.tls=true
       - traefik.http.routers.transmission.tls.certresolver=lets-encrypt
-      - traefik.port=9091
+      - traefik.http.services.transmission.loadbalancer.server.port=9091
     ports:
       - 55955:55955/tcp
       - 55955:55955/udp

@@ -27,6 +27,6 @@
       - traefik.http.routers.medusa.rule=Host(`${MEDUSANAME}.${MYDOMAIN}`)
       - traefik.http.routers.medusa.tls=true
       - traefik.http.routers.medusa.tls.certresolver=lets-encrypt
-      - traefik.port=8081
+      - traefik.http.services.medusa.loadbalancer.server.port=8081
     networks:
       - OmniNet

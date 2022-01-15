@@ -25,7 +25,7 @@
       - traefik.http.routers.jackett.rule=Host(`${JACKETTNAME}.${MYDOMAIN}`)
       - traefik.http.routers.jackett.tls=true
       - traefik.http.routers.jackett.tls.certresolver=lets-encrypt
-      - traefik.port=9117
+      - traefik.http.services.jackett.loadbalancer.server.port=9117
     networks:
       - OmniNet
     healthcheck:

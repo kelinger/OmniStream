@@ -16,6 +16,6 @@
       - traefik.http.routers.speed.rule=Host(`${SPEEDNAME}.${MYDOMAIN}`)
       - traefik.http.routers.speed.tls=true
       - traefik.http.routers.speed.tls.certresolver=lets-encrypt
-      - traefik.port=3000
+      - traefik.http.services.speed.loadbalancer.server.port=3000
     networks:
       - OmniNet

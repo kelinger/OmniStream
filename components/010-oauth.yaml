@@ -29,4 +29,4 @@
       - traefik.http.routers.oauth.rule=Host(`${OAUTHNAME}.${MYDOMAIN}`)
       - traefik.http.routers.oauth.tls=true
       - traefik.http.routers.oauth.tls.certresolver=lets-encrypt
-      - traefik.port=4181
+      - traefik.http.services.oauth.loadbalancer.server.port=4141

@@ -39,7 +39,7 @@
       - traefik.http.routers.rediscom.rule=Host(`${REDISCOMNAME}.${MYDOMAIN}`)
       - traefik.http.routers.rediscom.tls=true
       - traefik.http.routers.rediscom.tls.certresolver=lets-encrypt
-      - traefik.port=8081
+      - traefik.http.services.rediscom.loadbalancer.server.port=8081
     healthcheck:
       test: ["CMD-SHELL", "netstat -ntlp | grep :8081"]
       interval: 10s

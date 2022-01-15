@@ -24,7 +24,7 @@
       - traefik.http.routers.nzbget.rule=Host(`${NZBGETNAME}.${MYDOMAIN}`)
       - traefik.http.routers.nzbget.tls=true
       - traefik.http.routers.nzbget.tls.certresolver=lets-encrypt
-      - traefik.port=6789
+      - traefik.http.services.nzbget.loadbalancer.server.port=6789
     healthcheck:
       test: ["CMD-SHELL", "netstat -ntlp | grep :6789"]
       interval: 10s

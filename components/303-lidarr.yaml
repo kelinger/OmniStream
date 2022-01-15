@@ -25,7 +25,7 @@
       - traefik.http.routers.lidarr.rule=Host(`${LIDARRNAME}.${MYDOMAIN}`)
       - traefik.http.routers.lidarr.tls=true
       - traefik.http.routers.lidarr.tls.certresolver=lets-encrypt
-      - traefik.port=8686
+      - traefik.http.services.lidarr.loadbalancer.server.port=8686
     networks:
       - OmniNet
     healthcheck:

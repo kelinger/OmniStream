@@ -19,7 +19,7 @@
       - traefik.http.routers.sabnzbd.rule=Host(`${SABNZBDNAME}.${MYDOMAIN}`)
       - traefik.http.routers.sabnzbd.tls=true
       - traefik.http.routers.sabnzbd.tls.certresolver=lets-encrypt
-      - traefik.port=8080
+      - traefik.http.services.sabnzbd.loadbalancer.server.port=8080
     volumes:
       - ${CONFIGS}/${SABNZBDNAME}:/config
       - ${MERGEMOUNT}:/cloud

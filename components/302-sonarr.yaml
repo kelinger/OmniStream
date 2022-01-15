@@ -19,7 +19,7 @@
       - traefik.http.routers.sonarr.rule=Host(`${SONARRNAME}.${MYDOMAIN}`)
       - traefik.http.routers.sonarr.tls=true
       - traefik.http.routers.sonarr.tls.certresolver=lets-encrypt
-      - traefik.port=8989
+      - traefik.http.services.sonarr.loadbalancer.server.port=8989
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/${SONARRNAME}:/config

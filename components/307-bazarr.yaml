@@ -19,7 +19,7 @@
       - traefik.http.routers.bazarr.rule=Host(`${BAZARRNAME}.${MYDOMAIN}`)
       - traefik.http.routers.bazarr.tls=true
       - traefik.http.routers.bazarr.tls.certresolver=lets-encrypt
-      - traefik.port=6767
+      - traefik.http.services.bazarr.loadbalancer.server.port=6767
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/${BAZARRNAME}:/config

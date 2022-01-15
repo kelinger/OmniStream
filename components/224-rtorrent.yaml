@@ -23,7 +23,7 @@
       - traefik.http.routers.rtorrent.rule=Host(`${RTORRENTNAME}.${MYDOMAIN}`)
       - traefik.http.routers.rtorrent.tls=true
       - traefik.http.routers.rtorrent.tls.certresolver=lets-encrypt
-      - traefik.port=8080
+      - traefik.http.services.rtorrent.loadbalancer.server.port=8080
     volumes:
       - ${CONFIGS}/${RTORRENTNAME}:/data
       - ${MERGEMOUNT}:/cloud

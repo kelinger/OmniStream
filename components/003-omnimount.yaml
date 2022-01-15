@@ -14,6 +14,7 @@
       - TZ=${TIMEZONE}
     volumes:
       - ${CONFIGS}/omnimount:/config
+      - ${CONFIGS}/healthchecks/omnimountcheck:/omnimountcheck
       - type: bind
         source: ${HOME}/OmniStream/mnt
         target: /mnt
@@ -22,3 +23,8 @@
     privileged: true
     devices:
       - '/dev/fuse'
+    healthcheck:
+      test: ["CMD-SHELL", "/omnimountcheck"]
+      interval: 10s
+      timeout: 2s
+      retries: 1

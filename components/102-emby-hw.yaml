@@ -20,7 +20,7 @@
       - traefik.http.routers.emby.rule=Host(`${EMBYNAME}.${MYDOMAIN}`)
       - traefik.http.routers.emby.tls=true
       - traefik.http.routers.emby.tls.certresolver=lets-encrypt
-      - traefik.port=8096
+      - traefik.http.services.emby.loadbalancer.server.port=8096
     volumes:
       - ${CONFIGS}/${EMBYNAME}:/config
       - ${MEDIA}:/mnt/media

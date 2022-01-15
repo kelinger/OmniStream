@@ -23,7 +23,7 @@
       - traefik.http.routers.ovpn.rule=Host(`${OVPNNAME}.${MYDOMAIN}`)
       - traefik.http.routers.ovpn.tls=true
       - traefik.http.routers.ovpn.tls.certresolver=lets-encrypt
-      - traefik.port=943
+      - traefik.http.services.ovpn.loadbalancer.server.port=943
     volumes:
       - ${CONFIGS}/${OVPNNAME}:/config
     healthcheck:

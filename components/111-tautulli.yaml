@@ -18,7 +18,7 @@
       - traefik.http.routers.tautulli.rule=Host(`${TAUTULLINAME}.${MYDOMAIN}`)
       - traefik.http.routers.tautulli.tls=true
       - traefik.http.routers.tautulli.tls.certresolver=lets-encrypt
-      - traefik.port=8181
+      - traefik.http.services.tautulli.loadbalancer.server.port=8181
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/${TAUTULLINAME}:/config

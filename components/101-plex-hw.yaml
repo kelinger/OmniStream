@@ -22,7 +22,7 @@
       - traefik.http.routers.plex.rule=Host(`${PLEXNAME}.${MYDOMAIN}`)
       - traefik.http.routers.plex.tls=true
       - traefik.http.routers.plex.tls.certresolver=lets-encrypt
-      - traefik.port=32400
+      - traefik.http.services.plex.loadbalancer.server.port=32400
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/Plex:/config

@@ -18,7 +18,7 @@
       - traefik.http.routers.netdata.rule=Host(`${NETDATANAME}.${MYDOMAIN}`)
       - traefik.http.routers.netdata.tls=true
       - traefik.http.routers.netdata.tls.certresolver=lets-encrypt
-      - traefik.port=19999
+      - traefik.http.services.netdata.loadbalancer.server.port=19999
     volumes:
       - ${CONFIGS}/${NETDATANAME}:/etc/netdata
       - netdatalib:/var/lib/netdata

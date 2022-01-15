@@ -25,7 +25,7 @@
       - traefik.http.routers.qbit.rule=Host(`${QBITNAME}.${MYDOMAIN}`)
       - traefik.http.routers.qbit.tls=true
       - traefik.http.routers.qbit.tls.certresolver=lets-encrypt
-      - traefik.port=8080
+      - traefik.http.services.qbit.loadbalancer.server.port=8080
     ports:
       - 55955:55955/tcp
       - 55955:55955/udp

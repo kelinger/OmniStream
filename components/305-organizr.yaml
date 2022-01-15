@@ -21,7 +21,7 @@
       - traefik.http.routers.menu.rule=Host(`${MENU}.${MYDOMAIN}`)
       - traefik.http.routers.menu.tls=true
       - traefik.http.routers.menu.tls.certresolver=lets-encrypt
-      - traefik.port=80
+      - traefik.http.services.menu.loadbalancer.server.port=80
     networks:
       - OmniNet
     healthcheck:

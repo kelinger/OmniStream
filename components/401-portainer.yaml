@@ -19,6 +19,6 @@
       - traefik.http.routers.portainer.rule=Host(`${PORTAINERNAME}.${MYDOMAIN}`)
       - traefik.http.routers.portainer.tls=true
       - traefik.http.routers.portainer.tls.certresolver=lets-encrypt
-      - traefik.port=9000
+      - traefik.http.services.portainer.loadbalancer.server.port=9000
     networks:
       - OmniNet
