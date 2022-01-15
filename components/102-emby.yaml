@@ -8,8 +8,10 @@
     domainname: ${MYDOMAIN}
     restart: unless-stopped
     depends_on:
-      - traefik
-      - omnimount
+      traefik:
+        condition: service_healthy
+      omnimount:
+        condition: service_healthy
     environment:
       - ADVERTISE_IP=https://${EMBYNAME}.${MYDOMAIN}
       - UID=${USERID}

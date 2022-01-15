@@ -8,8 +8,10 @@
     domainname: ${MYDOMAIN}
     restart: always
     depends_on:
-      - traefik
-      - omnimount
+      traefik:
+        condition: service_healthy
+      omnimount:
+        condition: service_healthy
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock

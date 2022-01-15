@@ -10,7 +10,8 @@
     domainname: ${MYDOMAIN}
     restart: unless-stopped
     depends_on:
-      - traefik
+      traefik:
+        condition: service_healthy
     labels:
       - traefik.enable=true
       - traefik.http.routers.speed.rule=Host(`${SPEEDNAME}.${MYDOMAIN}`)

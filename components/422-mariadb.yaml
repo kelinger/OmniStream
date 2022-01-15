@@ -4,8 +4,6 @@
     hostname: ${MARIADBNAME}
     domainname: ${MYDOMAIN}
     restart: always
-    depends_on:
-      - traefik
     volumes:
       - ${CONFIGS}/${MARIADBNAME}:/config
       - /etc/localtime:/etc/localtime:ro

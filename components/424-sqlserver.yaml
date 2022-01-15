@@ -4,8 +4,6 @@
     hostname: ${SQLSERVERNAME}
     domainname: ${MYDOMAIN}
     restart: always
-    depends_on:
-      - traefik
     networks:
       - OmniNet
     ports:

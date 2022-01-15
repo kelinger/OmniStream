@@ -11,8 +11,10 @@
       - 51413:51413/udp
       - 51414:51414/udp
     depends_on:
-      - traefik
-      - omnimount
+      traefik:
+        condition: service_healthy
+      omnimount:
+        condition: service_healthy
     environment:
       - PUID=${USERID}
       - PGID=${GROUPID}

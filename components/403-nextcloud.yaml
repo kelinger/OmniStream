@@ -8,10 +8,14 @@
     domainname: ${MYDOMAIN}
     restart: unless-stopped
     depends_on:
-      - traefik
-      - omnimount
-      - mariadb
-      - redis
+      traefik:
+        condition: service_healthy
+      omnimount:
+        condition: service_healthy
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       - PGID=${GROUPID}
       - PUID=${USERID}

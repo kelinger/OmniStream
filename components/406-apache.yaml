@@ -5,7 +5,8 @@
     domainname: ${MYDOMAIN}
     restart: always
     depends_on:
-      - traefik
+      traefik:
+        condition: service_healthy
     networks:
       - OmniNet
     volumes:

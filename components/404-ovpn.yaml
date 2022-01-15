@@ -5,7 +5,8 @@
     domainname: ${MYDOMAIN}
     restart: unless-stopped
     depends_on:
-      - traefik
+      traefik:
+        condition: service_healthy
     cap_add:
       - NET_ADMIN
     ports:
