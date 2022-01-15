@@ -2,7 +2,7 @@
 # Hydra - Usenet manual searching
 #
   hydra:
-    image: linuxserver/hydra:latest
+    image: lscr.io/linuxserver/nzbhydra2
     container_name: ${HYDRANAME}
     hostname: ${HYDRANAME}
     domainname: ${MYDOMAIN}
@@ -21,15 +21,16 @@
       - traefik.http.routers.hydra.rule=Host(`${HYDRANAME}.${MYDOMAIN}`)
       - traefik.http.routers.hydra.tls=true
       - traefik.http.routers.hydra.tls.certresolver=lets-encrypt
-      - traefik.http.services.hydra.loadbalancer.server.port=5075
+      - traefik.http.services.hydra.loadbalancer.server.port=5076
     volumes:
       - ${CONFIGS}/${HYDRANAME}:/config
       - ${MERGEMOUNT}:/cloud
       - /etc/localtime:/etc/localtime:ro
+      - /bin/netstat:/bin/netstat:ro
     networks:
       - OmniNet
     healthcheck:
-      test: ["CMD-SHELL", "netstat -ntlp | grep :5075"]
+      test: ["CMD-SHELL", "netstat -ntlp | grep :5076"]
       interval: 10s
       timeout: 2s
       retries: 3

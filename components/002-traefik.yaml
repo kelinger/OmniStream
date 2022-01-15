@@ -16,6 +16,8 @@
         published: 443
         protocol: tcp
         mode: host
+    environment:
+      - TZ=${TIMEZONE}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ${CONFIGS}/${TRAEFIKNAME}/acme/acme.json:/acme.json
