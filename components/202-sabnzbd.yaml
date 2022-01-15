@@ -23,7 +23,7 @@
       - traefik.http.routers.sabnzbd.tls.certresolver=lets-encrypt
       - traefik.http.services.sabnzbd.loadbalancer.server.port=8080
     volumes:
-      - ${CONFIGS}/${SABNZBDNAME}:/config
+      - ${OMNIHOME}/${SABNZBDNAME}:/config
       - ${MERGEMOUNT}:/cloud
       - ${LOGS}:/logs
       - ${CONFIGS}/healthchecks/sabnzbdcheck:/sabnzbdcheck
