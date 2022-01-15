@@ -15,7 +15,7 @@ source ~/.config/omnistream.conf
 #	NAMES:  names of components being proxied through Traefik
 
 IP="$(curl -s http://ipv4.icanhazip.com)"
-NAMES=$(cat ~/Omni/enabled/* |grep hostname| sed 's/.*://' | sed 's/\..*$//')
+NAMES=$(cat ~/OmniStream/enabled/* |grep hostname| sed 's/.*://' | sed 's/\..*$//')
 NAMES=$(eval echo ${NAMES})
 
 function zoneid() {
@@ -113,7 +113,7 @@ fi
 ZONEID=$(zoneid)
 
 #	Step through each component that uses a subdomain through Traefik proxy
-cd /home/kelinger/Omni/enabled
+cd /home/kelinger/OmniStream/enabled
 for LINE in $(cat *.yaml |grep "omni=" |cut -f2 -d'"' | cut -f2 -d'='); do
 	HOST=$(echo ${LINE} | cut -f1 -d',')
 	if [[ "${HOST:0:1}" == "$" ]]; then

@@ -9,7 +9,7 @@ cloudflare_auth_key=${CF_KEY}
 ip=$(curl -s -X GET https://checkip.amazonaws.com)
 echo "Current IP is $ip"
 
-NAMES=$(cat ~/Omni/enabled/* |grep traefik.frontend.rule | sed 's/.*://' | sed 's/\..*$//')
+NAMES=$(cat ~/OmniStream/enabled/* |grep traefik.frontend.rule | sed 's/.*://' | sed 's/\..*$//')
 
 for LOOP in ${NAMES}; do
   echo Adding ${LOOP}
