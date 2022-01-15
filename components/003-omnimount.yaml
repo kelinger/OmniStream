@@ -20,6 +20,8 @@
         target: /mnt
         bind:
           propagation: shared
+    labels:
+      - traefik.enable=false
     privileged: true
     devices:
       - '/dev/fuse'
