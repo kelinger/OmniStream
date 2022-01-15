@@ -9,6 +9,7 @@
     restart: always
     depends_on:
       - traefik
+      - omnimount
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock

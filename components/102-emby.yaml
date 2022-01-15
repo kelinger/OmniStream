@@ -9,6 +9,7 @@
     restart: unless-stopped
     depends_on:
       - traefik
+      - omnimount
     environment:
       - ADVERTISE_IP=https://${EMBYNAME}.${MYDOMAIN}
       - UID=${USERID}

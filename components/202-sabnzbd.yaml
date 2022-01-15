@@ -9,7 +9,7 @@
     restart: unless-stopped
     depends_on:
       - traefik
-        #condition: service_healthy
+      - omnimount
     environment:
       - PGID=${GROUPID}
       - PUID=${USERID}

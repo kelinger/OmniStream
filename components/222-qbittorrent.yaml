@@ -9,6 +9,7 @@
     restart: unless-stopped
     depends_on:
       - traefik
+      - omnimount
     environment:
       - PUID=${USERID}
       - PGID=${GROUPID}

@@ -15,6 +15,10 @@ clear
 
 if [[ $(id -u) = "0" ]]
 then
+	echo -n Checking for sudo...
+	hash sudo 2>/dev/null || { echo -n installing... ; apt update > /dev/null 2>&1; apt install sudo -y > /dev/null 2>&1; }
+	echo done
+	echo
 	echo Omni Setup needs to be run as a user, not root.  SUDO will be used for root-level access where applicable.
 	echo Would you like to create a user now?
 	read -p "Y for YES or Q to QUIT: " -n1 REPLY

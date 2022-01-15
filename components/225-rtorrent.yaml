@@ -12,6 +12,7 @@
       - 51414:51414/udp
     depends_on:
       - traefik
+      - omnimount
     environment:
       - PUID=${USERID}
       - PGID=${GROUPID}

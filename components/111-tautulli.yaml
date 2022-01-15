@@ -22,7 +22,7 @@
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/${TAUTULLINAME}:/config
-      - ${CONFIGS}/Plex/Library/Application Support/Plex Media Server/Logs:/logs:ro
+      - ${CONFIGS}/${PLEXNAME}/Library/Application Support/Plex Media Server/Logs:/logs:ro
     networks:
       - OmniNet
     healthcheck:
