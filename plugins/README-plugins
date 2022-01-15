@@ -1,0 +1,13 @@
+OmniStream supports a limited set of plugins that, if they exist, will be called
+before or after specific processes.  These can be any executable (be sure to define
+the language with a header like #!/bin/bash).
+
+	up-start
+	up-end
+	down-start
+	down-end
+	sync-start
+	sync-end
+
+These run at the beginning or end of the up, down, or sync processes.  None will be
+replaced or removed when OmniStream is updated.

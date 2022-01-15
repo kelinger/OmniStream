@@ -3,3 +3,5 @@ enabled/
 docker-compose.yaml
 components/8*.yaml
 components/9[0-8]*.yaml
+plugins/*-start
+plugins/*-end

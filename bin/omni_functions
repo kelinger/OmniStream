@@ -12,6 +12,7 @@ omni() {
 	CURDIR=$(pwd)
 	case "${COMMAND}" in
 	up | start)
+		${OMNIHOME}/plugins/up-start
 		cd "${OMNIHOME}" || exit
 		echo -n Rebuilding config file...
 		./bin/make-env rebuild
@@ -20,13 +21,16 @@ omni() {
 		/usr/local/bin/docker-compose up -d --remove-orphans "${@:2}"
 		docker exec -ti sabnzbd /config/extras.sh >/dev/null 2>&1
 		cd "${CURDIR}" || exit
+		${OMNIHOME}/plugins/up-end
 		;;
 	down | stop)
+		${OMNIHOME}/plugins/down-start
 		cd "${OMNIHOME}" || exit
 		/usr/local/bin/docker-compose down "${@:2}"
 		echo
 		"${OMNIHOME}"/bin/del-dns
 		cd "${CURDIR}" || exit
+		${OMNIHOME}/plugins/down-end
 		;;
 	status)
 		cd "${OMNIHOME}" || exit
@@ -95,10 +99,6 @@ omni() {
 	clean)
 		omni down
 		docker system prune -a -f --volumes
-		;;
-	fullstop)
-		omni down
-		sudo systemctl stop omni-merger omni-rclone
 		;;
 	pull)
 		cd "${OMNIHOME}" || exit
