@@ -22,7 +22,7 @@
       - ${CONFIGS}/${TRAEFIKNAME}/traefik.toml:/traefik.toml
       - ${CONFIGS}/${TRAEFIKNAME}/traefik_secure.toml:/traefik_secure.toml
       - ${CONFIGS}/${TRAEFIKNAME}/traefik.log:/traefik.log
-      - ${CONFIGS}/healthchecks/traefikcheck:/traefikcheck
+      - ${OMNIHOME}/healthchecks/traefikcheck:/traefikcheck
     networks:
       - OmniNet
     healthcheck:

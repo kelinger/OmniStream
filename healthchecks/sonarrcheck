@@ -1,0 +1,31 @@
+#!/bin/bash
+
+APP=Sonarr
+PORT=8989
+MOUNT="/cloud"
+LOG="/config/health"
+NS=$(which netstat)
+
+if [[ ${?} -ne 0 ]];
+then
+	# No netstat so install it and create new log file
+	echo $(date) - Installing net-tools > ${LOG}
+	apt update
+	apt install net-tools -y
+fi
+
+${NS} -ntlp | grep :${PORT}
+if [[ ${?} -ne  0 ]];
+then
+	echo $(date) - ${APP} service not running >> ${LOG}
+	exit 1			# Port not open
+fi
+
+mountpoint ${MOUNT}
+if [[ ${?} -ne  0 ]];
+then
+	echo $(date) - Rclone mount failed >> ${LOG}
+	exit 2			# Rclone mount failed
+fi
+
+exit 0

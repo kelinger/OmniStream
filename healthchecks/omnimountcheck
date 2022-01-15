@@ -1,0 +1,15 @@
+#!/bin/bash
+
+mountpoint -q /mnt/$(basename ${MERGEMOUNT})
+if [[ ${?} -ne  0 ]];
+then
+	exit 1			# MergerFS mount failed
+fi
+
+mountpoint -q /mnt/$(basename ${RCLONEMOUNT})
+if [[ ${?} -ne  0 ]];
+then
+	exit 2			# Rclone mount failed
+fi
+
+exit 0

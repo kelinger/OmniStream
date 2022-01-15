@@ -26,7 +26,7 @@
       - ${LOGS}:/config/logs
       - ${MERGEMOUNT}:/cloud
       - /usr/bin/killall:/usr/bin/killall:ro
-      - ${CONFIGS}/healthchecks/radarrcheck:/radarrcheck
+      - ${OMNIHOME}/healthchecks/radarrcheck:/radarrcheck
     networks:
       - OmniNet
     healthcheck:

@@ -1,0 +1,19 @@
+#!/bin/sh
+
+which netstat
+if [[ ${?} -ne 0 ]];
+then
+	# No netstat so install it
+	echo $(date) - Installing net-tools
+	apt update
+	apt install net-tools -y
+fi
+
+netstat -ntlp | grep :443
+if [[ ${?} -ne  0 ]];
+then
+	echo $(date) - Traefik service not running
+	exit 1			# Port not open
+fi
+
+exit 0

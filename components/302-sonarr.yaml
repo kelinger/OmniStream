@@ -25,7 +25,7 @@
       - ${CONFIGS}/${SONARRNAME}:/config
       - ${LOGS}:/config/logs
       - ${MERGEMOUNT}:/cloud
-      - ${CONFIGS}/healthchecks/sonarrcheck:/sonarrcheck
+      - ${OMNIHOME}/healthchecks/sonarrcheck:/sonarrcheck
     networks:
       - OmniNet
     healthcheck:

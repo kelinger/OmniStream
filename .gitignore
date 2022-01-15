@@ -1,7 +1,5 @@
 .env
-Configs/**
-!Configs/healthchecks/*
 enabled/
 docker-compose.yaml
-components/[89]*.yaml
-!components/99[0-9]*.yaml
+components/8*.yaml
+components/9[0-8]*.yaml
