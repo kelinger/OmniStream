@@ -1,6 +1,6 @@
 .env
 Configs/
-!Configs/healthchecks/**
+!Configs/healthchecks
 enabled/
 docker-compose.yaml
 components/[89]*.yaml
