@@ -25,17 +25,17 @@ echo Starting sync at "$(date)" | tee -a "${LOG}"
 
 # Fix dates in the future
 
-find "${UPLOADCACHE}"/ ! -path "*Downloads*" ! -path "*Synology*" -type f -mmin -0 -exec touch "{}" -d "$(date -d "-5 minutes")" \;
+find "${UPLOADCACHE}"/ ! -path "*Downloads*" -type f -mmin -0 -exec touch "{}" -d "$(date -d "-5 minutes")" \;
 
 # Identify files needing to be copied
 
-find "${UPLOADCACHE}"/ ! -path "*Downloads*" ! -path "*Synology*" -type f -mmin +${AGE} | sed 's|'"${UPLOADCACHE}"'||' | sort >${TEMPFILE}
+find "${UPLOADCACHE}"/ ! -path "*Downloads*" -type f -mmin +${AGE} | sed 's|'"${UPLOADCACHE}"'||' | sort >${TEMPFILE}
 
 # Copy files
 
 if [[ -s ${TEMPFILE} ]]; then
 	while IFS= read -r FILE; do
-		rclone rc core/stats --user omnistream --pass pLGdakQNwubWtMbGwr4GRRwW9ReFECuM | jq '.transferring' | grep "${UPLOADCACHE}${FILE}" >/dev/null
+		rclone rc core/stats | jq '.transferring' | grep "${UPLOADCACHE}${FILE}" >/dev/null
 		RUNCHECK=${?}
 		if [[ ${RUNCHECK} -gt 0 ]]; then
 			BYTES=$(du -b "${UPLOADCACHE}${FILE}" | cut -f1)
@@ -48,7 +48,7 @@ if [[ -s ${TEMPFILE} ]]; then
 				echo Making "${TESTDIR}"
 				mkdir -p "${TESTDIR}"
 			fi
-			rclone rc operations/movefile _async=true srcFs=Local: srcRemote="${UPLOADCACHE}${FILE}" dstFs="${RCLONESERVICE}": dstRemote="${FILE}" --user omnistream --pass pLGdakQNwubWtMbGwr4GRRwW9ReFECuM >/dev/null
+			rclone rc operations/movefile _async=true srcFs=Local: srcRemote="${UPLOADCACHE}${FILE}" dstFs="${RCLONESERVICE}": dstRemote="${FILE}" >/dev/null
 		else
 			echo Skipping "${FILE}": Already in queue
 		fi
