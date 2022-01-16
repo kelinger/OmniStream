@@ -11,22 +11,13 @@ source ~/.bashrc ~/.profile
 CDIR=${HOME}/.config
 ENV=${CDIR}/omnistream.conf
 
-# Check to see if anything is scheduled to go to home NAS first.  If yes, send them there so they don't go to Google
-
-/home/kelinger/bin/naspush
-
-# Check to see if anything needs to be cached locally.  Doing this before the sync allows new files to be copied locally first.
-
-#/home/kelinger/Omni/bin/localcache
-
 # Load existing variables and use them as defaults, if available
 
 source "${ENV}"
-sudo chown -R kelinger:kelinger "${UPLOADCACHE}"
+sudo chown -R ${USER}:${USER} "${UPLOADCACHE}"
 
 AGE=0 # How many minutes old a file must be before copying/deleting
 LOG=${LOGS}/mounter-sync.log
-APILOG=${LOGS}/api.log
 
 TEMPFILE="/tmp/filesmissing"
 

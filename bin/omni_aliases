@@ -6,5 +6,7 @@ alias oa='vi ${OMNIHOME}/bin/omni_aliases ; cat ${OMNIHOME}/bin/omni_aliases | s
 alias of='vi ${OMNIHOME}/bin/omni_functions ; source ${OMNIHOME}/bin/omni_functions'
 alias psize='du -sh ${CONFIGS}/Plex'
 alias ptsd='pipx upgrade plextraktsync'
+alias rc='docker exec -ti omnimount rclone rc'
+alias rstats='docker exec -ti omnimount /root/rstats'
 alias sd='cd /etc/systemd/system'
 alias tv='source ~/.config/omnistream.conf ; cd ${MEDIA}/TV\ Shows'
