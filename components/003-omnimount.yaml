@@ -22,6 +22,8 @@
           propagation: shared
     labels:
       - traefik.enable=false
+    networks:
+      - OmniNet
     privileged: true
     devices:
       - '/dev/fuse'
