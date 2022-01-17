@@ -1,0 +1,63 @@
+#
+# Traefik - Maps containers to public FQDNs accessable via https with valid certs
+#
+  traefik:
+    image: traefik:latest
+    container_name: ${TRAEFIKNAME}
+    hostname: ${TRAEFIKNAME}
+    domainname: ${MYDOMAIN}
+    restart: unless-stopped
+    ports:
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
+      - target: 443
+        published: 443
+        protocol: tcp
+        mode: host
+    environment:
+      - CF_API_EMAIL=${CF_EMAIL}
+      - CF_API_KEY=${CF_KEY}
+      - TZ=${TIMEZONE}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${CONFIGS}/${TRAEFIKNAME}/acme:/acme
+      - ${LOGS}:/logs
+      - ${OMNIHOME}/healthchecks/traefikcheck:/traefikcheck
+    networks:
+      - OmniNet
+    command:
+      - --api=true
+      - --global.checkNewVersion=true
+      - --log.level=DEBUG
+      - --log.filePath=/logs/traefik.log
+      - --accessLog.filePath=/logs/traefik_access.log
+      - --accessLog.bufferingSize=100
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.endpoint=unix:///var/run/docker.sock
+      - --entryPoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --entryPoints.web.http.redirections.entryPoint.to=websecure
+      - --entryPoints.web.http.redirections.entryPoint.scheme=https
+      - --entryPoints.web.http.redirections.entrypoint.permanent=true
+      - --certificatesResolvers.letsencrypt.acme.email=${MYEMAIL}
+      - --certificatesResolvers.letsencrypt.acme.storage=acme/acme.json
+      - --certificatesresolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+      - --certificatesResolvers.letsencrypt.acme.dnsChallenge=true
+      - --certificatesResolvers.letsencrypt.acme.dnsChallenge.provider=cloudflare
+    labels:
+      - traefik.enable=true
+      - traefik.http.middlewares.admin.basicauth.users=admin:{SHA}/jIOs1SoLMVGd6FMOlt5mF6Ega0=
+      - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.traefik.middlewares=admin
+      - traefik.http.services.traefik.loadbalancer.server.port=8080
+      - traefik.http.routers.traefik.rule=Host(`${TRAEFIKNAME}.{MYDOMAIN}`)
+      - traefik.http.routers.traefik.entrypoints=websecure
+      - traefik.http.routers.traefik.tls.certresolver=letsencrypt
+    healthcheck:
+      test: ["CMD-SHELL", "/traefikcheck"]
+      interval: 10s
+      timeout: 2s
+      retries: 3

@@ -231,6 +231,9 @@ docker network create \
 	-o "com.docker.network.driver.mtu"="1500" \
 	-o "com.docker.network.bridge.host_binding_ipv4"="0.0.0.0" \
 	OmniNet > /dev/null 2>&1
+cd /tmp
+wget https://github.com/harelba/q/releases/download/v3.1.6/q-text-as-data-3.1.6-1.x86_64.deb
+sudo dpkg -i q-text-as-data-3.1.6-1.x86_64.deb > /dev/null 2>&1
 echo Done
 
 # Make system Omni-ready

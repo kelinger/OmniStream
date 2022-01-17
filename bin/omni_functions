@@ -14,6 +14,7 @@ omni() {
 	up | start)
 		test -x ${OMNIHOME}/plugins/up-start && ${OMNIHOME}/plugins/up-start
 		cd "${OMNIHOME}" || exit
+		git pull
 		echo -n Rebuilding config file...
 		./bin/make-env rebuild
 		echo
@@ -88,6 +89,7 @@ omni() {
 		;;
 	update)
 		cd "${OMNIHOME}" || exit
+		git pull
 		"${OMNIHOME}"/bin/make-env rebuild
 		echo
 		/usr/local/bin/docker-compose pull
