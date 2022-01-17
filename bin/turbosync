@@ -8,7 +8,7 @@ fi
 
 source ~/.bashrc
 source ~/.profile
-source ~/.configs/omnistream.conf
+source ~/.config/omnistream.conf
 
 # Call sync-start plugin, if it exists
 [[ -f ${OMNIHOME}/plugins/sync-start ]] && source ${OMNIHOME}/plugins/sync-start
