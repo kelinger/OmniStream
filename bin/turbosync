@@ -6,7 +6,9 @@ if pidof -o %PPID -x "$(basename "$0")"; then
 	exit 1
 fi
 
-source ~/.bashrc ~/.profile ~/.configs/omnistream.conf
+source ~/.bashrc
+source ~/.profile
+source ~/.configs/omnistream.conf
 
 # Call sync-start plugin, if it exists
 [[ -f ${OMNIHOME}/plugins/sync-start ]] && source ${OMNIHOME}/plugins/sync-start
