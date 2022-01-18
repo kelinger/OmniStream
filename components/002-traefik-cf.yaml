@@ -23,6 +23,7 @@
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ${CONFIGS}/${TRAEFIKNAME}:/config
+			- ${LOGS}:/logs
       #- ${CONFIGS}/${TRAEFIKNAME}/traefik.toml:/traefik.toml
       #- ${CONFIGS}/${TRAEFIKNAME}/traefik_secure.toml:/traefik_secure.toml
       #- ${CONFIGS}/${TRAEFIKNAME}/traefik.log:/traefik.log
@@ -52,6 +53,10 @@
       - --entrypoints.websecure.http.tls.certResolver=lets-encrypt
       - --entrypoints.websecure.http.tls.domains[0].main=${MYDOMAIN}
       - --entrypoints.websecure.http.tls.domains[0].sans=*.${MYDOMAIN}
+      - --log.level=INFO
+      - --log.filePath=/logs/traefik.log
+      - --accessLog.filePath=/logs/traefik-access.log
+      - --accessLog.bufferingSize=100
     networks:
       - OmniNet
     healthcheck:
