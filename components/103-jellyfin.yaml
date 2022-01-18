@@ -19,6 +19,7 @@
       - TZ=${TIMEZONE}
       - UMASK_SET=022
     labels:
+      - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.jellyfin.rule=Host(`${JELLYNAME}.${MYDOMAIN}`)
       - traefik.http.routers.jellyfin.tls=true

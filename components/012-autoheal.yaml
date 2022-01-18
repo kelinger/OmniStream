@@ -5,7 +5,7 @@
     domainname: ${MYDOMAIN}
     restart: unless-stopped
     environment:
-      - AUTOHEAL_CONTAINER_LABEL=all
+      - AUTOHEAL_CONTAINER_LABEL=autoheal
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     labels:

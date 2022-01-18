@@ -21,6 +21,7 @@
       - TZ=${TIMEZONE}
       - UMASK_SET=022
     labels:
+      - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.rtorrent.rule=Host(`${RTORRENTNAME}.${MYDOMAIN}`)
       - traefik.http.routers.rtorrent.tls=true

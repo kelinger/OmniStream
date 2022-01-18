@@ -21,6 +21,7 @@
       - ${CONFIGS}/${TRANSNAME}:/config
       - ${MERGEMOUNT}:/cloud
     labels:
+      - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.transmission.rule=Host(`${TRANSNAME}.${MYDOMAIN}`)
       - traefik.http.routers.transmission.tls=true

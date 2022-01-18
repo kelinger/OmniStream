@@ -14,6 +14,7 @@
       - /etc/localtime:/etc/localtime:ro
       - /bin/netstat:/bin/netstat:ro
     labels:
+      - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.apache.rule=Host(`${APACHENAME}.${MYDOMAIN}`)
       - traefik.http.routers.apache.tls=true

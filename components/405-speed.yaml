@@ -13,6 +13,7 @@
       traefik:
         condition: service_healthy
     labels:
+      - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.speed.rule=Host(`${SPEEDNAME}.${MYDOMAIN}`)
       - traefik.http.routers.speed.tls=true

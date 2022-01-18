@@ -29,6 +29,7 @@
       #- ${CONFIGS}/${TRAEFIKNAME}/traefik.log:/traefik.log
       #- ${OMNIHOME}/healthchecks/traefikcheck:/traefikcheck
     labels:
+      - "autoheal=true"
       - "traefik.enable=true"
       - 'traefik.http.routers.traefik.rule=Host(`${TRAEFIKNAME}.${MYDOMAIN}`)'
       - "traefik.http.routers.traefik.entrypoints=websecure"

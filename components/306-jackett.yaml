@@ -23,6 +23,7 @@
       - ${CONFIGS}/${JACKETTNAME}:/config
       - ${MERGEMOUNT}:/cloud
     labels:
+      - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.jackett.rule=Host(`${JACKETTNAME}.${MYDOMAIN}`)
       - traefik.http.routers.jackett.tls=true

@@ -20,6 +20,7 @@
       - VERSION=latest
       - UMASK_SET=022
     labels:
+      - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.plex.rule=Host(`${PLEXNAME}.${MYDOMAIN}`)
       - traefik.http.routers.plex.tls=true

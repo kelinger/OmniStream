@@ -25,6 +25,8 @@
       - ${CONFIGS}/${TRAEFIKNAME}/traefik_secure.toml:/traefik_secure.toml
       - ${CONFIGS}/${TRAEFIKNAME}/traefik.log:/traefik.log
       - ${OMNIHOME}/healthchecks/traefikcheck:/traefikcheck
+    labels:
+      - autoheal=true
     networks:
       - OmniNet
     healthcheck:

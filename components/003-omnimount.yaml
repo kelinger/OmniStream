@@ -23,6 +23,7 @@
           propagation: shared
     labels:
       - traefik.enable=false
+      - autoheal=false
     networks:
       - OmniNet
     privileged: true

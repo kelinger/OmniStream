@@ -19,6 +19,7 @@
     volumes:
       - ${CONFIGS}/${ORGANIZRNAME}:/config
     labels:
+      - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.menu.rule=Host(`${MENU}.${MYDOMAIN}`)
       - traefik.http.routers.menu.tls=true

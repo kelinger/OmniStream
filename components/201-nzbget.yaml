@@ -22,6 +22,7 @@
     networks:
       - OmniNet
     labels:
+      - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.nzbget.rule=Host(`${NZBGETNAME}.${MYDOMAIN}`)
       - traefik.http.routers.nzbget.tls=true

@@ -17,6 +17,7 @@
       - /var/run/docker.sock:/var/run/docker.sock
       - ${CONFIGS}/${PORTAINERNAME}:/data
     labels:
+      - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.portainer.rule=Host(`${PORTAINERNAME}.${MYDOMAIN}`)
       - traefik.http.routers.portainer.tls=true

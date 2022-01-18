@@ -25,6 +25,7 @@
       DEFAULT_ACTION: auth
       DEFAULT_PROVIDER: google
     labels:
+      - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.oauth.rule=Host(`${OAUTHNAME}.${MYDOMAIN}`)
       - traefik.http.routers.oauth.tls=true

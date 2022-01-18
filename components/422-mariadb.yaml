@@ -21,6 +21,7 @@
       - PGID=${GROUPID}
       - TZ=${TIMEZONE}
     labels:
+      - autoheal=true
       - traefik.enable=false
     healthcheck:
       test: ["CMD-SHELL", "netstat -ntlp | grep :3306"]

@@ -18,6 +18,7 @@
       - GID=${GROUPID}
       - GIDLIST=${GPUGIDS}
     labels:
+      - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.emby.rule=Host(`${EMBYNAME}.${MYDOMAIN}`)
       - traefik.http.routers.emby.tls=true

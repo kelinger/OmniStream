@@ -15,6 +15,7 @@
       - PGID=${GROUPID}
       - TZ=${TIMEZONE}
     labels:
+      - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.embystat.rule=Host(`${EMBYSTATNAME}.${MYDOMAIN}`)
       - traefik.http.routers.embystat.tls=true

@@ -20,6 +20,7 @@
       - TZ=${TIMEZONE}
       - INTERFACE=eth0 #optional
     labels:
+      - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.ovpn.rule=Host(`${OVPNNAME}.${MYDOMAIN}`)
       - traefik.http.routers.ovpn.tls=true

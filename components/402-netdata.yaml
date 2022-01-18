@@ -15,6 +15,7 @@
       - TZ=${TIMEZONE}
       - DOCKER_USR=${USER}
     labels:
+      - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.netdata.rule=Host(`${NETDATANAME}.${MYDOMAIN}`)
       - traefik.http.routers.netdata.tls=true

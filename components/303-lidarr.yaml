@@ -23,6 +23,7 @@
       - ${MERGEMOUNT}:/cloud
       - /bin/netstat:/bin/netstat:ro
     labels:
+      - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.lidarr.rule=Host(`${LIDARRNAME}.${MYDOMAIN}`)
       - traefik.http.routers.lidarr.tls=true
