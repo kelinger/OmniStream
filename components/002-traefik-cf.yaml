@@ -23,7 +23,7 @@
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ${CONFIGS}/${TRAEFIKNAME}:/config
-			- ${LOGS}:/logs
+      - ${LOGS}:/logs
       #- ${CONFIGS}/${TRAEFIKNAME}/traefik.toml:/traefik.toml
       #- ${CONFIGS}/${TRAEFIKNAME}/traefik_secure.toml:/traefik_secure.toml
       #- ${CONFIGS}/${TRAEFIKNAME}/traefik.log:/traefik.log
@@ -44,7 +44,7 @@
       - --certificatesresolvers.lets-encrypt.acme.dnschallenge.provider=cloudflare
       - --certificatesresolvers.lets-encrypt.acme.email=${MYEMAIL}
       - --certificatesresolvers.lets-encrypt.acme.storage=/config/acme.json
-			- --certificatesresolvers.lets-encrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+      - --certificatesresolvers.lets-encrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
       - --entrypoints.web.address=:80
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
