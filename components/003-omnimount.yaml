@@ -23,7 +23,7 @@
           propagation: shared
     labels:
       - traefik.enable=false
-      - autoheal=false
+      - autoheal=true
     networks:
       - OmniNet
     privileged: true
@@ -32,5 +32,5 @@
     healthcheck:
       test: ["CMD-SHELL", "/omnimountcheck"]
       interval: 10s
-      timeout: 2s
+      timeout: 5s
       retries: 1
