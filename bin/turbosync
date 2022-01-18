@@ -14,7 +14,7 @@ source ~/.config/omnistream.conf
 [[ -f ${OMNIHOME}/plugins/sync-start ]] && source ${OMNIHOME}/plugins/sync-start
 
 # Run turbosync inside omnimount
-docker exec -ti omnimount /root/turbosync
+docker exec -i omnimount /root/turbosync
 
 # Call sync-end plugin, if it exists
 [[ -f ${OMNIHOME}/plugins/sync-end ]] && source ${OMNIHOME}/plugins/sync-end
