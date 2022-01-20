@@ -44,7 +44,7 @@
         #- "traefik.http.routers.traefik.middlewares=chain-oauth@file"
     command:
       ##### Uncomment the next line for testing #####
-      - --certificatesresolvers.lets-encrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory # Uncomment for testing
+      #- --certificatesresolvers.lets-encrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory # Uncomment for testing
       - --global.checkNewVersion=true
       - --global.sendAnonymousUsage=true
       - --certificatesResolvers.lets-encrypt.acme.email=${CF_EMAIL}
