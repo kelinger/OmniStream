@@ -89,10 +89,12 @@ APPLIST=" \
 	ca-certificates \
 	curl \
 	dialog \
+	dnsutils \
 	fuse \
 	git-core \
 	htop \
 	jq \
+	net-tools \
 	parallel \
 	pigz \
 	pv \
