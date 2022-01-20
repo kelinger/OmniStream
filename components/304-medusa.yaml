@@ -25,6 +25,7 @@
       - /bin/netstat:/bin/netstat:ro
       - /usr/bin/killall:/usr/bin/killall:ro
     labels:
+      - "omni=${MEDUSANAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.medusa.rule=Host(`${MEDUSANAME}.${MYDOMAIN}`)

@@ -23,6 +23,7 @@
       - NEXTCLOUD_TRUSTED_DOMAINS=${NEXTCLOUDNAME}.${MYDOMAIN}
       - REDIS_HOST=redis
     labels:
+      - "omni=${NEXTCLOUDNAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.nextcloud.rule=Host(`${NEXTCLOUDNAME}.${MYDOMAIN}`)

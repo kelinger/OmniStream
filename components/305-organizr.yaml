@@ -19,6 +19,7 @@
     volumes:
       - ${CONFIGS}/${ORGANIZRNAME}:/config
     labels:
+      - "omni=${ORGANIZRNAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.menu.rule=Host(`${MENU}.${MYDOMAIN}`)

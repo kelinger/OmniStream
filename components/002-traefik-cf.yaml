@@ -26,6 +26,7 @@
       - ${LOGS}:/logs
       - ${OMNIHOME}/healthchecks/traefikcheck:/traefikcheck
     labels:
+      - "omni=${TRAEFIKNAME},${MYDOMAIN},yes,yes,yes"
       - "autoheal=true"
       - "traefik.enable=true"
       # HTTP-to-HTTPS Redirect

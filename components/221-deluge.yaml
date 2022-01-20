@@ -30,6 +30,7 @@
     networks:
       - OmniNet
     labels:
+      - "omni=${DELUGENAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.deluge.rule=Host(`${DELUGENAME}.${MYDOMAIN}`)

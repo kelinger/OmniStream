@@ -26,6 +26,7 @@
       - ${CONFIGS}/${TRAEFIKNAME}/traefik.log:/traefik.log
       - ${OMNIHOME}/healthchecks/traefikcheck:/traefikcheck
     labels:
+      - "omni=${TRAEFIKNAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
     networks:
       - OmniNet

@@ -21,6 +21,7 @@
       - PGID=${GROUPID}
       - TZ=${TIMEZONE}
     labels:
+      - "omni=${MARIADBNAME},${MYDOMAIN},yes,yes,no"
       - autoheal=true
       - traefik.enable=false
     healthcheck:

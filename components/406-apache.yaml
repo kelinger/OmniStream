@@ -14,6 +14,7 @@
       - /etc/localtime:/etc/localtime:ro
       - /bin/netstat:/bin/netstat:ro
     labels:
+      - "omni=${APACHENAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.apache.rule=Host(`${APACHENAME}.${MYDOMAIN}`)

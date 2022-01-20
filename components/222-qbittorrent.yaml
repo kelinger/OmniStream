@@ -23,6 +23,7 @@
       - ${DOWNLOADS}:/downloads
       - ${MERGEMOUNT}:/cloud
     labels:
+      - "omni=${QBITNAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.qbit.rule=Host(`${QBITNAME}.${MYDOMAIN}`)

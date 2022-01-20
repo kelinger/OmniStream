@@ -21,6 +21,7 @@
       - ${CONFIGS}/${TRANSNAME}:/config
       - ${MERGEMOUNT}:/cloud
     labels:
+      - "omni=${TRANSNAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.transmission.rule=Host(`${TRANSNAME}.${MYDOMAIN}`)

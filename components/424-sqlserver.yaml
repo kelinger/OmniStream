@@ -18,6 +18,7 @@
       - /etc/localtime:/etc/localtime:ro
       - /bin/netstat:/bin/netstat:ro
     labels:
+      - "omni=${SQLSERVERNAME},${MYDOMAIN},yes,yes,no"
       - autoheal=true
       - traefik.enable=false
     healthcheck:

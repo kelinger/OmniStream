@@ -17,6 +17,7 @@
       - PUID=${USERID}
       - TZ=${TIMEZONE}
     labels:
+      - "omni=${RADARRNAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.radarr.rule=Host(`${RADARRNAME}.${MYDOMAIN}`)

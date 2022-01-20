@@ -17,6 +17,7 @@
       - PUID=${USERID}
       - TZ=${TIMEZONE}
     labels:
+      - "omni=${SABNZBDNAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.sabnzbd.rule=Host(`${SABNZBDNAME}.${MYDOMAIN}`)

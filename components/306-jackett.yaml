@@ -23,6 +23,7 @@
       - ${CONFIGS}/${JACKETTNAME}:/config
       - ${MERGEMOUNT}:/cloud
     labels:
+      - "omni=${JACKETTNAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.jackett.rule=Host(`${JACKETTNAME}.${MYDOMAIN}`)

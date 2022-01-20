@@ -23,6 +23,7 @@
       - ${MERGEMOUNT}:/cloud
       - /bin/netstat:/bin/netstat:ro
     labels:
+      - "omni=${LIDARRNAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.lidarr.rule=Host(`${LIDARRNAME}.${MYDOMAIN}`)
