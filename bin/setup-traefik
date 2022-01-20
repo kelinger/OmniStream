@@ -116,3 +116,6 @@ cat > ${CONFIGS}/${TRAEFIKNAME}/traefik_secure.toml << EOF
   [http.routers.api.tls]
     certResolver = "lets-encrypt"
 EOF
+
+echo ${AUTH} > ${CONFIGS}/${TRAEFIKNAME}/users
+mkdir -p ${CONFIGS}/${TRAEFIKNAME}/external_sites
