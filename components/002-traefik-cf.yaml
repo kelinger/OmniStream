@@ -17,50 +17,46 @@
         protocol: tcp
         mode: host
     environment:
-      - CLOUDFLARE_EMAIL=${CF_EMAIL}
-      - CLOUDFLARE_DNS_API_TOKEN=${CF_KEY}
+      - CF_API_EMAIL=${CF_EMAIL}
+      - CF_API_KEY=${CF_KEY}
       - TZ=${TIMEZONE}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ${CONFIGS}/${TRAEFIKNAME}:/config
       - ${LOGS}:/logs
-      #- ${CONFIGS}/${TRAEFIKNAME}/traefik.toml:/traefik.toml
-      #- ${CONFIGS}/${TRAEFIKNAME}/traefik_secure.toml:/traefik_secure.toml
-      #- ${CONFIGS}/${TRAEFIKNAME}/traefik.log:/traefik.log
-      #- ${OMNIHOME}/healthchecks/traefikcheck:/traefikcheck
+      - ${OMNIHOME}/healthchecks/traefikcheck:/traefikcheck
     labels:
-      - "autoheal=true"
-      - "traefik.enable=true"
-      - 'traefik.http.routers.traefik.rule=Host(`${TRAEFIKNAME}.${MYDOMAIN}`)'
-      - "traefik.http.routers.traefik.entrypoints=websecure"
-      - "traefik.http.routers.traefik.tls.certresolver=lets-encrypt"
-      - "traefik.http.routers.traefik.service=api@internal"
-      - 'traefik.http.routers.traefik.middlewares=strip'
-      - 'traefik.http.middlewares.strip.stripprefix.prefixes=/traefik'
+      - autoheal=true
+      - traefik.enable=true
+      - traefik.http.routers.traefik.rule=Host(`${TRAEFIKNAME}.${MYDOMAIN}`)
+      - traefik.http.routers.traefik.entrypoints=websecure
+      - traefik.http.routers.traefik.tls.certresolver=lets-encrypt
+      - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.traefik.middlewares=strip
+      - traefik.http.middlewares.strip.stripprefix.prefixes=/traefik
     command:
-      - --api.dashboard=true
-      - --providers.docker=true
-      - --providers.docker.exposedbydefault=false
       - --providers.file.directory=/config/external_sites
       - --providers.file.watch=true
-      - --providers.docker.network=OmniNet
-      - --certificatesresolvers.lets-encrypt.acme.dnschallenge=true
-      - --certificatesresolvers.lets-encrypt.acme.dnschallenge.provider=cloudflare
-      - --certificatesresolvers.lets-encrypt.acme.email=${MYEMAIL}
-      - --certificatesresolvers.lets-encrypt.acme.storage=/config/acme.json
-      - --certificatesresolvers.lets-encrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
-      - --entrypoints.web.address=:80
-      - --entrypoints.websecure.address=:443
-      - --entrypoints.web.http.redirections.entrypoint.to=websecure
-      - --entrypoints.web.http.redirections.entrypoint.scheme=https
-      - --entrypoints.websecure.http.tls=true
-      - --entrypoints.websecure.http.tls.certResolver=lets-encrypt
-      - --entrypoints.websecure.http.tls.domains[0].main=${MYDOMAIN}
-      - --entrypoints.websecure.http.tls.domains[0].sans=*.${MYDOMAIN}
+        #- --certificatesresolvers.lets-encrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory # Uncomment for testing
       - --log.level=INFO
       - --log.filePath=/logs/traefik.log
       - --accessLog.filePath=/logs/traefik-access.log
       - --accessLog.bufferingSize=100
+      - --providers.docker=true
+      - --api.dashboard=true
+      - --certificatesresolvers.lets-encrypt.acme.dnschallenge=true
+      - --certificatesresolvers.lets-encrypt.acme.dnschallenge.provider=cloudflare
+      - --certificatesresolvers.lets-encrypt.acme.email=${CF_EMAIL}
+      - --certificatesresolvers.lets-encrypt.acme.storage=/config/acme.json
+      - --entrypoints.https.forwardedHeaders.trustedIPs=173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.    0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/12,172.64.0.0/13,131.0.72.0/22
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.websecure.http.tls=true
+      - --entrypoints.websecure.http.tls.certResolver=lets-encrypt
+      - --entrypoints.websecure.http.tls.domains[0].main=${MYDOMAIN}
+      - --entrypoints.websecure.http.tls.domains[0].sans=*.${MYDOMAIN}
     networks:
       - OmniNet
     healthcheck:
