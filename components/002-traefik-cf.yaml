@@ -51,6 +51,12 @@
       - --certificatesresolvers.lets-encrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.websecure.http.tls=true
+      - --entrypoints.websecure.http.tls.certResolver=lets-encrypt
+      - --entrypoints.websecure.http.tls.domains[0].main=${MYDOMAIN}
+      - --entrypoints.websecure.http.tls.domains[0].sans=*.${MYDOMAIN}
       - --log.level=INFO
       - --log.filePath=/logs/traefik.log
       - --accessLog.filePath=/logs/traefik-access.log
