@@ -60,7 +60,7 @@
       - --log.level=INFO # (Default: error) DEBUG, INFO, WARN, ERROR, FATAL, PANIC
       - --log.filePath=/logs/traefik.log
       - --accessLog=true
-      - --accessLog.filePath=/config/traefik-access.log
+      - --accessLog.filePath=/logs/traefik-access.log
       - --accessLog.bufferingSize=100
       - --accessLog.filters.statusCodes=400-499
       - --providers.docker=true
