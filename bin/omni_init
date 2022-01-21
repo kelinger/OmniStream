@@ -9,8 +9,7 @@ cd ${OMNIHOME}
 
 echo "
 OmniStream functions loaded into local environment.
-Installed version from:  $(git log --pretty="%cd" -n 1)
+Installed version from:  $(git log --pretty="%cr" -n 1)
 
-OmniStream Home:  https://github.com/kelinger/OmniStream
-Documentation:  https://sites.google.com/view/omnistream/home
+OmniStream Home:  omnistream.cloud
 "
