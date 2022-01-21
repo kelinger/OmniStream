@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source ~/.config/omnistream.conf
+source ${OMNIHOME}/bin/omni_init > /dev/null 2>&1
 
 TEMP=/tmp/answer${$}
 
@@ -29,6 +30,13 @@ passwordbox() {
 quit() {
 	clear
 	echo Traefik setup canceled.  No files have been changed.  To restart Traefik setup, run \"setup-traefik\" from the shell.
+	echo
+	exit
+}
+
+quit2() {
+	clear
+	echo Traefik advanced setup canceled.  The basic Traefik settings have been saved.  To restart Traefik setup, run \"setup-traefik\" from the shell.
 	echo
 	exit
 }
@@ -119,3 +127,57 @@ EOF
 
 echo ${AUTH} > ${CONFIGS}/${TRAEFIKNAME}/users
 mkdir -p ${CONFIGS}/${TRAEFIKNAME}/external_sites
+
+TITLE="Traefik Advanced"
+DESC="Do you wish to enhance Traefik with an advanced configuration that integrates with CloudFlare (DNS hosting and site caching)?  This is a bit more complex and requires you to already have a CloudFlare account.
+
+Select NO to just use the basic Traefik routing and certificate management."
+yesno
+if [[ ${VALUE} != 0 ]]
+then
+	        quit2
+fi
+
+TITLE="Traefik Advanced - CloudFlare Email"
+DESC="Please enter the email address you use to login to CloudFlare:"
+[[ ${CF_EMAIL} = "" ]] && DEFAULT=${MYEMAIL} || DEFAULT=${CF_EMAIL}
+get_text
+CF_EMAIL=${VALUE}
+
+while true
+do
+        TITLE="Traefik Advanced - CloudFlare Global Key"
+        DESC="Please enter the Global API Key from CloudFlare.  This can be retrieved from https://dash.cloudflare.com/profile/api-tokens."
+	unset DEFAULT
+        passwordbox
+
+        PW1="${VALUE}"
+
+        DESC="Just to be sure, please enter it one more time:"
+	unset DEFAULT
+        passwordbox
+        PW2="${VALUE}"
+
+        if [[ "${PW1}" != "${PW2}" ]]
+        then
+                TITLE="Key Mismatch!"
+                DESC="Your two keys do not match.  Please make sure you enter the same key both times.
+
+                Do you want to try again?"
+                yesno
+                if [[ ${VALUE} != 0 ]]
+                then
+                        quit2
+                fi
+        else
+                break
+        fi
+done
+CF_KEY=${VALUE}
+
+sed -i 's/.*'CF_EMAIL'=.*/'CF_EMAIL'='${CF_EMAIL}'/' ~/.config/omnistream.conf
+sed -i 's/.*'CF_KEY'=.*/'CF_KEY'='${CF_KEY}'/' ~/.config/omnistream.conf
+
+clear
+o- 002-traefik.yaml > /dev/null 2>&1
+o+ 002-traefik-cf.yaml
