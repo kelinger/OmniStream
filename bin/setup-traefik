@@ -135,7 +135,7 @@ Select NO to just use the basic Traefik routing and certificate management."
 yesno
 if [[ ${VALUE} != 0 ]]
 then
-	        quit2
+        quit2
 fi
 
 TITLE="Traefik Advanced - CloudFlare Email"
@@ -143,6 +143,7 @@ DESC="Please enter the email address you use to login to CloudFlare:"
 [[ ${CF_EMAIL} = "" ]] && DEFAULT=${MYEMAIL} || DEFAULT=${CF_EMAIL}
 get_text
 CF_EMAIL=${VALUE}
+unset DEFAULT
 
 TITLE="Traefik Advanced - CloudFlare Global Key"
 DESC="Please enter or paste the Global API Key from CloudFlare.  This can be retrieved from https://dash.cloudflare.com/profile/api-tokens.

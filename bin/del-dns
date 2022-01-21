@@ -113,7 +113,7 @@ fi
 ZONEID=$(zoneid)
 
 #	Step through each component that uses a subdomain through Traefik proxy
-cd /home/kelinger/OmniStream/enabled
+cd ${OMNIHOME}/enabled
 for LINE in $(cat *.yaml |grep "omni=" |cut -f2 -d'"' | cut -f2 -d'='); do
 	HOST=$(echo ${LINE} | cut -f1 -d',')
 	if [[ "${HOST:0:1}" == "$" ]]; then

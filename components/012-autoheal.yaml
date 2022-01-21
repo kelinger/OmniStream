@@ -2,7 +2,6 @@
     image: willfarrell/autoheal
     container_name: ${HEALNAME}
     hostname: ${HEALNAME}
-    domainname: ${MYDOMAIN}
     restart: unless-stopped
     environment:
       - AUTOHEAL_CONTAINER_LABEL=autoheal

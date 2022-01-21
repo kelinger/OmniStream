@@ -33,6 +33,16 @@ omni() {
 		cd "${CURDIR}" || exit
 		test -x ${OMNIHOME}/plugins/down-end && ${OMNIHOME}/plugins/down-end
 		;;
+	version | v)
+		echo "OmniStream installed version from $(git -C $OMNIHOME log --pretty="format:%cr" -n1)"
+		;;
+	refresh | repair)
+		cd "${OMNIHOME}" || exit
+		git fetch
+		git reset --hard HEAD
+		git merge '@{u}'
+		cd "${CURDIR}" || exit
+		;;
 	status)
 		cd "${OMNIHOME}" || exit
 		/usr/local/bin/docker-compose ps "${@:2}"

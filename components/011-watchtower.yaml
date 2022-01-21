@@ -2,7 +2,6 @@
     image: containrrr/watchtower
     container_name: ${WATCHNAME}
     hostname: ${WATCHNAME}
-    domainname: ${MYDOMAIN}
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

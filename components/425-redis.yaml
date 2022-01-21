@@ -2,7 +2,6 @@
     image: redis:latest
     container_name: ${REDISNAME}
     hostname: ${REDISNAME}
-    domainname: ${MYDOMAIN}
     restart: always
     networks:
       - OmniNet

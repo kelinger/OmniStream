@@ -2,7 +2,6 @@
     image: mcr.microsoft.com/mssql/server:2019-latest
     container_name: ${SQLSERVERNAME}
     hostname: ${SQLSERVERNAME}
-    domainname: ${MYDOMAIN}
     restart: always
     networks:
       - OmniNet

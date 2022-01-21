@@ -2,7 +2,6 @@
     image: linuxserver/mariadb
     container_name: ${MARIADBNAME}
     hostname: ${MARIADBNAME}
-    domainname: ${MYDOMAIN}
     restart: always
     volumes:
       - ${CONFIGS}/${MARIADBNAME}:/config
