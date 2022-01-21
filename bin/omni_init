@@ -7,11 +7,9 @@ source ${HOME}/OmniStream/bin/omni_complete
 [[ ":$PATH:" != *":OmniStream/bin:"* ]] && PATH="${HOME}/OmniStream/bin:${PATH}"
 
 echo "
- ██████╗ ███╗   ███╗███╗   ██╗██╗███████╗████████╗██████╗ ███████╗ █████╗ ███╗   ███╗
-██╔═══██╗████╗ ████║████╗  ██║██║██╔════╝╚══██╔══╝██╔══██╗██╔════╝██╔══██╗████╗ ████║
-██║   ██║██╔████╔██║██╔██╗ ██║██║███████╗   ██║   ██████╔╝█████╗  ███████║██╔████╔██║
-██║   ██║██║╚██╔╝██║██║╚██╗██║██║╚════██║   ██║   ██╔══██╗██╔══╝  ██╔══██║██║╚██╔╝██║
-╚██████╔╝██║ ╚═╝ ██║██║ ╚████║██║███████║   ██║   ██║  ██║███████╗██║  ██║██║ ╚═╝ ██║
- ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═══╝╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝
-        For help and documentation:  https://github.com/kelinger/OmniStream
+OmniStream functions loaded into local environment.
+Installed version from:  $(git log --pretty="%cd" -n 1)
+
+OmniStream Home:  https://github.com/kelinger/OmniStream
+Documentation:  https://sites.google.com/view/omnistream/home
 "
