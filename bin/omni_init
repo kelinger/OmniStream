@@ -3,13 +3,12 @@
 source ${HOME}/OmniStream/bin/omni_aliases
 source ${HOME}/OmniStream/bin/omni_functions
 source ${HOME}/OmniStream/bin/omni_complete
-cd ${OMNIHOME}
 
 [[ ":$PATH:" != *":OmniStream/bin:"* ]] && PATH="${HOME}/OmniStream/bin:${PATH}"
 
 echo "
 OmniStream functions loaded into local environment.
-Installed version from:  $(git log --pretty="%cr" -n 1)
+Installed version from:  $(git -C $OMNIHOME log --pretty="format:%cr" -n1)
 
 OmniStream Home:  omnistream.cloud
 "
