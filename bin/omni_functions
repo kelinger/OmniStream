@@ -78,6 +78,10 @@ omni() {
 		cd "${OMNIHOME}" || exit
 		ls
 		;;
+	dns)
+		"${OMNIHOME}/bin/dns-report-gen"
+		cat "${OMNIHOME}/dns-report"
+		;;
 	logs)
 		cd "${OMNIHOME}" || exit
 		/usr/local/bin/docker-compose logs -f "${@:2}"
@@ -101,6 +105,7 @@ omni() {
 		cd "${OMNIHOME}" || exit
 		git pull
 		"${OMNIHOME}"/bin/make-env rebuild
+		"${OMNIHOME}"/bin/dns-report-gen
 		echo
 		/usr/local/bin/docker-compose pull
 		/usr/local/bin/docker-compose up --remove-orphans --build -d

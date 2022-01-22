@@ -16,6 +16,7 @@ source ~/.config/omnistream.conf
 #	NAMES:  names of components being proxied through Traefik
 
 OMNIHOME=${HOME}/OmniStream
+${OMNIHOME}/bin/dns-report-gen
 #IP="$(curl -s http://ipv4.icanhazip.com)"
 IP="$(dig +short myip.opendns.com @resolver1.opendns.com)"
 

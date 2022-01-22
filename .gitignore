@@ -1,7 +1,9 @@
 .env
-enabled/
 docker-compose.yaml
+dns-report
 components/8*.yaml
 components/9[0-8]*.yaml
+enabled/
+install-report
 plugins/*-start
 plugins/*-end

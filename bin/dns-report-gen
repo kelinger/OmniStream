@@ -1,0 +1,46 @@
+#!/bin/bash
+
+source ~/.config/omnistream.conf
+
+OMNIHOME=${HOME}/OmniStream
+IP="$(dig +short myip.opendns.com @resolver1.opendns.com)"
+
+for i in 1 2; do
+	if [[ $i == 1 ]]; then
+		cd ${OMNIHOME}/enabled
+		echo "Currently active containers that require DNS entries" > /tmp/dns
+		echo "These must have DNS entries to be accessible:" >> /tmp/dns
+		echo >> /tmp/dns
+	else
+		cd ${OMNIHOME}/components
+		echo >> /tmp/dns
+		echo "====================================================" >> /tmp/dns
+		echo >> /tmp/dns
+		echo "All containers that require DNS entries" >> /tmp/dns
+		echo "Create DNS entries if you plan to add these later:" >> /tmp/dns
+		echo >> /tmp/dns
+	fi
+	for LINE in $(cat *.yaml |grep "omni=" |cut -f2 -d'"' | cut -f2 -d'='); do
+		HOST=$(echo ${LINE} | cut -f1 -d',')
+		if [[ "${HOST:0:1}" == "$" ]]; then
+			HOST=$(echo $(eval echo ${HOST}))
+		fi
+		DOMAIN=$(echo ${LINE} | cut -f2 -d',')
+		if [[ "${DOMAIN:0:1}" == "$" ]]; then
+			DOMAIN=$(echo $(eval echo ${DOMAIN}))
+		fi
+		ADD=$(echo ${LINE} | cut -f3 -d',')
+		ADD="${ADD^^}"
+		DEL=$(echo ${LINE} | cut -f4 -d',')
+		DEL="${DEL^^}"
+		CACHE=$(echo ${LINE} | cut -f5 -d',')
+		CACHE="${CACHE^^}"
+		FQDN=${HOST}.${DOMAIN}
+		if [[ ${ADD} == "YES" ]]; then
+			echo "A-record --> ${IP} --> ${FQDN} " >> /tmp/dns2
+		fi
+	done
+	cat /tmp/dns2 | sort -u >> /tmp/dns
+	rm /tmp/dns2
+done
+mv /tmp/dns ${OMNIHOME}/dns-report
