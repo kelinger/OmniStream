@@ -1,0 +1,107 @@
+#!/bin/bash
+if pidof -o %PPID -x "$(basename $0)"; then
+	echo Already running!
+	exit 1
+fi
+
+source ~/.config/omnistream.conf
+SERVER=$(hostname)
+SERVER=${SERVER,,}
+APILOG="${LOGS}/api.log"
+OMNIHOME="${HOME}/OmniStream"
+DIFFBACK="apache cloudflare desktop embystat hydra mariadb mysql portainer radarr redis rtorrent sabnzbd sonarr tautulli traefik redis transmission"
+
+# Make sure there's a place to store backup index for full versus differential
+mkdir -p ${OMNIHOME}/snapshots
+
+rmove() {
+	# This function handles moving a file from the local storage to Google.  It will display
+	# the original path as well as the target and file size upon completion.
+	SOURCE=${1}
+	TARGET=${2}
+	echo "${TARGET}"
+	mkdir -p $(dirname ${MERGEMOUNT}${TARGET})
+	mv ${SOURCE} ${MERGEMOUNT}${TARGET}
+}
+
+cd ${HOME}
+echo Creating backup
+crontab -l > ${HOME}/cron
+# Create the server's non-Omni backup.  Some files specified may not exist.
+echo "/tmp/${SERVER}-backup.tar.xz --> "
+sudo tar -c -p -I 'xz -9 -T0' -f /tmp/${SERVER}-backup.tar.xz \
+       --exclude=.cache \
+       --exclude=.iterm* \
+       --exclude=thinclient_drives \
+       --exclude=${HOME}/Downloads \
+       --exclude=${HOME}/OmniStream/mnt \
+       --exclude=${HOME}/OmniStream/Configs \
+       --exclude=${HOME}/OmniStream/snapshots \
+       --exclude=${HOME}/.cache \
+       ${HOME} \
+       /etc/docker/daemon.json \
+       /etc/default/docker \
+       /etc/fail2ban > /dev/null 2>&1
+sudo chown ${USERID}:${GROUPID} /tmp/${SERVER}-*.tar.xz
+rmove "/tmp/${SERVER}-backup.tar.xz" "/Backups/${SERVER}/${SERVER}-backup.tar.xz"
+
+cd ${CONFIGS}
+
+FILES="${CONFIGS}/"*
+# Loop through each filename / directory name in the Configs directory
+for f in ${FILES}
+do
+	FILENAME="$(basename "${f}")"
+	echo -n "${FILENAME} --> "
+	if [[ -f "${f}" ]]
+	then
+		# This is a file, not a directory.  So, we're just going to copy it to Google
+		# as is (no tar/zip).
+		cp "${f}" /tmp/
+		rmove "/tmp/${FILENAME}" "/Backups/${SERVER}/Configs/${FILENAME}"
+	else
+		# This is a directory so we're going to pack it up into /tmp and then ship
+		# it off to Google drive.
+		if [[ -f "${OMNIHOME}/snapshots/${FILENAME}.snar" ]]
+		then
+			# We already have a snar, which means that this is a differential.
+			FULL=0
+			cp "${OMNIHOME}/snapshots/${FILENAME}.snar" "${OMNIHOME}/snapshots/${FILENAME}.bak"
+			FILENAME2="${FILENAME}-diff"
+		else
+			# No snar found, so we're doing the full backup
+			FULL=1
+			FILENAME2="${FILENAME}-full"
+		fi
+		sudo tar -c -p -I 'xz -9 -T0' \
+			--listed-incremental "${OMNIHOME}/snapshots/${FILENAME}.snar" \
+			-f "/tmp/${FILENAME2}.tar.xz" \
+			--exclude=.cache \
+			--exclude=.iterm* \
+			--exclude=thinclient_drives \
+			"${FILENAME}" > /dev/null 2>&1
+		sudo chown ${USERID}:${GROUPID} "/tmp/${FILENAME2}.tar.xz" "${OMNIHOME}/snapshots/${FILENAME}.snar"
+		if [[ ${FULL} -eq 0 ]]
+		then
+			# If this is a differential, we want to remember the original so that
+			# future differential backups are based on the original, not the previous
+			# differential
+			mv "${OMNIHOME}/snapshots/${FILENAME}.bak" "${OMNIHOME}/snapshots/${FILENAME}.snar"
+		else
+			# This is a full backup so remove any previous differential.
+			echo -n "Removing outdated DIFF for ${FILENAME} --> "
+			rm ${MERGEMOUNT}"/Backups/${SERVER}/Configs/${FILENAME}-diff.tar.xz" > /dev/null 2>&1
+			rmove "/tmp/${FILENAME2}.tar.xz" "/Backups/${SERVER}/Configs/${FILENAME2}.tar.xz"
+		fi
+		if [[ ${DIFFBAK} =~ (^|[[:space:]])${FILENAME}($|[[:space:]]) ]]
+		then
+			rmove "/tmp/${FILENAME2}.tar.xz" "/Backups/${SERVER}/Configs/${FILENAME2}.tar.xz"
+		else
+			# Don't keep the SNAR so that this is always a full backup
+			echo "Disposing SNAR for ${FILENAME}"
+			rm "${OMNIHOME}/snapshots/${FILENAME}.snar"
+		fi
+	fi
+done
+
+sudo rm ${HOME}/cron

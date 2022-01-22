@@ -7,3 +7,4 @@ enabled/
 install-report
 plugins/*-start
 plugins/*-end
+snapshots

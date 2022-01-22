@@ -24,8 +24,8 @@
       - ${DOWNLOADS}:/downloads
       - ${MERGEMOUNT}:/cloud
     ports:
-      - 55957:55957/tcp
-      - 55957:55957/udp
+      - 55956:55956/tcp
+      - 55956:55956/udp
       - 58846:58846/tcp
     networks:
       - OmniNet
