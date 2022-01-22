@@ -15,7 +15,7 @@ for i in 1 2; do
 	else
 		cd ${OMNIHOME}/components
 		echo >> /tmp/dns
-		echo "====================================================" >> /tmp/dns
+		echo "==========================================================" >> /tmp/dns
 		echo >> /tmp/dns
 		echo "All containers that require DNS entries" >> /tmp/dns
 		echo "Create DNS entries for any services you plan to add later:" >> /tmp/dns

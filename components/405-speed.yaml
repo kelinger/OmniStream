@@ -22,3 +22,8 @@
       - traefik.http.services.speed.loadbalancer.server.port=3000
     networks:
       - OmniNet
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -ntlp | grep :3000"]
+      interval: 10s
+      timeout: 2s
+      retries: 3
