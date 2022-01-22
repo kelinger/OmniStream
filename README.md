@@ -64,9 +64,10 @@ In almost all cases, each container is not dependent on any others meaning you c
 * Easy updates:  keep OmniStream and containers on the most recent build automatically.
 * Personal container management:  add your own Docker containers to be managed by the OmniStream stack
 * Command-line and menu-based functions for simplified management
-* CloudFlare integration (optional):  Automatically add and/or remove DNS entries for containers upon startup and shutdown respectively.  Includes setting caching options.
+* CloudFlare integration (optional):  Automatically add and/or remove DNS entries for containers upon startup and shutdown respectively.  Includes setting caching options.  Also enables wildcard certificates (one certificate per domain versus one per container) when using CloudFlare.
 * System backup for easy restore:  Includes differential backups for large containers (eg. Plex) to minimize storage and API transfer limitations.
 * Plug-in scripting:  add your own functionality to critical scripts
+
 ...
 
 ## Acknowledgements (to be expanded and detailed)
