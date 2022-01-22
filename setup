@@ -260,6 +260,7 @@ clear
 ### Output results
 
 source ${OMNIHOME}/.env
+${OMNIHOME}/bin/dns-report-gen
 echo
 echo
 echo
@@ -268,46 +269,55 @@ echo =========================================================================
 echo "         OmniStream initial setup complete.  Please review!"
 echo =========================================================================
 echo
-echo Linux distribution is ${VERSION}
-docker -v
-docker-compose -v
+echo For a list of DNS entries needed, run:
+echo "	cat ${OMNIHOME}/dns-report"
+echo "		or"
+echo "	omni dns"
 echo
-echo Rclone:
-update-rclone
-echo
-echo Rclone settings:  ${RCLONEHOME}/rclone.conf
-echo
-echo OmniStream Config Files:  ${CONFIGS}
-echo Traefik URL:  ${TRAEFIKNAME}.${MYDOMAIN}
-echo
-if [[ ${DOCKER} = 0 ]]
-then
-	echo Docker appears to already be installed.  Since there are multiple methods for installing Docker,
-	echo the install script did not reinstall it.  Please make sure your Docker is up-to-date.
-	echo
-fi
-
-if [[ ${COMPOSE} = 0 ]]
-then
-	echo Docker-compose appears to already be installed.  Since there are multiple methods for installing
-	echo docker-compose, the install script did not reinstall it.  Please make sure your installation
-	echo of docker-compose is up-to-date.
-	echo
-fi
-if [[ ${OMNI} = 0 ]]
-then
-	echo OmniStream was already downloaded on this system.  It was checked and updated to the latest
-	echo version, if applicable.
-	echo
-fi
-echo
-echo
-echo Rclone can be configured via the \"rclone config\" command.
-echo or by restoring your configuration to the file:
-echo ${HOME}/.config/rclone/rclone.conf
-echo
-echo Customizations are in ${HOME}/.config/omnistream.conf
+echo For installation report, run:
+echo "	cat ${OMNIHOME}/install-report"
 echo
 echo =========================================================================
 echo "  Please log out and back into your server for changes to take affect"
 echo =========================================================================
+
+REPORT=${OMNIHOME}/install-report
+echo Linux distribution is ${VERSION} > ${REPORT}
+docker -v >> ${REPORT}
+docker-compose -v >> ${REPORT}
+echo >> ${REPORT}
+echo Rclone: >> ${REPORT}
+update-rclone >> ${REPORT}
+echo >> ${REPORT}
+echo Rclone settings:  ${RCLONEHOME}/rclone.conf >> ${REPORT}
+echo >> ${REPORT}
+echo OmniStream Config Files:  ${CONFIGS} >> ${REPORT}
+echo Traefik URL:  ${TRAEFIKNAME}.${MYDOMAIN} >> ${REPORT}
+echo >> ${REPORT}
+if [[ ${DOCKER} = 0 ]] >> ${REPORT}
+then
+	echo Docker appears to already be installed.  Since there are multiple methods for installing Docker, >> ${REPORT}
+	echo the install script did not reinstall it.  Please make sure your Docker is up-to-date. >> ${REPORT}
+	echo >> ${REPORT}
+fi
+
+if [[ ${COMPOSE} = 0 ]]
+then
+	echo Docker-compose appears to already be installed.  Since there are multiple methods for installing >> ${REPORT}
+	echo docker-compose, the install script did not reinstall it.  Please make sure your installation >> ${REPORT}
+	echo of docker-compose is up-to-date. >> ${REPORT}
+	echo >> ${REPORT}
+fi
+if [[ ${OMNI} = 0 ]]
+then
+	echo OmniStream was already downloaded on this system.  It was checked and updated to the latest >> ${REPORT}
+	echo version, if applicable. >> ${REPORT}
+	echo >> ${REPORT}
+fi
+echo >> ${REPORT}
+echo >> ${REPORT}
+echo Rclone can be configured via the \"rclone config\" command. >> ${REPORT}
+echo or by restoring your configuration to the file: >> ${REPORT}
+echo ${HOME}/.config/rclone/rclone.conf >> ${REPORT}
+echo >> ${REPORT}
+echo Customizations are in ${HOME}/.config/omnistream.conf >> ${REPORT}

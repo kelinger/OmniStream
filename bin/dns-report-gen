@@ -37,10 +37,10 @@ for i in 1 2; do
 		CACHE="${CACHE^^}"
 		FQDN=${HOST}.${DOMAIN}
 		if [[ ${ADD} == "YES" ]]; then
-			echo "A-record --> ${IP} --> ${FQDN} " >> /tmp/dns2
+			echo "${FQDN},A,${IP}" >> /tmp/dns2
 		fi
 	done
-	cat /tmp/dns2 | sort -u >> /tmp/dns
+	cat /tmp/dns2 | sort -u | sed 's/\t/,|,/g' | column -s ',' -t >> /tmp/dns
 	rm /tmp/dns2
 done
 mv /tmp/dns ${OMNIHOME}/dns-report
