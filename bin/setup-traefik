@@ -154,6 +154,8 @@ CF_KEY=${VALUE}
 
 sed -i 's/.*'CF_EMAIL'=.*/'CF_EMAIL'='${CF_EMAIL}'/' ~/.config/omnistream.conf
 sed -i 's/.*'CF_KEY'=.*/'CF_KEY'='${CF_KEY}'/' ~/.config/omnistream.conf
+sed -i 's/.*'ADD_DNS'=.*/'ADD_DNS=true'/' ~/.config/omnistream.conf
+sed -i 's/.*'DELETE_DNS'=.*/'DELETE_DNS=true'/' ~/.config/omnistream.conf
 
 clear
 o- 002-traefik.yaml > /dev/null 2>&1
