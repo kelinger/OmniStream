@@ -9,9 +9,9 @@ OMNIHOME=${HOME}/OmniStream
 OMNI=$(test -d ${OMNIHOME} ; echo ${?})
 source ~/.selected_editor > /dev/null 2>&1
 
-# Run as USER, not root/sudo
-
 clear
+
+# Run as USER, not root/sudo
 
 if [[ $(id -u) = "0" ]]
 then
@@ -34,10 +34,11 @@ then
 		echo -e "${PU}\tALL=(ALL)\tNOPASSWD:ALL" > /etc/sudoers.d/${PU}
 		# Secure file
 		chmod 0440 /etc/sudoers.d/${PU}
-		echo
-		echo Setup is now stopping.  Please login as \"${PU}\" and rerun without sudo.
 	fi
-	rm ${0}
+	chmod 777 ${0}
+	echo
+	echo Login as your user and restart setup with ${0}
+	echo
 	exit 1
 fi
 

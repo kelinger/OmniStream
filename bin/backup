@@ -5,6 +5,10 @@ if pidof -o %PPID -x "$(basename $0)"; then
 fi
 
 source ~/.config/omnistream.conf
+
+# Call backup-start plugin, if it exists
+[[ -f ${OMNIHOME}/plugins/backup-start ]] && source ${OMNIHOME}/plugins/backup-start
+
 SERVER=$(hostname)
 SERVER=${SERVER,,}
 APILOG="${LOGS}/api.log"
@@ -105,3 +109,6 @@ do
 done
 
 sudo rm ${HOME}/cron
+
+# Call backup-end plugin, if it exists
+[[ -f ${OMNIHOME}/plugins/backup-end ]] && source ${OMNIHOME}/plugins/backup-end

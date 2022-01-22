@@ -8,6 +8,8 @@ the language with a header like #!/bin/bash).
 	down-end
 	sync-start
 	sync-end
+	backup-start
+	backup-end
 
 These run at the beginning or end of the up, down, or sync processes.  None will be
 replaced or removed when OmniStream is updated.
