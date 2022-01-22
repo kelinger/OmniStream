@@ -31,8 +31,8 @@
       - traefik.http.routers.qbit.tls.certresolver=lets-encrypt
       - traefik.http.services.qbit.loadbalancer.server.port=8080
     ports:
-      - 55955:55955/tcp
-      - 55955:55955/udp
+      - 55956:55956/tcp
+      - 55956:55956/udp
     networks:
       - OmniNet
     healthcheck:
