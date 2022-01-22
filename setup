@@ -271,7 +271,7 @@ echo =========================================================================
 echo
 echo For a list of DNS entries needed, run:
 echo "	cat ${OMNIHOME}/dns-report"
-echo "		or"
+echo "	  or"
 echo "	omni dns"
 echo
 echo For installation report, run:
@@ -314,7 +314,6 @@ then
 	echo version, if applicable. >> ${REPORT}
 	echo >> ${REPORT}
 fi
-echo >> ${REPORT}
 echo >> ${REPORT}
 echo Rclone can be configured via the \"rclone config\" command. >> ${REPORT}
 echo or by restoring your configuration to the file: >> ${REPORT}

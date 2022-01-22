@@ -8,7 +8,8 @@ IP="$(dig +short myip.opendns.com @resolver1.opendns.com)"
 for i in 1 2; do
 	if [[ $i == 1 ]]; then
 		cd ${OMNIHOME}/enabled
-		echo "Currently active containers that require DNS entries" > /tmp/dns
+		echo > /tmp/dns
+		echo "Currently active containers that require DNS entries" >> /tmp/dns
 		echo "These must have DNS entries to be accessible:" >> /tmp/dns
 		echo >> /tmp/dns
 	else
@@ -17,7 +18,7 @@ for i in 1 2; do
 		echo "====================================================" >> /tmp/dns
 		echo >> /tmp/dns
 		echo "All containers that require DNS entries" >> /tmp/dns
-		echo "Create DNS entries if you plan to add these later:" >> /tmp/dns
+		echo "Create DNS entries for any services you plan to add later:" >> /tmp/dns
 		echo >> /tmp/dns
 	fi
 	for LINE in $(cat *.yaml |grep "omni=" |cut -f2 -d'"' | cut -f2 -d'='); do
