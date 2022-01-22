@@ -4,6 +4,7 @@ OmniStream is a collection of Docker containers and utilities/commands for build
 
 ---
 WARNING - Most code is written; this is being ported into a GIT project and it is strongly recommended that you do NOT clone this project until this message is removed.  Until then, it is quite possible that anything downloaded from here will not yet be a complete project.
+
 ---
 
 ## TL;DR
@@ -11,6 +12,8 @@ Download and install on a fresh Debian-like system with
 `wget tinyurl.com/omniSetup -O /tmp/setup && chmod 700 /tmp/setup && /tmp/setup`
 
 Documentation:  https://omnistream.cloud
+
+---
 
 ## Currently supported containers (included in OmniStream setup)
 ### Core components
