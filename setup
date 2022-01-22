@@ -119,6 +119,9 @@ for i in ${APPLIST}; do
 	fi
 done
 
+python3 -m pip install --user pipx > /dev/null 2>&1
+python3 -m pipx ensurepath > /dev/null 2>&1
+
 # Clone OmniStream to HOME
 
 cd ~

@@ -213,6 +213,6 @@ function o-() {
 }
 
 O=${OMNIHOME}
-M=${MERGETARGET}/Media
-G=${MERGETARGET}
-D=${MERGETARGET}/Downloads
+M=${MERGEMOUNT}/Media
+G=${MERGEMOUNT}
+D=${MERGEMOUNT}/Downloads
