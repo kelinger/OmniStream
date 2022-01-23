@@ -3,24 +3,11 @@
 source ~/.config/omnistream.conf
 
 OMNIHOME=${HOME}/OmniStream
+REPORT=${OMNIHOME}/dns-report
 IP="$(dig +short myip.opendns.com @resolver1.opendns.com)"
 
-for i in 1 2; do
-	if [[ $i == 1 ]]; then
-		cd ${OMNIHOME}/enabled
-		echo > /tmp/dns
-		echo "Currently active containers that require DNS entries" >> /tmp/dns
-		echo "These must have DNS entries to be accessible:" >> /tmp/dns
-		echo >> /tmp/dns
-	else
-		cd ${OMNIHOME}/components
-		echo >> /tmp/dns
-		echo "==========================================================" >> /tmp/dns
-		echo >> /tmp/dns
-		echo "All containers that require DNS entries" >> /tmp/dns
-		echo "Create DNS entries for any services you plan to add later:" >> /tmp/dns
-		echo >> /tmp/dns
-	fi
+for i in components enabled; do
+	cd ${OMNIHOME}/$i
 	for LINE in $(cat *.yaml |grep "omni=" |cut -f2 -d'"' | cut -f2 -d'='); do
 		HOST=$(echo ${LINE} | cut -f1 -d',')
 		if [[ "${HOST:0:1}" == "$" ]]; then
@@ -38,10 +25,23 @@ for i in 1 2; do
 		CACHE="${CACHE^^}"
 		FQDN=${HOST}.${DOMAIN}
 		if [[ ${ADD} == "YES" ]]; then
-			echo "${FQDN},A,${IP}" >> /tmp/dns2
+			echo "${FQDN},A,${IP}" >> /tmp/dns-$i
 		fi
 	done
-	cat /tmp/dns2 | sort -u | sed 's/\t/,|,/g' | column -s ',' -t >> /tmp/dns
-	rm /tmp/dns2
 done
-mv /tmp/dns ${OMNIHOME}/dns-report
+sort -u -o /tmp/dns-enabled /tmp/dns-enabled
+sort -u -o /tmp/dns-components /tmp/dns-components
+echo "
+The following domain names are needed for your current setup.  Please make sure they
+are created at your DNS host before starting OmniStream.
+------------------------------------------------------------------------------------------
+" > ${REPORT}
+cat /tmp/dns-enabled | sed 's/\t/,|,/g' | column -s ',' -t >> ${REPORT}
+
+echo "
+The following domain names are not used in your current setup and do not need DNS
+entries.  However, you may want to create entries for those you plan on using later.
+------------------------------------------------------------------------------------------
+" >> ${REPORT}
+diff --new-line-format="" --unchanged-line-format="" /tmp/dns-components /tmp/dns-enabled | sed 's/\t/,|,/g' | column -s ',' -t >> ${REPORT}
+rm /tmp/dns-components /tmp/dns-enabled
