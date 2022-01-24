@@ -27,7 +27,7 @@
       - traefik.http.services.emby.loadbalancer.server.port=8096
     volumes:
       - ${CONFIGS}/${EMBYNAME}:/config
-      - ${MEDIA}:/mnt/media
+      - ${MEDIA}:/Media
       - /etc/localtime:/etc/localtime:ro
       - /tmp/Emby-transcode:/transcode
     devices:

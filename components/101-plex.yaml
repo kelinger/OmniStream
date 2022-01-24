@@ -32,11 +32,11 @@
       - ${CONFIGS}/${PLEXNAME}:/config
       - /tmp:/transcode
       - /bin/netstat:/bin/netstat:ro
-      - ${MEDIA}:/data
+      - ${MEDIA}:/Media
     networks:
       - OmniNet
     healthcheck:
-      test: ["CMD-SHELL", "netstat -ntlp | grep :32400 && mountpoint /data"]
+      test: ["CMD-SHELL", "netstat -ntlp | grep :32400 && mountpoint /Media"]
       interval: 10s
       timeout: 2s
       retries: 3

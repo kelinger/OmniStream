@@ -28,7 +28,7 @@
       - traefik.http.services.jellyfin.loadbalancer.server.port=8096
     volumes:
       - ${CONFIGS}/${JELLYNAME}:/config
-      - ${MEDIA}:/mnt/media
+      - ${MEDIA}:/Media
       - /tmp/JellyCache:/cache
       - /tmp/Jellyfin-transcode:/transcode
     devices:

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+OLD="media"
+NEW="Media"
+
+cd "/home/kelinger/Omni/Configs/Plex/Library/Application Support/Plex Media Server/Plug-in Support/Databases"
+
+sqlite3 com.plexapp.plugins.library.db 'update section_locations set root_path=replace(root_path,"/'${OLD}'/","/'${NEW}'/");'
+sqlite3 com.plexapp.plugins.library.db 'update media_parts set file=replace(file,"/'${OLD}'/","/'${NEW}'/");'

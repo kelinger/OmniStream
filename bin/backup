@@ -32,8 +32,8 @@ cd ${HOME}
 echo Creating backup
 crontab -l > ${HOME}/cron
 # Create the server's non-Omni backup.  Some files specified may not exist.
-echo "/tmp/${SERVER}-backup.tar.xz --> "
-sudo tar -c -p -I 'xz -9 -T0' -f /tmp/${SERVER}-backup.tar.xz \
+echo "/tmp/${SERVER}-backup.tar.gz --> "
+sudo tar -cpf /tmp/${SERVER}-backup.tar.gz \
        --exclude=.cache \
        --exclude=.iterm* \
        --exclude=thinclient_drives \
@@ -46,8 +46,8 @@ sudo tar -c -p -I 'xz -9 -T0' -f /tmp/${SERVER}-backup.tar.xz \
        /etc/docker/daemon.json \
        /etc/default/docker \
        /etc/fail2ban > /dev/null 2>&1
-sudo chown ${USERID}:${GROUPID} /tmp/${SERVER}-*.tar.xz
-rmove "/tmp/${SERVER}-backup.tar.xz" "/Backups/${SERVER}/${SERVER}-backup.tar.xz"
+sudo chown ${USERID}:${GROUPID} /tmp/${SERVER}-*.tar.gz
+rmove "/tmp/${SERVER}-backup.tar.gz" "/Backups/${SERVER}/${SERVER}-backup.tar.gz"
 
 cd ${CONFIGS}
 
@@ -77,14 +77,14 @@ do
 			FULL=1
 			FILENAME2="${FILENAME}-full"
 		fi
-		sudo tar -c -p -I 'xz -9 -T0' \
+		sudo tar -cpf "/tmp/${FILENAME2}.tar.gz" \
 			--listed-incremental "${OMNIHOME}/snapshots/${FILENAME}.snar" \
-			-f "/tmp/${FILENAME2}.tar.xz" \
+			--use-compress-program=pigz \
 			--exclude=.cache \
 			--exclude=.iterm* \
 			--exclude=thinclient_drives \
 			"${FILENAME}" > /dev/null 2>&1
-		sudo chown ${USERID}:${GROUPID} "/tmp/${FILENAME2}.tar.xz" "${OMNIHOME}/snapshots/${FILENAME}.snar"
+		sudo chown ${USERID}:${GROUPID} "/tmp/${FILENAME2}.tar.gz" "${OMNIHOME}/snapshots/${FILENAME}.snar"
 		if [[ ${FULL} -eq 0 ]]
 		then
 			# If this is a differential, we want to remember the original so that
@@ -94,12 +94,12 @@ do
 		else
 			# This is a full backup so remove any previous differential.
 			echo -n "Removing outdated DIFF for ${FILENAME} --> "
-			rm ${MERGEMOUNT}"/Backups/${SERVER}/Configs/${FILENAME}-diff.tar.xz" > /dev/null 2>&1
-			rmove "/tmp/${FILENAME2}.tar.xz" "/Backups/${SERVER}/Configs/${FILENAME2}.tar.xz"
+			rm ${MERGEMOUNT}"/Backups/${SERVER}/Configs/${FILENAME}-diff.tar.gz" > /dev/null 2>&1
+			rmove "/tmp/${FILENAME2}.tar.gz" "/Backups/${SERVER}/Configs/${FILENAME2}.tar.gz"
 		fi
 		if [[ ${DIFFBAK} =~ (^|[[:space:]])${FILENAME}($|[[:space:]]) ]]
 		then
-			rmove "/tmp/${FILENAME2}.tar.xz" "/Backups/${SERVER}/Configs/${FILENAME2}.tar.xz"
+			rmove "/tmp/${FILENAME2}.tar.gz" "/Backups/${SERVER}/Configs/${FILENAME2}.tar.gz"
 		else
 			# Don't keep the SNAR so that this is always a full backup
 			echo "Disposing SNAR for ${FILENAME}"
