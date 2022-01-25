@@ -17,7 +17,7 @@
       - ${LOGS}:/config/logs
       - ${OMNIHOME}/healthchecks/omnimountcheck:/omnimountcheck
       - type: bind
-        source: ${HOME}/OmniStream/mnt
+        source: ${OMNIHOME}/mnt
         target: /mnt
         bind:
           propagation: shared

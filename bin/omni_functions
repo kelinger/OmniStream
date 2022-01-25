@@ -71,7 +71,7 @@ omni() {
 		ls
 		;;
 	configs)
-		cd "${OMNIHOME}"/Configs || exit
+		cd "${CONFIGS}" || exit
 		ls
 		;;
 	home)
