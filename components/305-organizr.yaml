@@ -2,30 +2,29 @@
 # Organizr - Default web site
 #
   Organizr:
-    image: lsiocommunity/organizr:latest
-    container_name: ${ORGANIZRNAME}
-    hostname: ${MENU}
-    domainname: ${MYDOMAIN}
     restart: always
+    image: organizr/organizr:latest
+    container_name: ${ORGANIZRNAME}
+    hostname: ${ORGANIZRNAME}
+    domainname: ${MYDOMAIN}
+    restart: unless-stopped
     depends_on:
       traefik:
-        condition: service_healthy
-      omnimount:
         condition: service_healthy
     environment:
       - PUID=${USERID}
       - PGID=${GROUPID}
       - TZ=${TIMEZONE}
-    volumes:
-      - ${CONFIGS}/${ORGANIZRNAME}:/config
     labels:
       - "omni=${ORGANIZRNAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
       - traefik.enable=true
-      - traefik.http.routers.menu.rule=Host(`${MENU}.${MYDOMAIN}`)
-      - traefik.http.routers.menu.tls=true
-      - traefik.http.routers.menu.tls.certresolver=lets-encrypt
-      - traefik.http.services.menu.loadbalancer.server.port=80
+      - traefik.http.routers.organizr.rule=Host(`${ORGANIZRNAME}.${MYDOMAIN}`)
+      - traefik.http.routers.organizr.tls=true
+      - traefik.http.routers.organizr.tls.certresolver=lets-encrypt
+      - traefik.http.services.organizr.loadbalancer.server.port=80
+    volumes:
+      - ${CONFIGS}/${ORGANIZRNAME}:/config
     networks:
       - OmniNet
     healthcheck:
