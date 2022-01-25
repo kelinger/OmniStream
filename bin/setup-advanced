@@ -1,6 +1,13 @@
 #!/bin/bash
 
-source ~/.config/omnistream.conf
+# Set default values
+
+touch ${HOME}/.config/omnistream.conf
+source ${HOME}/.config/omnistream.conf
+${OMNIHOME}/bin/make-env rebuild
+source ${HOME}/.config/omnistream.conf
+source ${OMNIHOME}/bin/omni_functions
+SKIP=${1}
 
 TEMP=/tmp/answer${$}
 
@@ -28,12 +35,15 @@ passwordbox() {
 
 quit() {
 	clear
-	echo Advanced setup exited.  All changes have been saved.  To restart the advanced setup, run \"setup-advanced\" from the shell.  To load your changes, run \"source ~/.config/omnistream.conf\".
-	echo
+	if [[ ${SKIP} = "warn" ]]
+	then
+		echo Advanced setup exited.  All changes have been saved.  To restart the advanced setup, run \"setup-advanced\" from the shell.  To load your changes, run \"source ~/.config/omnistream.conf\".
+		echo
+	fi
 	exit
 }
 
-if [[ ${1} = "warn" ]]
+if [[ ${SKIP} = "warn" ]]
 then
 	TITLE="Advanced Setup"
 	DESC="OmniStream is ready to go using the default host and config names.  Do you wish to skip the advanced setup?
@@ -107,6 +117,8 @@ do
 		--backtitle "Advanced Setup" \
 		--title "Container Names" \
 		--default-item "${CHOICE}" \
+		--ok-label "Edit" \
+		--cancel-label "Exit" \
 		--menu "Please edit the names you would like to use.  Press cancel when you have finished editing:" \
 		0 0 0 \
 		"${VAR[@]}" \
