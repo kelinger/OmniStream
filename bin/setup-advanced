@@ -33,14 +33,17 @@ quit() {
 	exit
 }
 
-TITLE="Advanced Setup"
-DESC="OmniStream is ready to go using the default host and config names.  Do you wish to skip the advanced setup?
+if [[ ${1} = "warn" ]]
+then
+	TITLE="Advanced Setup"
+	DESC="OmniStream is ready to go using the default host and config names.  Do you wish to skip the advanced setup?
 
 YES is strongly recommended here unless you know what you are doing."
-yesno
-if [[ ${VALUE} = 0 ]] || [[ ${VALUE} = 255 ]]
-then
-	quit
+	yesno
+	if [[ ${VALUE} = 0 ]] || [[ ${VALUE} = 255 ]]
+	then
+		quit
+	fi
 fi
 
 CHOICE=1
@@ -58,6 +61,7 @@ do
 		EMBYNAME
 		EMBYSTATNAME
 		HEALNAME
+		HEIMDALLNAME
 		HYDRANAME
 		JACKETTNAME
 		JELLYNAME
@@ -65,21 +69,21 @@ do
 		MARIADBNAME
 		MEDUSANAME
 		MENU
+		MONITORRNAME
 		MYSQLNAME
 		NETDATANAME
 		NEXTCLOUDNAME
 		NZBGETNAME
 		OAUTHNAME
+		OMBINAME
 		ORGANIZRNAME
 		OVPNNAME
 		PLEXNAME
 		PORTAINERNAME
 		POSTGRESNAME
-		QBITNAME
 		RADARRNAME
 		REDISCOMNAME
 		REDISNAME
-		RTORRENTNAME
 		SABNZBDNAME
 		SONARRNAME
 		SPEEDNAME

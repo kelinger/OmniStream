@@ -1,0 +1,25 @@
+  heimdall:
+    image: lscr.io/linuxserver/heimdall
+    container_name: ${HEIMDALLNAME}
+    hostname: ${HEIMDALLNAME}
+    domainname:  ${MYDOMAIN}
+    restart: unless-stopped
+    depends_on:
+      traefik:
+        condition: service_healthy
+    environment:
+      - PUID=${USERID}
+      - PGID=${GROUPID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${CONFIGS}/heimdall:/config
+    labels:
+      - "omni=${HEIMDALLNAME},${MYDOMAIN},yes,yes,yes"
+      - autoheal=true
+      - traefik.enable=true
+      - traefik.http.routers.${HEIMDALLNAME}.rule=Host(`${HEIMDALLNAME}.${MYDOMAIN}`)
+      - traefik.http.routers.${HEIMDALLNAME}.tls=true
+      - traefik.http.routers.${HEIMDALLNAME}.tls.certresolver=lets-encrypt
+      - traefik.http.services.${HEIMDALLNAME}.loadbalancer.server.port=80
+    networks:
+      - OmniNet

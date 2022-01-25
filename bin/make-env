@@ -6,6 +6,7 @@ hash dialog 2>/dev/null || { echo Installing dialog \(one time\) ; sudo apt upda
 # These are default values for required parameters.  Do not change here in this
 # script.  They are overwritten by the values stored in the user's config (ENV).
 
+HOME=~
 OMNIHOME=${HOME}/OmniStream
 CDIR=${HOME}/.config
 ENV=${CDIR}/omnistream.conf
@@ -26,6 +27,7 @@ DELUGENAME=deluge
 EMBYNAME=emby
 EMBYSTATNAME=embystat
 HEALNAME=autoheal
+HEIMDALLNAME=heimdall
 HYDRANAME=hydra
 JACKETTNAME=jackett
 JELLYNAME=jellyfin
@@ -140,6 +142,7 @@ DELUGENAME=${DELUGENAME}
 EMBYNAME=${EMBYNAME}
 EMBYSTATNAME=${EMBYSTATNAME}
 HEALNAME=${HEALNAME}
+HEIMDALLNAME=${HEIMDALLNAME}
 HYDRANAME=${HYDRANAME}
 JACKETTNAME=${JACKETTNAME}
 JELLYNAME=${JELLYNAME}
@@ -147,7 +150,7 @@ LIDARRNAME=${LIDARRNAME}
 MARIADBNAME=${MARIADBNAME}
 MEDUSANAME=${MEDUSANAME}
 MENU=${MENU}
-MONITORRNAME=${MONITORRNAME}}
+MONITORRNAME=${MONITORRNAME}
 MYSQLNAME=${MYSQLNAME}
 NETDATANAME=${NETDATANAME}
 NEXTCLOUDNAME=${NEXTCLOUDNAME}

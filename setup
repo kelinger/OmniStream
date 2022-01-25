@@ -257,7 +257,7 @@ echo Done
 echo
 ${OMNIHOME}/bin/make-env
 ${OMNIHOME}/bin/setup-rclone
-${OMNIHOME}/bin/setup-advanced
+${OMNIHOME}/bin/setup-advanced warn
 ${OMNIHOME}/bin/setup-traefik
 clear
 
