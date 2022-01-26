@@ -78,6 +78,9 @@ omni() {
 		cd "${OMNIHOME}" || exit
 		ls
 		;;
+	menu)
+		"${OMNIHOME}/bin/menu"
+		;;
 	dns)
 		"${OMNIHOME}/bin/dns-report-gen"
 		cat "${OMNIHOME}/dns-report"

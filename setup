@@ -257,6 +257,7 @@ echo Done
 echo
 ${OMNIHOME}/bin/make-env
 ${OMNIHOME}/bin/setup-rclone
+${OMNIHOME}/bin/setup-media
 ${OMNIHOME}/bin/setup-advanced warn
 ${OMNIHOME}/bin/setup-traefik
 clear
@@ -322,5 +323,8 @@ echo >> ${REPORT}
 echo Rclone can be configured via the \"rclone config\" command. >> ${REPORT}
 echo or by restoring your configuration to the file: >> ${REPORT}
 echo ${HOME}/.config/rclone/rclone.conf >> ${REPORT}
+echo >> ${REPORT}
+echo Cloud directory: "${MERGEMOUNT}" >> ${REPORT}
+echo Media directory: "${MEDIA}" >> ${REPORT}
 echo >> ${REPORT}
 echo Customizations are in ${HOME}/.config/omnistream.conf >> ${REPORT}
