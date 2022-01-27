@@ -13,6 +13,7 @@ hash dialog 2>/dev/null || { echo Installing dialog \(one time\) ; sudo apt upda
 # Set default values
 
 touch ${HOME}/.config/omnistream.conf
+source ${HOME}/.config/omnistream.conf
 ${OMNIHOME}/bin/make-env rebuild
 source ${HOME}/.config/omnistream.conf
 source ${OMNIHOME}/bin/omni_functions
@@ -30,21 +31,25 @@ edit_components() {
 	COUNTER=1
 	for i in ${COMPONENTS}
 	do
-		NAME=${i#????}
-		NAME=${NAME%".yaml"}
-		OPTIONS="${OPTIONS}${COUNTER} ${NAME} "
-		STATUS=off
-		for j in ${ENABLED}
-		do
-			if [ ${i} = ${j} ]
-			then
-				STATUS=on
-			fi
-		done
-		OPTIONS="${OPTIONS} ${STATUS} "
-		COUNTER=$((COUNTER+1)) 
+		CODE=${i:0:3}
+		if ! [[ ${CODE} =~ ^(001|999)$ ]]
+		then
+			NAME=${i#????}
+			NAME=${NAME%".yaml"}
+			OPTIONS="${OPTIONS}${COUNTER} ${NAME} "
+			STATUS=off
+			for j in ${ENABLED}
+			do
+				if [ ${i} = ${j} ]
+				then
+					STATUS=on
+				fi
+			done
+			OPTIONS="${OPTIONS} ${STATUS} "
+			COUNTER=$((COUNTER+1))
+		fi
 	done
-	dialog --title "Enabled Components" --checklist "Choose which components are active:" 20 60 16 ${OPTIONS} 2>${TEMP}
+	dialog --title "Enabled Components" --no-tags --checklist "Choose which components are active:" 0 0 0 ${OPTIONS} 2>${TEMP}
 
 	if [ "$?" != "0" ] ; then return ; fi
 
@@ -52,23 +57,27 @@ edit_components() {
 	COUNTER=1
 	for i in ${COMPONENTS}
   	do
-		COMMAND="o- ${i}"
-		for j in ${CHOICE}
-		do
-			if [ ${COUNTER} = ${j} ]
-			then
-				COMMAND="o+ ${i}"
-			fi
-		done
-		eval ${COMMAND} > /dev/null
-		COUNTER=$((COUNTER+1))
+		CODE=${i:0:3}
+		if ! [[ ${CODE} =~ ^(001|999)$ ]]
+		then
+			COMMAND="o- ${i}"
+			for j in ${CHOICE}
+			do
+				if [ ${COUNTER} = ${j} ]
+				then
+					COMMAND="o+ ${i}"
+				fi
+			done
+			eval ${COMMAND} > /dev/null
+			COUNTER=$((COUNTER+1))
+		fi
 	done
 	"${OMNIHOME}"/bin/omni_complete # Update Auto-complete
 	exit
 }
 
 get_text() {
-	dialog --title "${TITLE}" --clear --no-cancel --inputbox "${DESC}" 16 51 "${DEFAULT}" 2> ${TEMP}-Input
+	dialog --title "${TITLE}" --clear --no-cancel --inputbox "${DESC}" 0 0 "${DEFAULT}" 2> ${TEMP}-Input
 	VALUE=$(cat ${TEMP}-Input)
 	rm ${TEMP}-Input
 }
@@ -79,7 +88,7 @@ main_menu() {
 		dialog \
 			--no-cancel \
 			--title "Omnistream Configuration Editor" \
-			--menu "Select an option:" 15 60 4 \
+			--menu "Select an option:" 0 0 0 \
 			1 "Edit components" \
 			2 "Edit hostnames" \
 			8 "Utilities" \

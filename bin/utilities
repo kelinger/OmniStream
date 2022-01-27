@@ -17,7 +17,7 @@ display_result() {
 }
 
 program_runner() {
-	${1} 2>&1 | dialog --programbox 30 100
+	${1} 2>&1 | dialog --programbox 1000 1000
 }
 
 while true; do
@@ -25,6 +25,7 @@ while true; do
   SELECTION=$(dialog \
     --backtitle "Omni Controls" \
     --title "Menu" \
+    --no-tags \
     --clear \
     --cancel-label "Exit" \
     --menu "Please select:" ${HEIGHT} ${WIDTH} 5 \
