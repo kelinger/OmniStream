@@ -14,7 +14,7 @@
       - TZ=${TIMEZONE}
     volumes:
       - ${CONFIGS}/omnimount:/config
-      - ${LOGS}:/config/logs
+      - ${LOGS}:/logs
       - ${OMNIHOME}/healthchecks/omnimountcheck:/omnimountcheck
       - type: bind
         source: ${OMNIHOME}/mnt
