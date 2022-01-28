@@ -1,5 +1,5 @@
   omnimount:
-    image: kelinger/omnimount
+    image: kelinger/omnimount:latest
     container_name: omnimount
     hostname: omnimount
     restart: unless-stopped
