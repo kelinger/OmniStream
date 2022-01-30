@@ -1,0 +1,11 @@
+#!/bin/bash
+
+OLD="${1}"
+NEW="${2}"
+
+source ${HOME}/.config/omnistream.conf
+
+
+cd "${CONFIGS}/${RADARRNAME}"
+
+sqlite3 radarr.db 'update ImportLists set RootFolderPath=replace(RootFolderPath,"/'${OLD}'/","/'${NEW}'/");'

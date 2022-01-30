@@ -104,6 +104,7 @@ APPLIST=" \
 	software-properties-common \
 	speedometer \
 	speedtest-cli \
+	sqlite3 \
 	unzip \
 	vnstat \
 	wget \

@@ -1,5 +1,5 @@
   apache:
-    image: bitnami/apache:latest
+    image: php:apache
     container_name: ${APACHENAME}
     hostname: ${APACHENAME}
     domainname: ${MYDOMAIN}

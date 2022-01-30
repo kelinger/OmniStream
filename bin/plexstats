@@ -5,7 +5,7 @@
 source ${HOME}/.config/omnistream.conf
 
 logfile="${LOGS}/plexstats.log"
-db="/${CONFIGS}/Plex/Library/Application Support/Plex Media Server/Plug-in Support/Databases/com.plexapp.plugins.library.db"
+db="/${CONFIGS}/${PLEXNAME}/Library/Application Support/Plex Media Server/Plug-in Support/Databases/com.plexapp.plugins.library.db"
 echo "$(date "+%d.%m.%Y %T") PLEX LIBRARY STATS" | tee -a $logfile
 echo "Media items in Libraries" | tee -a $logfile
 query="SELECT Library, Items \
