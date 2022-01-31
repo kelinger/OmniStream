@@ -204,6 +204,6 @@ EOF
 ln -sf ${ENV} ${OMNIHOME}/.env
 
 cat ${OMNIHOME}/enabled/???-* >${OMNIHOME}/docker-compose.yaml
-mkdir -p ${CONFIGS} ${DOWNLOADS} ${LOGS}
+mkdir -p ${CONFIGS} ${MERGEMOUNT}/${DOWNLOADS} ${LOGS}
 
 echo done
