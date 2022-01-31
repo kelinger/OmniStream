@@ -42,10 +42,7 @@ sudo tar -cpf /tmp/${SERVER}-backup.tar.gz \
        --exclude=${CONFIGS} \
        --exclude=${OMNIHOME}/snapshots \
        --exclude=${HOME}/.cache \
-       ${HOME} \
-       /etc/docker/daemon.json \
-       /etc/default/docker \
-       /etc/fail2ban > /dev/null 2>&1
+       ${HOME} > /dev/null 2>&1
 sudo chown ${USERID}:${GROUPID} /tmp/${SERVER}-*.tar.gz
 rmove "/tmp/${SERVER}-backup.tar.gz" "/Backups/${SERVER}/${SERVER}-backup.tar.gz"
 

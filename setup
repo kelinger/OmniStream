@@ -100,6 +100,7 @@ APPLIST=" \
 	pigz \
 	pv \
 	python3-pip \
+	python3-venv \
 	rsync \
 	software-properties-common \
 	speedometer \
@@ -156,20 +157,16 @@ then
 else
 	echo -n Installing Docker...
 
-	curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg > /dev/null 2>&1
-
-	echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null 2>&1
-
-	sudo apt update > /dev/null 2>&1
-	sudo apt install -y docker-ce docker-ce-cli containerd.io > /dev/null 2>&1
+	curl -fsSL https://get.docker.com -o /tmp/get-docker.sh > /dev/null 2>&1
+	sudo sh /tmp/get-docker.sh 2>&1
 
 	while [[ ${?} -ne 0 ]]
 	do
 		echo -n download failed...waiting...
 		sleep 15
 		echo -n retrying...
-	#curl -fsSL get.docker.com -o /tmp/get-docker.sh > /dev/null 2>&1
-		sudo apt install -y docker-ce docker-ce-cli containerd.io > /dev/null 2>&1
+		curl -fsSL https://get.docker.com -o /tmp/get-docker.sh > /dev/null 2>&1
+		sudo sh /tmp/get-docker.sh 2>&1
 	done
 
 	if [[ ${?} = 0 ]]
