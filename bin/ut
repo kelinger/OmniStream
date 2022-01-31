@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo -n Runtime stats for ${1}
+docker exec -ti ${1} stat /proc/1/cmdline
