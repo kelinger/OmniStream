@@ -31,5 +31,11 @@
       - ${MEDIA}:/Media
       - /tmp/JellyCache:/cache
       - /tmp/Jellyfin-transcode:/transcode
+      - ${OMNIHOME}/healthchecks/jellycheck:/jellycheck
     networks:
       - OmniNet
+    healthcheck:
+      test: ["CMD-SHELL", "/jellycheck"]
+      interval: 10s
+      timeout: 2s
+      retries: 3
