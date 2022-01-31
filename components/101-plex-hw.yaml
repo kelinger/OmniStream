@@ -29,7 +29,7 @@
       - traefik.http.services.plex.loadbalancer.server.port=32400
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${CONFIGS}/Plex:/config
+      - ${CONFIGS}/${PLEXNAME}:/config
       - /tmp:/transcode
       - /bin/netstat:/bin/netstat:ro
       - ${MEDIA}:/Media
