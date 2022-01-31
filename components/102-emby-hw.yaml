@@ -30,12 +30,13 @@
       - ${MEDIA}:/Media
       - /etc/localtime:/etc/localtime:ro
       - /tmp/Emby-transcode:/transcode
+      - ${OMNIHOME}/healthchecks/embycheck:/embycheck
     devices:
       - /dev/dri:/dev/dri
     networks:
       - OmniNet
     healthcheck:
-      test: ["CMD-SHELL", "netstat -ntlp | grep :8096"]
+      test: ["CMD-SHELL", "/embycheck"]
       interval: 10s
       timeout: 2s
       retries: 3

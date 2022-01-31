@@ -33,12 +33,13 @@
       - /tmp:/transcode
       - /bin/netstat:/bin/netstat:ro
       - ${MEDIA}:/Media
+      - ${OMNIHOME}/healthchecks/plexcheck:/plexcheck
     devices:
       - /dev/dri:/dev/dri
     networks:
       - OmniNet
     healthcheck:
-      test: ["CMD-SHELL", "netstat -ntlp | grep :32400 && mountpoint /Media"]
+      test: ["CMD-SHELL", "/plexcheck"]
       interval: 10s
       timeout: 2s
       retries: 3
