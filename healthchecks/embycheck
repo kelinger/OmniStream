@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 APP=Emby
 PORT=8096
