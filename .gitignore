@@ -6,6 +6,8 @@ components/9[0-8]*.yaml
 [cC]onfigs
 enabled/
 install-report
+[lL]ogs
+mnt
 plugins/*-start
 plugins/*-end
 snapshots
