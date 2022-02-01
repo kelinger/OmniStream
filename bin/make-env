@@ -205,5 +205,6 @@ ln -sf ${ENV} ${OMNIHOME}/.env
 
 cat ${OMNIHOME}/enabled/???-* >${OMNIHOME}/docker-compose.yaml
 mkdir -p ${CONFIGS} ${MERGEMOUNT}/${DOWNLOADS} ${LOGS}
+cp ${RCLONEHOME}/rclone.conf ${CONFIGS}/omnimount/
 
 echo done
