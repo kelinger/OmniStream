@@ -205,6 +205,7 @@ ln -sf ${ENV} ${OMNIHOME}/.env
 
 cat ${OMNIHOME}/enabled/???-* >${OMNIHOME}/docker-compose.yaml
 mkdir -p ${CONFIGS} ${MERGEMOUNT}/${DOWNLOADS} ${LOGS}
-cp ${RCLONEHOME}/rclone.conf ${CONFIGS}/omnimount/
+sudo cp ${RCLONEHOME}/rclone.conf ${CONFIGS}/omnimount/
+sudo chown ${USERID}:${GROUPID} ${CONFIGS}/omnimount/rclone.conf
 
 echo done
