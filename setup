@@ -50,6 +50,8 @@ fi
 
 source ~/.selected_editor > /dev/null 2>&1
 
+sudo dpkg-reconfigure tzdata
+
 # Detect if Omni already installed
 
 if [[ ${OMNI} = 0 ]]
