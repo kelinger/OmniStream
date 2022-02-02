@@ -31,7 +31,7 @@
       - /etc/localtime:/etc/localtime:ro
       - /tmp/Emby-transcode:/transcode
       - ${OMNIHOME}/healthchecks/embycheck:/embycheck
-      - ${LOGS}:/logs
+      - ${LOGS}:/config/logs
     devices:
       - /dev/dri:/dev/dri
     networks:

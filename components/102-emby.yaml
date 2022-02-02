@@ -31,7 +31,7 @@
       - /etc/localtime:/etc/localtime:ro
       - /tmp/Emby-transcode:/transcode
       - ${OMNIHOME}/healthchecks/embycheck:/embycheck
-      - ${LOGS}:/logs
+      - ${LOGS}:/config/logs
     networks:
       - OmniNet
     healthcheck:

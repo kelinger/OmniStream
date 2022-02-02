@@ -34,6 +34,7 @@
       - /bin/netstat:/bin/netstat:ro
       - ${MEDIA}:/Media
       - ${OMNIHOME}/healthchecks/plexcheck:/plexcheck
+      "- ${LOGS}:/config/Library/Application Support/Plex Media Server/Logs"
     devices:
       - /dev/dri:/dev/dri
     networks:
