@@ -32,6 +32,7 @@
       - /tmp/JellyCache:/cache
       - /tmp/Jellyfin-transcode:/transcode
       - ${OMNIHOME}/healthchecks/jellycheck:/jellycheck
+      - ${LOGS}:/logs
     devices:
       - /dev/dri:/dev/dri
     networks:
