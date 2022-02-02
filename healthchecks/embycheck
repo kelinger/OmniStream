@@ -9,7 +9,7 @@ NS=$(which netstat)
 if [[ ${?} -ne 0 ]];
 then
 	# No netstat so install it and create new log file
-	echo $(date) - (${APP}) Installing net-tools >> ${LOG}
+	echo $(date) - ${APP} - Installing net-tools >> ${LOG}
 	apt update
 	apt install net-tools -y
 fi
