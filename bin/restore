@@ -33,33 +33,116 @@ msgbox() {
 
 source ${HOME}/.config/omnistream.conf
 
-cd ${MERGEMOUNT}/Backups
-SERVERS=$(ls -d */)
-COUNT=$(echo ${SERVERS} | wc -w)
+declare -a SERVERS
+i=1
+j=1
+while read DIR
+do
+	SERVERS[ ${i} ]=${j}
+	(( j++ ))
+	SERVERS[ (${i} + 1) ]=${DIR}
+	(( i=(${i}+2) ))
+done < <(ls ${MERGEMOUNT}/Backups)
+TERMINAL=$(tty)
 
-if [[ ${COUNT} -gt 1 ]]
+CHOICE=$(dialog --clear \
+	--backtitle "Restore OmniStream" \
+	--title "Server selection" \
+	--menu "Restore from which servers?" \
+	0 0 0 \
+	"${SERVERS[@]}" \
+	2>&1 >$TERMINAL)
+CODE=${?}
+if [[ ${CODE} = 255 ]] || [[ ${CODE} = 1 ]]
 then
-	echo $COUNT servers!
-else
-	echo One server
+	clear
+	exit
+fi
+SERVER=${SERVERS[${CHOICE}*2]}
+
+# Get list of full backups for restore
+cd "${MERGEMOUNT}/Backups/${SERVER}/"[Cc]onfigs
+FULLBAK="$(ls *-full.tar.gz)"
+OPTIONS=""
+COUNTER=1
+for i in ${FULLBAK}
+do
+	OPTIONS="${OPTIONS}${COUNTER} ${i} off "
+	COUNTER=$((COUNTER+1))
+done
+dialog --title "Config restoration" \
+	--no-tags \
+	--checklist \
+	"Choose which full backups from configs to restore:" \
+	0 0 0 \
+	${OPTIONS} 2>${TEMP}
+
+CODE=${?}
+if [[ ${CODE} = 255 ]] || [[ ${CODE} = 1 ]]
+then
+	clear
+	exit
 fi
 
+CHOICE=$(cat ${TEMP})
+rm ${TEMP}
 
-exit
+# Get list of differential backups for restore
+DIFFBAK="$(ls *-diff.tar.gz)"
+if [[ ${DIFFBAK} -ne "" ]]
+then
+	OPTIONS=""
+	COUNTER=1
+	for i in ${DIFFBAK}
+	do
+		OPTIONS="${OPTIONS}${COUNTER} ${i} off "
+		COUNTER=$((COUNTER+1))
+	done
+	dialog --title "Config restoration" \
+		--no-tags \
+		--checklist \
+		"Choose which differential backups from configs to restore:" \
+		0 0 0 \
+		${OPTIONS} 2>${TEMP}
 
-# Loop through all full backups and extract (tar is removed if successful)
-
-for f in *-full.tar.gz
+	CODE=${?}
+	if [[ ${CODE} = 255 ]] || [[ ${CODE} = 1 ]]
+	then
+		DIFFCHOICE=""
+	else
+		DIFFCHOICE=$(cat ${TEMP})
+	fi
+	rm ${TEMP}
+fi
+COUNTER=1
+TARGET=${CONFIGS}
+TARGET=/tmp
+for i in ${FULLBAK}
 do
-	(pv -n "${f}" | tar xzpf -) 2>&1 | dialog --gauge "Restoring ${f}..." 6 50 && rm ${f}
+	for j in ${CHOICE}
+	do
+		if [[ ${COUNTER} = ${j} ]]
+		then
+			(pv -n "${i}" | tar xzpf - --unlink-first --recursive-unlink --directory=${TARGET}) 2>&1 | dialog --gauge "Restoring ${i}..." 6 50 
+		fi
+	done
+	COUNTER=$((COUNTER+1))
 done
 
-# Loop through all incremental backups and extract (tar is removed if successful)
-
-for f in *-diff.tar.gz
-do
-	(pv -n "${f}" | tar --incremental xzpf -) 2>&1 | dialog --gauge "Restoring ${f}..." 6 50 && rm ${f}
-done
+if [[ ${DIFFBAK} -ne "" ]]
+then
+	for i in ${DIFFBAK}
+	do
+		for j in ${CHOICE}
+		do
+			if [[ ${COUNTER} = ${j} ]]
+			then
+				(pv -n "${i}" | tar xzpf - --incremental --unlink-first --recursive-unlink --directory=${TARGET}) 2>&1 | dialog --gauge "Restoring ${i}..." 6 50 
+			fi
+		done
+		COUNTER=$((COUNTER+1))
+	done
+fi
 
 clear
 echo Restoration complete!
