@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# Install dialog, if missing
+
+hash dialog 2>/dev/null || { echo Installing dialog \(one time\) ; sudo apt update > /dev/null ; sudo apt install dialog -y > /dev/null ; }
+
+# Dialog functions
+
+TEMP=/tmp/answer${$}
+
+get_text() {
+        dialog --title "${TITLE}" --clear --no-cancel --inputbox "${DESC}" 0 0 "${DEFAULT}" 2> ${TEMP}-Input
+        VALUE=$(cat ${TEMP}-Input)
+        rm ${TEMP}-Input
+}
+
+yesno() {
+        dialog --title "${TITLE}" --clear --yesno "${DESC}" 0 0
+        VALUE=${?}
+}
+
+noyes() {
+        dialog --title "${TITLE}" --clear --yesno --defaultno "${DESC}" 0 0
+        VALUE=${?}
+}
+
+msgbox() {
+	dialog --title "${TITLE}" --clear --msgbox "${DESC}" 0 0
+	VALUE=${?}
+}
+
+# Load Omni variables
+
+source ${HOME}/.config/omnistream.conf
+
+cd ${MERGEMOUNT}/Backups
+SERVERS=$(ls -d */)
+COUNT=$(echo ${SERVERS} | wc -w)
+
+if [[ ${COUNT} -gt 1 ]]
+then
+	echo $COUNT servers!
+else
+	echo One server
+fi
+
+
+exit
+
+# Loop through all full backups and extract (tar is removed if successful)
+
+for f in *-full.tar.gz
+do
+	(pv -n "${f}" | tar xzpf -) 2>&1 | dialog --gauge "Restoring ${f}..." 6 50 && rm ${f}
+done
+
+# Loop through all incremental backups and extract (tar is removed if successful)
+
+for f in *-diff.tar.gz
+do
+	(pv -n "${f}" | tar --incremental xzpf -) 2>&1 | dialog --gauge "Restoring ${f}..." 6 50 && rm ${f}
+done
+
+clear
+echo Restoration complete!

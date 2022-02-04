@@ -1,6 +1,5 @@
 #!/bin/bash
 
-#if ! dpkg-query -W -f='${Status}' dialog  | grep "Dialog command found"; then sudo apt install dialog -y ; fi
 hash dialog 2>/dev/null || { echo Installing dialog \(one time\) ; sudo apt update > /dev/null ; sudo apt install dialog -y > /dev/null ; }
 source ${HOME}/.config/omnistream.conf
 source ${HOME}/Omni/bin/omni_functions
