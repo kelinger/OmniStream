@@ -13,14 +13,13 @@ SERVER=$(hostname)
 SERVER=${SERVER,,}
 APILOG="${LOGS}/api.log"
 OMNIHOME="${HOME}/OmniStream"
-DIFFBACK="apache cloudflare desktop embystat hydra mariadb mysql portainer radarr redis rtorrent sabnzbd sonarr tautulli traefik redis transmission"
+DIFFBAK="apache cloudflare desktop embystat hydra mariadb mysql portainer radarr redis rtorrent sabnzbd sonarr tautulli traefik redis transmission"
 
 # Make sure there's a place to store backup index for full versus differential
 mkdir -p ${OMNIHOME}/snapshots
 
 rmove() {
-	# This function handles moving a file from the local storage to Google.  It will display
-	# the original path as well as the target and file size upon completion.
+	# This function handles moving a file from the local storage to cloud.
 	SOURCE=${1}
 	TARGET=${2}
 	echo "${TARGET}"
@@ -31,17 +30,19 @@ rmove() {
 cd ${HOME}
 echo Creating backup
 crontab -l > ${HOME}/cron
-# Create the server's non-Omni backup.  Some files specified may not exist.
+
+# Create the server's home backup.  Some files specified may not exist.
+
 echo "/tmp/${SERVER}-backup.tar.gz --> "
 sudo tar -cpf /tmp/${SERVER}-backup.tar.gz \
-       --exclude=.cache \
-       --exclude=.iterm* \
-       --exclude=thinclient_drives \
-       --exclude=${HOME}/Downloads \
-       --exclude=${OMNIHOME}/mnt \
-       --exclude=${CONFIGS} \
-       --exclude=${OMNIHOME}/snapshots \
-       --exclude=${HOME}/.cache \
+       --exclude='.cache' \
+       --exclude='.iterm*' \
+       --exclude='thinclient_drives' \
+       --exclude='${HOME}/[Dd]ownloads' \
+       --exclude='${OMNIHOME}/mnt' \
+       --exclude='${OMNIHOME}/[Ll]ogs/*' \
+       --exclude='${CONFIGS}' \
+       --exclude='${OMNIHOME}/snapshots' \
        ${HOME} > /dev/null 2>&1
 sudo chown ${USERID}:${GROUPID} /tmp/${SERVER}-*.tar.gz
 rmove "/tmp/${SERVER}-backup.tar.gz" "/Backups/${SERVER}/${SERVER}-backup.tar.gz"
@@ -56,13 +57,13 @@ do
 	echo -n "${FILENAME} --> "
 	if [[ -f "${f}" ]]
 	then
-		# This is a file, not a directory.  So, we're just going to copy it to Google
+		# This is a file, not a directory.  So, we're just going to copy it to the cloud
 		# as is (no tar/zip).
 		cp "${f}" /tmp/
 		rmove "/tmp/${FILENAME}" "/Backups/${SERVER}/$(basename ${CONFIGS})/${FILENAME}"
 	else
 		# This is a directory so we're going to pack it up into /tmp and then ship
-		# it off to Google drive.
+		# it off to the cloud drive.
 		if [[ -f "${OMNIHOME}/snapshots/${FILENAME}.snar" ]]
 		then
 			# We already have a snar, which means that this is a differential.
@@ -78,8 +79,6 @@ do
 			--listed-incremental "${OMNIHOME}/snapshots/${FILENAME}.snar" \
 			--use-compress-program=pigz \
 			--exclude=.cache \
-			--exclude=.iterm* \
-			--exclude=thinclient_drives \
 			"${FILENAME}" > /dev/null 2>&1
 		sudo chown ${USERID}:${GROUPID} "/tmp/${FILENAME2}.tar.gz" "${OMNIHOME}/snapshots/${FILENAME}.snar"
 		if [[ ${FULL} -eq 0 ]]

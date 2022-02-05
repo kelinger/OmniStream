@@ -16,6 +16,7 @@ LOGS=${OMNIHOME}/logs
 ADD_DNS=false
 DELETE_DNS=false
 TEMP=/tmp/answer${$}
+DIFFBAK="emby jellyfin plex"
 
 touch ${ENV}
 
@@ -124,10 +125,10 @@ MERGEMOUNT=${MERGEMOUNT}
 RCLONEHOME=${HOME}/.config/rclone
 RCLONESERVICE=${RCLONESERVICE}
 RCLONEMOUNT=${RCLONEMOUNT}
-TV="\"${MEDIA}/TV Shows\""
 UNSYNCED=${UNSYNCED}
 UPLOADCACHE=${UPLOADCACHE}
 MEDIA=${MERGEMOUNT}/Media
+DIFFBAK="${DIFFBAK}"
 
 ############################
 #   Container/Host names   #
