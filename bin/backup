@@ -35,14 +35,16 @@ crontab -l > ${HOME}/cron
 
 echo "/tmp/${SERVER}-backup.tar.gz --> "
 sudo tar -cpf /tmp/${SERVER}-backup.tar.gz \
-       --exclude='.cache' \
-       --exclude='.iterm*' \
-       --exclude='thinclient_drives' \
-       --exclude='${HOME}/[Dd]ownloads' \
-       --exclude='${OMNIHOME}/mnt' \
-       --exclude='${OMNIHOME}/[Ll]ogs/*' \
-       --exclude='${CONFIGS}' \
-       --exclude='${OMNIHOME}/snapshots' \
+       --exclude=.cache \
+       --exclude=.iterm* \
+       --exclude=thinclient_drives \
+       --exclude=${HOME}/downloads \
+       --exclude=${HOME}/Downloads \
+       --exclude=${OMNIHOME}/mnt/* \
+       --exclude=${OMNIHOME}/logs/* \
+       --exclude=${OMNIHOME}/Logs/* \
+       --exclude=${CONFIGS} \
+       --exclude=${OMNIHOME}/snapshots \
        ${HOME} > /dev/null 2>&1
 sudo chown ${USERID}:${GROUPID} /tmp/${SERVER}-*.tar.gz
 rmove "/tmp/${SERVER}-backup.tar.gz" "/Backups/${SERVER}/${SERVER}-backup.tar.gz"
