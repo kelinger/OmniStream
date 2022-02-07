@@ -47,6 +47,7 @@ sudo tar -cpf /tmp/${SERVER}-backup.tar.gz \
        ${HOME} > /dev/null 2>&1
 sudo chown ${USERID}:${GROUPID} /tmp/${SERVER}-*.tar.gz
 rmove "/tmp/${SERVER}-backup.tar.gz" "/Backups/${SERVER}/${SERVER}-backup.tar.gz"
+rm ${HOME}/cron
 
 cd ${CONFIGS}
 
@@ -72,6 +73,8 @@ do
 				BACKUPNAME="${FILENAME}-diff"
 			else
 				BACKUPNAME="${FILENAME}-full"
+				# Remove previous DIFF, if it exists
+				rm ${MERGEMOUNT}"/Backups/${SERVER}/$(basename ${CONFIGS})/${FILENAME}-diff.tar.gz" > /dev/null 2>&1
 			fi
 		else
 			BACKUPNAME="${FILENAME}-full"
