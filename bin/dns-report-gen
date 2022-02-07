@@ -4,7 +4,8 @@ source ~/.config/omnistream.conf
 
 OMNIHOME=${HOME}/OmniStream
 REPORT=${OMNIHOME}/dns-report
-IP="$(dig +short myip.opendns.com @resolver1.opendns.com)"
+#IP="$(dig +short myip.opendns.com @resolver1.opendns.com)"
+IP=$(dig +short txt ch whoami.cloudflare @1.0.0.1 | tr -d '"')
 
 for i in components enabled; do
 	cd ${OMNIHOME}/$i

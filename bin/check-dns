@@ -17,8 +17,8 @@ source ~/.config/omnistream.conf
 
 OMNIHOME=${HOME}/OmniStream
 ${OMNIHOME}/bin/dns-report-gen
-#IP="$(curl -s http://ipv4.icanhazip.com)"
-IP="$(dig +short myip.opendns.com @resolver1.opendns.com)"
+#IP="$(dig +short myip.opendns.com @resolver1.opendns.com)"
+IP=$(dig +short txt ch whoami.cloudflare @1.0.0.1 | tr -d '"')
 
 function zoneid() {
 #	Return ZONEID for managed CloudFlare ZONE
