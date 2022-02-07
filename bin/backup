@@ -91,3 +91,6 @@ do
 		rmove "/tmp/${BACKUPNAME}.tar.gz" "/Backups/${SERVER}/$(basename ${CONFIGS})/${BACKUPNAME}.tar.gz"
 	fi
 done
+
+# Call backup-end plugin, if it exists
+[[ -f ${OMNIHOME}/plugins/backup-end ]] && source ${OMNIHOME}/plugins/backup-end
