@@ -13,7 +13,6 @@ SERVER=$(hostname)
 SERVER=${SERVER,,}
 APILOG="${LOGS}/api.log"
 OMNIHOME="${HOME}/OmniStream"
-DIFFBAK="apache cloudflare desktop embystat hydra mariadb mysql portainer radarr redis rtorrent sabnzbd sonarr tautulli traefik redis transmission"
 
 # Make sure there's a place to store backup index for full versus differential
 mkdir -p ${OMNIHOME}/snapshots
@@ -33,7 +32,7 @@ crontab -l > ${HOME}/cron
 
 # Create the server's home backup.  Some files specified may not exist.
 
-echo "/tmp/${SERVER}-backup.tar.gz --> "
+echo -n "/tmp/${SERVER}-backup.tar.gz --> "
 sudo tar -cpf /tmp/${SERVER}-backup.tar.gz \
        --exclude=.cache \
        --exclude=.iterm* \
@@ -56,57 +55,39 @@ FILES="${CONFIGS}/"*
 for f in ${FILES}
 do
 	FILENAME="$(basename "${f}")"
+	[[ ${DIFFBAK} =~ (^|[[:space:]])${FILENAME}($|[[:space:]]) ]] && DIFF=1 || DIFF=0
+	[[ -f "${f}" ]] && FILE=1 || FILE=0
+	[[ -f "${OMNIHOME}/snapshots/${FILENAME}.snar" ]] && SNAR=1 || SNAR=0
 	echo -n "${FILENAME} --> "
-	if [[ -f "${f}" ]]
+	if [[ ${FILE} = 1 ]]
 	then
-		# This is a file, not a directory.  So, we're just going to copy it to the cloud
-		# as is (no tar/zip).
 		cp "${f}" /tmp/
 		rmove "/tmp/${FILENAME}" "/Backups/${SERVER}/$(basename ${CONFIGS})/${FILENAME}"
 	else
-		# This is a directory so we're going to pack it up into /tmp and then ship
-		# it off to the cloud drive.
-		if [[ -f "${OMNIHOME}/snapshots/${FILENAME}.snar" ]]
+		if [[ ${DIFF} = 1 ]]
 		then
-			# We already have a snar, which means that this is a differential.
-			FULL=0
-			cp "${OMNIHOME}/snapshots/${FILENAME}.snar" "${OMNIHOME}/snapshots/${FILENAME}.bak"
-			FILENAME2="${FILENAME}-diff"
+			if [[ ${SNAR} = 1 ]]
+			then
+				cp "${OMNIHOME}/snapshots/${FILENAME}.snar" "${OMNIHOME}/snapshots/${FILENAME}.bak"
+				BACKUPNAME="${FILENAME}-diff"
+			else
+				BACKUPNAME="${FILENAME}-full"
+			fi
 		else
-			# No snar found, so we're doing the full backup
-			FULL=1
-			FILENAME2="${FILENAME}-full"
+			BACKUPNAME="${FILENAME}-full"
+			# Remove previous SNAR, if it exists
+			rm "${OMNIHOME}/snapshots/${FILENAME}.snar" > /dev/null 2>&1
+			# Remove previous DIFF, if it exists
+			rm ${MERGEMOUNT}"/Backups/${SERVER}/$(basename ${CONFIGS})/${FILENAME}-diff.tar.gz" > /dev/null 2>&1
 		fi
-		sudo tar -cpf "/tmp/${FILENAME2}.tar.gz" \
+		sudo tar -cpf "/tmp/${BACKUPNAME}.tar.gz" \
 			--listed-incremental "${OMNIHOME}/snapshots/${FILENAME}.snar" \
 			--use-compress-program=pigz \
 			--exclude=.cache \
 			"${FILENAME}" > /dev/null 2>&1
-		sudo chown ${USERID}:${GROUPID} "/tmp/${FILENAME2}.tar.gz" "${OMNIHOME}/snapshots/${FILENAME}.snar"
-		if [[ ${FULL} -eq 0 ]]
-		then
-			# If this is a differential, we want to remember the original so that
-			# future differential backups are based on the original, not the previous
-			# differential
-			mv "${OMNIHOME}/snapshots/${FILENAME}.bak" "${OMNIHOME}/snapshots/${FILENAME}.snar"
-		else
-			# This is a full backup so remove any previous differential.
-			echo -n "Removing outdated DIFF for ${FILENAME} --> "
-			rm ${MERGEMOUNT}"/Backups/${SERVER}/$(basename ${CONFIGS})/${FILENAME}-diff.tar.gz" > /dev/null 2>&1
-			rmove "/tmp/${FILENAME2}.tar.gz" "/Backups/${SERVER}/$(basename ${CONFIGS})/${FILENAME2}.tar.gz"
-		fi
-		if [[ ${DIFFBAK} =~ (^|[[:space:]])${FILENAME}($|[[:space:]]) ]]
-		then
-			rmove "/tmp/${FILENAME2}.tar.gz" "/Backups/${SERVER}/$(basename ${CONFIGS})/${FILENAME2}.tar.gz"
-		else
-			# Don't keep the SNAR so that this is always a full backup
-			echo "Disposing SNAR for ${FILENAME}"
-			rm "${OMNIHOME}/snapshots/${FILENAME}.snar"
-		fi
+		sudo chown ${USERID}:${GROUPID} "/tmp/${BACKUPNAME}.tar.gz" "${OMNIHOME}/snapshots/${FILENAME}.snar"
+		[[ ${SNAR} = 1 ]] && mv "${OMNIHOME}/snapshots/${FILENAME}.bak" "${OMNIHOME}/snapshots/${FILENAME}.snar"
+		[[ ${DIFF} = 0 ]] && rm "${OMNIHOME}/snapshots/${FILENAME}.snar"
+		rmove "/tmp/${BACKUPNAME}.tar.gz" "/Backups/${SERVER}/$(basename ${CONFIGS})/${BACKUPNAME}.tar.gz"
 	fi
 done
-
-sudo rm ${HOME}/cron
-
-# Call backup-end plugin, if it exists
-[[ -f ${OMNIHOME}/plugins/backup-end ]] && source ${OMNIHOME}/plugins/backup-end
