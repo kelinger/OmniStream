@@ -11,7 +11,7 @@ then
 	# No netstat so install it and create new log file
 	echo $(date) - ${APP} - Installing net-tools >> ${LOG}
 	apk update
-	apk add net-tools -y
+	apk add net-tools
 fi
 
 ${NS} -ntlp | grep :${PORT}
