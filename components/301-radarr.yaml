@@ -2,7 +2,7 @@
 # Radarr - Movie catalog and management
 #
   radarr:
-    image: linuxserver/radarr:nightly
+    image: linuxserver/radarr
     container_name: ${RADARRNAME}
     hostname: ${RADARRNAME}
     domainname: ${MYDOMAIN}
@@ -34,7 +34,7 @@
     networks:
       - OmniNet
     healthcheck:
-      test: ["CMD", "/radarrcheck"]
+      test: ["CMD-SHELL", "/radarrcheck"]
       interval: 10s
       timeout: 2s
       retries: 3
