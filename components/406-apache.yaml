@@ -10,7 +10,7 @@
     networks:
       - OmniNet
     volumes:
-      - ${CONFIGS}/${APACHENAME}:/app
+      - ${CONFIGS}/${APACHENAME}:/var/www/html
       - /etc/localtime:/etc/localtime:ro
       - /bin/netstat:/bin/netstat:ro
     labels:
@@ -20,9 +20,9 @@
       - traefik.http.routers.apache.rule=Host(`${APACHENAME}.${MYDOMAIN}`)
       - traefik.http.routers.apache.tls=true
       - traefik.http.routers.apache.tls.certresolver=lets-encrypt
-      - traefik.http.services.apache.loadbalancer.server.port=8080
+      - traefik.http.services.apache.loadbalancer.server.port=80
     healthcheck:
-      test: ["CMD-SHELL", "netstat -ntlp | grep :8080"]
+      test: ["CMD-SHELL", "netstat -ntlp | grep :80"]
       interval: 10s
       timeout: 2s
       retries: 3
