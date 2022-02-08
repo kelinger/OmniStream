@@ -34,7 +34,7 @@
     networks:
       - OmniNet
     healthcheck:
-      test: ["CMD-SHELL", "/radarrcheck"]
+      test: ["CMD", "/radarrcheck"]
       interval: 10s
       timeout: 2s
       retries: 3
