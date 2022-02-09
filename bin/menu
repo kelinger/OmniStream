@@ -100,6 +100,7 @@ main_menu() {
 			2) ${OMNIHOME}/bin/setup-advanced;;
 			8) utilities;;
 			9) rm -f ${TEMP}*
+				clear
 				exit;;
 		esac
 	done

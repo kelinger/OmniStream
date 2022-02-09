@@ -1,5 +1,6 @@
 #!/bin/bash
 
+SELECTION=${1}
 hash dialog 2>/dev/null || { echo Installing dialog \(one time\) ; sudo apt update > /dev/null ; sudo apt install dialog -y > /dev/null ; }
 source ${HOME}/.config/omnistream.conf
 source ${HOME}/OmniStream/bin/omni_functions
@@ -19,6 +20,9 @@ program_runner() {
 	${1} 2>&1 | dialog --programbox 1000 1000
 }
 
+# trap ctrl-c and call ctrl_c()
+trap ctrl_c INT
+
 while true
 do
 	exec 3>&1
@@ -35,7 +39,7 @@ do
 		"3" "omni restart - restart all containers" \
 		"4" "omni update - update all running Omni containers" \
 		"5" "omni status - show the status of running containers" \
-		"6" "omni stats - show realtime stats (ctrl-c to exit" \
+		"6" "omni stats - show realtime stats (ctrl-c to exit)" \
 		"7" "omni repair - force update OmniStream to latest version" \
 		"8" "dns report - show a report of DNS entries for active containers" \
 		"9" "update - run updates for operating system" \
