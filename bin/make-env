@@ -116,6 +116,7 @@ MYDOMAIN=${MYDOMAIN}
 MYEMAIL=${MYEMAIL}
 TIMEZONE=$(cat /etc/timezone)
 USERID=$(id -u)
+DIFFBAK="${DIFFBAK}"
 
 ############################
 #     Mount Variables      #
@@ -128,7 +129,6 @@ RCLONEMOUNT=${RCLONEMOUNT}
 UNSYNCED=${UNSYNCED}
 UPLOADCACHE=${UPLOADCACHE}
 MEDIA=${MERGEMOUNT}/Media
-DIFFBAK="${DIFFBAK}"
 
 ############################
 #   Container/Host names   #

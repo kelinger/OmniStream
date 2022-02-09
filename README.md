@@ -43,6 +43,7 @@ Documentation:  https://omnistream.cloud
 * Organizr
 * Jackett
 * Bazarr
+* Ombi
 ### Utilities and extras
 * NextCloud
 * NetData - server and container statistics and monitoring
