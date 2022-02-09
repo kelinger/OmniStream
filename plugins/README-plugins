@@ -10,6 +10,8 @@ the language with a header like #!/bin/bash).
 	sync-end
 	backup-start
 	backup-end
+	update-start
+	update-end
 
-These run at the beginning or end of the up, down, or sync processes.  None will be
-replaced or removed when OmniStream is updated.
+These run at the beginning or end of the up, down, sync, backup, or update processes.
+Your custom scripts will not be replaced or removed when OmniStream is updated.

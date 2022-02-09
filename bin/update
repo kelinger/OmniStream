@@ -1,8 +1,13 @@
 #!/bin/bash
 source ${HOME}/.config/omnistream.conf
+
+[[ -f ${OMNIHOME}/plugins/update-start ]] && source ${OMNIHOME}/plugins/update-start
+
 sudo apt update
 sudo apt upgrade -y
 sudo apt autoremove -y
 sudo apt autoclean
 sudo pveam update
 ${OMNIHOME}/bin/update-rclone
+
+[[ -f ${OMNIHOME}/plugins/update-end ]] && source ${OMNIHOME}/plugins/update-end
