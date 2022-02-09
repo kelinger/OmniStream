@@ -87,17 +87,24 @@ main_menu() {
 	while true; do
 		dialog \
 			--no-cancel \
+			--default-item ${CHOICE} \
 			--title "Omnistream Configuration Editor" \
 			--menu "Select an option:" 0 0 0 \
 			1 "Edit components" \
 			2 "Edit hostnames" \
+			3 "Rerun rclone setup" \
+			4 "Rerun Traefik setup" \
+			5 "Redefine media directory" \
 			8 "Utilities" \
 			9 "Exit" 2>${TEMP}
 
 		CHOICE=$(cat ${TEMP})
   		case ${CHOICE} in
 			1) edit_components;;
-			2) ${OMNIHOME}/bin/setup-advanced;;
+			2) setup-advanced;;
+			3) setup-rclone;;
+			4) setup-traefik;;
+			5) setup-media;;
 			8) utilities;;
 			9) rm -f ${TEMP}*
 				clear

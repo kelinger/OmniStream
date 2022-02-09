@@ -29,15 +29,14 @@ do
 	SELECTION=$(dialog \
 		--backtitle "Omni Controls" \
 		--title "Menu" \
-		--no-tags \
 		--clear \
 		--cancel-label "Exit" \
 		--default-item "${SELECTION}" \
-		--menu "Please select:" ${HEIGHT} ${WIDTH} 5 \
+		--menu "Please select:" ${HEIGHT} ${WIDTH} 0 \
 		"1" "omni up - refresh containers and bring up new ones" \
 		"2" "omni down - take down all containers; leave mounts" \
 		"3" "omni restart - restart all containers" \
-		"4" "omni update - update all running Omni containers" \
+		"4" "omni update - update all running Omni containers with latest build" \
 		"5" "omni status - show the status of running containers" \
 		"6" "omni stats - show realtime stats (ctrl-c to exit)" \
 		"7" "omni repair - force update OmniStream to latest version" \
