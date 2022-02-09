@@ -98,7 +98,6 @@ do
 			;;
 		"A" )
 			docker exec -ti omnimount /root/rstats
-			sleep 5
 			;;
 		"B" )
 			program_runner turbosync
