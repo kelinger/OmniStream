@@ -76,7 +76,8 @@ do
 			display_result "Omni Status"
 			;;
 		6 )
-			program_runner "Omni stats"
+			clear
+			omni stats
 			;;
 		7 )
 			clear
@@ -84,7 +85,7 @@ do
 			;;
 		8 )
 			dns-report-gen
-			result=$(cat "${OMNIHOME}/dns-report.txt")
+			result=$(cat "${OMNIHOME}/dns-report")
 			display_result "DNS Report"
 			;;
 		9 )

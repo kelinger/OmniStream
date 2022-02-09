@@ -49,7 +49,7 @@ omni() {
 		cd "${CURDIR}" || exit
 		;;
 	stats)
-		docker stats "${@:2}"
+		docker stats "${@:2}" --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}\t{{.PIDs}}"
 		;;
 	restart)
 		cd "${OMNIHOME}" || exit
