@@ -27,23 +27,23 @@ while true
 do
 	exec 3>&1
 	SELECTION=$(dialog \
-		--backtitle "Omni Controls" \
-		--title "Menu" \
+		--backtitle "OmniStream" \
+		--title "Utility Menu" \
 		--clear \
 		--cancel-label "Exit" \
 		--default-item "${SELECTION}" \
-		--menu "Please select:" ${HEIGHT} ${WIDTH} 0 \
-		"1" "omni up - refresh containers and bring up new ones" \
-		"2" "omni down - take down all containers" \
-		"3" "omni restart - restart all containers" \
-		"4" "omni update - update all running Omni containers with latest build" \
-		"5" "omni status - show the status of running containers" \
-		"6" "omni stats - show realtime stats (ctrl-c to exit)" \
-		"7" "omni repair - force update OmniStream to latest version" \
-		"8" "dns report - show a report of DNS entries for active containers" \
-		"9" "update - run updates for operating system" \
-		"A" "rstats - monitor active rclone transfers" \
-		"B" "turbosync - manually trigger sync of cached files up to cloud" \
+		--menu "Please select the command to run:" ${HEIGHT} ${WIDTH} 0 \
+		"omni up" "refresh containers and bring up new ones" \
+		"omni down" "take down all containers" \
+		"omni restart" "restart all containers" \
+		"omni update" "update all running Omni containers with latest build" \
+		"omni status" "show the status of running containers" \
+		"omni stats" "show realtime stats (ctrl-c to exit)" \
+		"omni repair" "force update OmniStream to latest version" \
+		"omni dns" "show a report of DNS entries for active containers" \
+		"update" "run updates for operating system" \
+		"rstats" "monitor active rclone transfers" \
+		"turbosync" "manually trigger sync of cached files up to cloud" \
 		2>&1 1>&3)
 	EXIT_STATUS=${?}
 	exec 3>&-
@@ -60,46 +60,46 @@ do
 			;;
 	esac
 	case ${SELECTION} in
-		1 )
+		"omni up" )
 			clear
 			omni up
 			;;
-		2 )
+		"omni down" )
 			clear
 			omni down
 			;;
-		3 )
+		"omni restart" )
 			clear
 			omni restart
 			;;
-		4 )
+		"omni update" )
 			clear
 			omni update
 			;;
-		5 )
+		"omni status" )
 			result=$(omni status)
 			display_result "Omni Status"
 			;;
-		6 )
+		"omni stats" )
 			clear
 			omni stats
 			;;
-		7 )
+		"omni repair" )
 			clear
 			omni repair
 			;;
-		8 )
+		"omni dns" )
 			dns-report-gen
 			result=$(cat "${OMNIHOME}/dns-report")
 			display_result "DNS Report"
 			;;
-		9 )
+		"update" )
 			program_runner update
 			;;
-		"A" )
+		"rstats" )
 			docker exec -ti omnimount /root/rstats
 			;;
-		"B" )
+		"turbosync" )
 			program_runner turbosync
 			;;
 	esac

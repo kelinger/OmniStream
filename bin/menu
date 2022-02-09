@@ -88,7 +88,8 @@ main_menu() {
 		dialog \
 			--no-cancel \
 			--default-item ${CHOICE} \
-			--title "Omnistream Configuration Editor" \
+			--backtitle "OmniStream" \
+			--title "OmniStream Setup and Configuration Editor" \
 			--menu "Select an option:" 0 0 0 \
 			1 "Edit components" \
 			2 "Edit hostnames" \
