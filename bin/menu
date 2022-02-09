@@ -105,5 +105,5 @@ main_menu() {
 	done
 }
 
-  main_menu
-  #variable_menu
+main_menu
+clear
