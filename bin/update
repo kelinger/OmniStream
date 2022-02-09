@@ -1,16 +1,8 @@
 #!/bin/bash
+source ${HOME}/.config/omnistream.conf
 sudo apt update
 sudo apt upgrade -y
-sudo apt dist-upgrade -y
 sudo apt autoremove -y
 sudo apt autoclean
-cd /tmp
-#wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz > /dev/null 2>&1
-#gunzip /tmp/GeoIP.dat.gz
-#mv /tmp/GeoIP.dat ~/Omni/Configs/Deluge/
 sudo pveam update
-cd /opt/LS_COLORS
-git pull
-cd ../mergerfs/mergerfs
-git pull
-/home/kelinger/OmniStream/bin/update-rclone
+${OMNIHOME}/bin/update-rclone
