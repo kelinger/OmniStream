@@ -109,13 +109,20 @@ omni() {
 		;;
 	update)
 		cd "${OMNIHOME}" || exit
-		git pull
-		"${OMNIHOME}"/bin/make-env rebuild
-		"${OMNIHOME}"/bin/dns-report-gen
+		echo Updating OmniStream from GIT
+		git pull > /dev/null 2>&1
+		echo Rebuilding OmniStream Docker stack configuration
+		"${OMNIHOME}"/bin/make-env rebuild > /dev/null 2>&1
+		echo Determining DNS assignments
+		"${OMNIHOME}"/bin/dns-report-gen > /dev/null 2>&1
 		echo
+		echo Updating Docker containers with latest versions
 		/usr/local/bin/docker-compose pull
+		echo
+		echo Ensuring running environment matches latest versions and configs
 		/usr/local/bin/docker-compose up --remove-orphans --build -d
-		docker exec -ti sabnzbd /config/extras.sh >/dev/null 2>&1
+		echo
+		echo Clearing leftovers
 		docker system prune -a -f --volumes
 		cd "${CURDIR}" || exit
 		;;
