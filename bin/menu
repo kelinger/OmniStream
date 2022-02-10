@@ -35,7 +35,7 @@ main_menu() {
 			--no-cancel \
 			--default-item ${CHOICE} \
 			--backtitle "OmniStream" \
-			--title "OmniStream Setup and Configuration Editor" \
+			--title "OmniStream Configurations and Utilities" \
 			--menu "Select an option:" 0 0 0 \
 			1 "Edit components" \
 			2 "Select setups to rerun" \
