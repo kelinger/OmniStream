@@ -43,6 +43,7 @@ Documentation:  https://omnistream.cloud
 * Organizr
 * Jackett
 * Bazarr
+* Monitorr
 * Ombi
 ### Utilities and extras
 * NextCloud
