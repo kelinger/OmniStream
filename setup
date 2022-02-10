@@ -97,6 +97,7 @@ APPLIST=" \
 	git-core \
 	htop \
 	jq \
+	keychain \
 	net-tools \
 	parallel \
 	pigz \

@@ -1,0 +1,52 @@
+#!/bin/bash
+#
+#	Menu to rerun setup processes
+#
+
+# Set default values
+
+source ${HOME}/.config/omnistream.conf
+source ${OMNIHOME}/bin/omni_functions
+
+
+# temporary file
+TEMP=/tmp/answer${$}
+
+get_text() {
+	dialog --title "${TITLE}" --clear --no-cancel --inputbox "${DESC}" 0 0 "${DEFAULT}" 2> ${TEMP}-Input
+	VALUE=$(cat ${TEMP}-Input)
+	rm ${TEMP}-Input
+}
+
+main_menu() {
+	CHOICE=0
+	while true; do
+		dialog \
+			--no-cancel \
+			--default-item ${CHOICE} \
+			--backtitle "OmniStream" \
+			--title "OmniStream Setup Processes" \
+			--menu "Select an option:" 0 0 0 \
+			1 "Edit hostnames" \
+			2 "Rerun rclone setup" \
+			3 "Rerun Traefik setup" \
+			4 "Redefine media directory" \
+			5 "Set timezone" \
+			9 "Exit" 2>${TEMP}
+
+		CHOICE=$(cat ${TEMP})
+  		case ${CHOICE} in
+			1) setup-advanced;;
+			2) setup-rclone;;
+			3) setup-traefik;;
+			4) setup-media;;
+			5) sudo dpkg-reconfigure tzdata;;
+			9) rm -f ${TEMP}*
+				clear
+				exit;;
+		esac
+	done
+}
+
+main_menu
+clear

@@ -22,60 +22,6 @@ source ${OMNIHOME}/bin/omni_functions
 # temporary file
 TEMP=/tmp/answer${$}
 
-# Get component list
-COMPONENTS="$(ls ${HOME}/OmniStream/components/*.yaml | sed s/^.*\\/\//)"
-ENABLED="$(ls ${HOME}/OmniStream/enabled/*.yaml | sed s/^.*\\/\//)"
-
-edit_components() {
-	OPTIONS=""
-	COUNTER=1
-	for i in ${COMPONENTS}
-	do
-		CODE=${i:0:3}
-		if ! [[ ${CODE} =~ ^(001|999)$ ]]
-		then
-			NAME=${i#????}
-			NAME=${NAME%".yaml"}
-			OPTIONS="${OPTIONS}${COUNTER} ${NAME} "
-			STATUS=off
-			for j in ${ENABLED}
-			do
-				if [ ${i} = ${j} ]
-				then
-					STATUS=on
-				fi
-			done
-			OPTIONS="${OPTIONS} ${STATUS} "
-			COUNTER=$((COUNTER+1))
-		fi
-	done
-	dialog --title "Enabled Components" --no-tags --checklist "Choose which components are active:" 0 0 0 ${OPTIONS} 2>${TEMP}
-
-	if [ "$?" != "0" ] ; then return ; fi
-
-	CHOICE=$(cat ${TEMP})
-	COUNTER=1
-	for i in ${COMPONENTS}
-  	do
-		CODE=${i:0:3}
-		if ! [[ ${CODE} =~ ^(001|999)$ ]]
-		then
-			COMMAND="o- ${i}"
-			for j in ${CHOICE}
-			do
-				if [ ${COUNTER} = ${j} ]
-				then
-					COMMAND="o+ ${i}"
-				fi
-			done
-			eval ${COMMAND} > /dev/null
-			COUNTER=$((COUNTER+1))
-		fi
-	done
-	"${OMNIHOME}"/bin/omni_complete # Update Auto-complete
-	exit
-}
-
 get_text() {
 	dialog --title "${TITLE}" --clear --no-cancel --inputbox "${DESC}" 0 0 "${DEFAULT}" 2> ${TEMP}-Input
 	VALUE=$(cat ${TEMP}-Input)
@@ -92,21 +38,15 @@ main_menu() {
 			--title "OmniStream Setup and Configuration Editor" \
 			--menu "Select an option:" 0 0 0 \
 			1 "Edit components" \
-			2 "Edit hostnames" \
-			3 "Rerun rclone setup" \
-			4 "Rerun Traefik setup" \
-			5 "Redefine media directory" \
-			8 "Utilities" \
+			2 "Select setups to rerun" \
+			3 "Utilities" \
 			9 "Exit" 2>${TEMP}
 
 		CHOICE=$(cat ${TEMP})
   		case ${CHOICE} in
-			1) edit_components;;
-			2) setup-advanced;;
-			3) setup-rclone;;
-			4) setup-traefik;;
-			5) setup-media;;
-			8) utilities;;
+			1) setup-components;;
+			2) setup-again;;
+			3) utilities;;
 			9) rm -f ${TEMP}*
 				clear
 				exit;;
