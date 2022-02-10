@@ -94,6 +94,9 @@ omni() {
 		cd "${OMNIHOME}"/mnt || exit
 		ls
 		;;
+	components)
+		source setup-components
+		;;
 	rebuild)
 		cd "${OMNIHOME}" || exit
 		"${OMNIHOME}"/bin/make-env rebuild
