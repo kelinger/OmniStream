@@ -1,0 +1,77 @@
+#!/bin/bash
+
+SELECTION=${1}
+hash dialog 2>/dev/null || { echo Installing dialog \(one time\) ; sudo apt update > /dev/null ; sudo apt install dialog -y > /dev/null ; }
+source ${HOME}/.config/omnistream.conf
+source ${HOME}/OmniStream/bin/omni_functions
+
+DIALOG_CANCEL=1
+DIALOG_ESC=255
+HEIGHT=0
+WIDTH=0
+
+display_result() {
+	dialog --title "${1}" \
+		--no-collapse \
+		--msgbox "$result" 0 0
+}
+
+program_runner() {
+	${1} 2>&1 | dialog --programbox 1000 1000
+}
+
+# trap ctrl-c and call ctrl_c()
+trap ctrl_c INT
+
+while true
+do
+	exec 3>&1
+	SELECTION=$(dialog \
+		--backtitle "OmniStream" \
+		--title "Utility Menu" \
+		--clear \
+		--cancel-label "Exit" \
+		--default-item "${SELECTION}" \
+		--menu "Please select the command to run:" ${HEIGHT} ${WIDTH} 0 \
+		"omni status" "show the status of running containers" \
+		"omni stats" "show realtime stats (ctrl-c to exit)" \
+		"omni dns" "show a report of DNS entries for active containers" \
+		"update" "run updates for operating system" \
+		"rstats" "monitor active rclone transfers" \
+		2>&1 1>&3)
+	EXIT_STATUS=${?}
+	exec 3>&-
+	case ${EXIT_STATUS} in
+		${DIALOG_CANCEL})
+			clear
+			echo "Program terminated."
+			exit
+			;;
+		${DIALOG_ESC})
+			clear
+			echo "Program aborted." >&2
+			exit 1
+			;;
+	esac
+	case ${SELECTION} in
+		"omni status" )
+			result=$(omni status)
+			display_result "Omni Status"
+			;;
+		"omni stats" )
+			clear
+			omni stats
+			;;
+		"omni dns" )
+			dns-report-gen
+			result=$(cat "${OMNIHOME}/dns-report")
+			display_result "DNS Report"
+			;;
+		"update" )
+			program_runner update
+			;;
+		"rstats" )
+			docker exec -ti omnimount /root/rstats
+			;;
+	esac
+done

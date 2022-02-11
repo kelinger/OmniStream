@@ -37,15 +37,15 @@ main_menu() {
 			--backtitle "OmniStream" \
 			--title "OmniStream Configurations and Utilities" \
 			--menu "Select an option:" 0 0 0 \
-			1 "Edit components" \
-			2 "Utilities" \
-			3 "Setups menu" \
+			1 "Omni Control" \
+			2 "Omni Utilities" \
+			3 "Setups Menu" \
 			9 "Exit" 2>${TEMP}
 
 		CHOICE=$(cat ${TEMP})
   		case ${CHOICE} in
-			1) setup-components;;
-			2) utilities;;
+			1) omni-control;;
+			2) omni-utilities;;
 			3) setup-again;;
 			9) rm -f ${TEMP}*
 				clear

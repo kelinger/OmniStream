@@ -79,7 +79,7 @@ omni() {
 		ls
 		;;
 	menu)
-		"${OMNIHOME}/bin/menu"
+		"${OMNIHOME}/bin/omni-menu"
 		;;
 	dns)
 		"${OMNIHOME}/bin/dns-report-gen"
@@ -96,6 +96,12 @@ omni() {
 		;;
 	components)
 		source setup-components
+		;;
+	controls)
+		source omni-controls
+		;;
+	utilities | utils)
+		source omni-utilities
 		;;
 	rebuild)
 		cd "${OMNIHOME}" || exit
