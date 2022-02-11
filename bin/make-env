@@ -93,6 +93,7 @@ if [[ ${1,,} != "rebuild" ]]; then
 	DEFAULT="${MYEMAIL}"
 	get_text
 	MYEMAIL="${VALUE}"
+	clear
 fi
 
 cat >${ENV} <<EOF

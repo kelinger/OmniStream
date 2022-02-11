@@ -38,15 +38,15 @@ main_menu() {
 			--title "OmniStream Configurations and Utilities" \
 			--menu "Select an option:" 0 0 0 \
 			1 "Edit components" \
-			2 "Select setups to rerun" \
-			3 "Utilities" \
+			2 "Utilities" \
+			3 "Setups menu" \
 			9 "Exit" 2>${TEMP}
 
 		CHOICE=$(cat ${TEMP})
   		case ${CHOICE} in
 			1) setup-components;;
-			2) setup-again;;
-			3) utilities;;
+			2) utilities;;
+			3) setup-again;;
 			9) rm -f ${TEMP}*
 				clear
 				exit;;

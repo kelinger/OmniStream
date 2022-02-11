@@ -30,8 +30,9 @@ main_menu() {
 			1 "Edit hostnames" \
 			2 "Rerun rclone setup" \
 			3 "Rerun Traefik setup" \
-			4 "Redefine media directory" \
-			5 "Set timezone" \
+			4 "Change domain and email address" \
+			5 "Redefine media directory" \
+			6 "Set timezone" \
 			9 "Exit" 2>${TEMP}
 
 		CHOICE=$(cat ${TEMP})
@@ -39,8 +40,9 @@ main_menu() {
 			1) setup-advanced;;
 			2) setup-rclone;;
 			3) setup-traefik;;
-			4) setup-media;;
-			5) sudo dpkg-reconfigure tzdata;;
+			4) make-env;;
+			5) setup-media;;
+			6) sudo dpkg-reconfigure tzdata;;
 			9) rm -f ${TEMP}*
 				clear
 				exit;;
