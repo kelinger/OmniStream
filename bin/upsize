@@ -8,6 +8,12 @@ cd ${UPLOADCACHE}
 #sudo find . -type d -empty -delete
 mkdir -p ${UPLOADCACHE}/Media
 
-find ${UPLOADCACHE} ! -path "*Downloads*" -type f -exec ls -sh --color=yes "{}" \; | column |cat -n
-echo ----
-du -sh ${UPLOADCACHE}/Media
+COUNT=$(find ${UPLOADCACHE} ! -path "*Downloads*" -type f)
+if [[ ${COUNT} -gt 0 ]]
+then
+	find ${UPLOADCACHE} ! -path "*Downloads*" -type f -exec ls -sh --color=yes "{}" \; | column |cat -n
+	echo ----
+	du -sh ${UPLOADCACHE}/Media
+else
+	echo "Queue is empty"
+fi
