@@ -11,7 +11,7 @@ OMNIHOME=${HOME}/OmniStream
 CDIR=${HOME}/.config
 ENV=${CDIR}/omnistream.conf
 CONFIGS=${HOME}/OmniStream/configs
-DOWNLOADS=${HOME}/Downloads
+DOWNLOADS=${HOME}/OmniStream/mnt/cloud/Downloads
 LOGS=${OMNIHOME}/logs
 ADD_DNS=false
 DELETE_DNS=false
@@ -206,7 +206,7 @@ EOF
 ln -sf ${ENV} ${OMNIHOME}/.env
 
 cat ${OMNIHOME}/enabled/???-* >${OMNIHOME}/docker-compose.yaml
-mkdir -p ${CONFIGS} ${MERGEMOUNT}/${DOWNLOADS} ${LOGS}
+mkdir -p ${CONFIGS} ${DOWNLOADS} ${LOGS}
 sudo cp ${RCLONEHOME}/rclone.conf ${CONFIGS}/omnimount/
 sudo chown ${USERID}:${GROUPID} ${CONFIGS}/omnimount/rclone.conf
 
