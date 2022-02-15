@@ -4,6 +4,8 @@
 OMNIHOME=${HOME}/OmniStream
 source ~/.config/omnistream.conf
 source "${OMNIHOME}"/bin/omni_complete
+SELECTED_EDITOR=nano
+source "${HOME}/.selected_editor"
 
 # Main OMNI function for OmniPlex
 
@@ -42,6 +44,9 @@ omni() {
 		git reset --hard HEAD
 		git merge '@{u}'
 		cd "${CURDIR}" || exit
+		;;
+	edit)
+		${SELECTED_EDITOR} ${HOME}/.config/omnistream.conf
 		;;
 	status)
 		cd "${OMNIHOME}" || exit
