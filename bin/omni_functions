@@ -200,6 +200,7 @@ function o+ {
 			ls ../components/*.yaml
 		elif [[ -f ${OMNIHOME}/components/${PARAM} ]]; then
 			ln -sf ../components/"${PARAM}" "${PARAM}"
+			[[ ${PARAM} = "221-deluge.yaml" ]] && touch ${LOGS}/deluged.log
 			echo "${PARAM}": Enabled
 		else
 			echo Error: "${PARAM}" not found
