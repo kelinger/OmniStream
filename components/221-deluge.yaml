@@ -21,6 +21,7 @@
       - /etc/localtime:/etc/localtime:ro
       - /bin/netstat:/bin/netstat:ro
       - ${CONFIGS}/${DELUGENAME}:/config
+      - ${LOGS}/deluged.log:/config/deluged.log
       - ${DOWNLOADS}:/downloads
       - ${MERGEMOUNT}:/cloud
     ports:
