@@ -4,24 +4,22 @@ APP=SABnzbd
 PORT=8080
 MOUNT="/cloud"
 LOG="/logs/health"
-NS=$(which at)
 
-if [[ ${?} -ne 0 ]];
-then
-	# No "at" so install it and create new log file
-	echo $(date) - ${APP} - Installing at >> ${LOG}
-	apt update
-	apt install at -y
-fi
-
+X=$(which at)
+X1=${?}
+X=$(pidof atd)
+X2=${?}
 NS=$(which netstat)
+X3=${?}
+((X=X1+X2+X3))
 
-if [[ ${?} -ne 0 ]];
+if [[ ${X} -ne 0 ]];
 then
-	# No netstat so install it and create new log file
-	echo $(date) - ${APP} - Installing net-tools >> ${LOG}
+	# At least one of at, atd, and netstat are missing
+	echo $(date) - ${APP} - Installing at and net-tools and starting atd >> ${LOG}
 	apt update
-	apt install net-tools -y
+	apt install at net-tools -y
+	atd
 fi
 
 ${NS} -ntlp | grep :${PORT}

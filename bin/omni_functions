@@ -22,7 +22,6 @@ omni() {
 		echo
 		"${OMNIHOME}"/bin/check-dns
 		/usr/local/bin/docker-compose up -d --remove-orphans "${@:2}"
-		docker exec -ti sabnzbd /config/extras.sh >/dev/null 2>&1
 		cd "${CURDIR}" || exit
 		test -x ${OMNIHOME}/plugins/up-end && ${OMNIHOME}/plugins/up-end
 		;;
@@ -144,7 +143,6 @@ omni() {
 	pull)
 		cd "${OMNIHOME}" || exit
 		/usr/local/bin/docker-compose up --no-start
-		docker exec -ti sabnzbd /config/extras.sh >/dev/null 2>&1
 		cd "${CURDIR}" || exit
 		;;
 	*)
