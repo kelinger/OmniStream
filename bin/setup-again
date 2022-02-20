@@ -29,20 +29,22 @@ main_menu() {
 			--menu "Select an option:" 0 0 0 \
 			1 "Edit hostnames" \
 			2 "Rerun rclone setup" \
-			3 "Rerun Traefik setup" \
-			4 "Change domain and email address" \
-			5 "Redefine media directory" \
-			6 "Set timezone" \
+			3 "Rerun scheduled task setup" \
+			4 "Rerun Traefik setup" \
+			5 "Change domain and email address" \
+			6 "Redefine media directory" \
+			7 "Set timezone" \
 			9 "Exit" 2>${TEMP}
 
 		CHOICE=$(cat ${TEMP})
   		case ${CHOICE} in
 			1) setup-advanced;;
 			2) setup-rclone;;
-			3) setup-traefik;;
-			4) make-env;;
-			5) setup-media;;
-			6) sudo dpkg-reconfigure tzdata;;
+			3) setup-cron;;
+			4) setup-traefik;;
+			5) make-env;;
+			6) setup-media;;
+			7) sudo dpkg-reconfigure tzdata;;
 			9) rm -f ${TEMP}*
 				clear
 				exit;;

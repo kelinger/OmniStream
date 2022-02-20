@@ -1,0 +1,82 @@
+#!/bin/bash
+
+# Set default values
+
+source ${HOME}/.config/omnistream.conf
+source ${OMNIHOME}/bin/omni_functions
+
+TEMP=/tmp/answer${$}
+
+program_runner() {
+	${1} 2>&1 | dialog --programbox 1000 1000
+}
+
+display_result() {
+	dialog --title "${1}" \
+		--no-collapse \
+		--msgbox "$result" 0 0
+}
+
+msgbox() {
+	dialog --title "${TITLE}" --clear --msgbox "${DESC}" 0 0
+	VALUE=${?}
+}
+
+build() {
+	cat > ${TEMP} << EOF
+05 4 * * sun rm ${OMNIHOME}/snapshots/*
+10 4 * * * ${OMNIHOME}/bin/backup > ${LOGS}/backup.log 2>&1
+0,15,30,45 * * * * ${OMNIHOME}/bin/turbosync > ${LOGS}/turbosync.log 2>&1
+EOF
+	crontab ${TEMP}
+}
+
+if [[ ${1} = "quiet" ]]
+then
+	build
+	rm ${TEMP}
+	exit 0
+fi
+
+CHOICE=0
+while true; do
+	dialog \
+		--no-cancel \
+		--default-item ${CHOICE} \
+		--backtitle "OmniStream" \
+		--title "OmniStream Task Scheduler" \
+		--menu "Select an option:" 0 0 0 \
+		1 "Load default schedules into cron" \
+		2 "View current cron schedule" \
+		3 "Edit cron schedule" \
+		4 "Cron help" \
+		9 "Exit" 2>${TEMP}
+
+	CHOICE=$(cat ${TEMP})
+  	case ${CHOICE} in
+		1) build
+			crontab ${TEMP}
+			TITLE="Scheduling Complete"
+			DESC="Your cron schedule has been setup with the default settings.  This will run a full backup every Sunday and a differential backup every other day at 4:10 AM.  TurboSync will run every 15 minutes."
+			msgbox
+			;;
+		2)
+			result=$(crontab -l)
+			display_result "Current cron for ${USER}"
+			;;
+		5) program_runner "crontab -l"
+			;;
+		3) crontab -e;;
+		4) TITLE="Cron Help"
+			DESC="Linux uses cron to schedule tasks to run at a certain time at a set frequency.  While there are many nuances to setting this up, it is important to note that these jobs run in an unattended shell without a UI.  As such, any input or error messages should be redirected so that they can be processed without hanging indefinately waiting for a response that will never come.
+
+In OmniStream, we setup a task to perform a daily backup to your cloud drive.  For some of the containers with larger config files, this is a differential backup by default (only the changes from the last full backup are archived).  On Sunday, we reset this so that all containers receive a full backup which prevents the differential from growing larger than the original backup.  Finally, we also setup TurboSync to run every 15 minutes to ensure your recently downloaded files make their way to the cloud, freeing up local drive space and ensuring their longevity.
+
+For an easy method to determine cron times and repetitiveness, check out https://crontab.guru."
+			msgbox
+			;;
+		9) rm -f ${TEMP}*
+			clear
+			exit;;
+	esac
+done

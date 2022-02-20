@@ -260,6 +260,7 @@ ${OMNIHOME}/bin/make-env
 ${OMNIHOME}/bin/setup-rclone
 ${OMNIHOME}/bin/setup-media
 ${OMNIHOME}/bin/setup-advanced warn
+${OMNIHOME}/bin/setup-cron quiet
 ${OMNIHOME}/bin/setup-traefik
 clear
 
