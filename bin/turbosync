@@ -6,8 +6,12 @@ if pidof -o %PPID -x "$(basename "$0")"; then
 	exit 1
 fi
 
-#source ~/.bashrc
-#source ~/.profile
+if ! [[ $(docker ps -q -f name=omnimount -f status=running) ]]
+then
+	echo OmniMount not running
+	exit 2
+fi
+
 source ~/.config/omnistream.conf
 
 # Call sync-start plugin, if it exists
