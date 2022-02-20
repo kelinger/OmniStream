@@ -23,18 +23,36 @@ msgbox() {
 }
 
 build() {
-	cat > ${TEMP} << EOF
-05 4 * * sun rm ${OMNIHOME}/snapshots/*
-10 4 * * * ${OMNIHOME}/bin/backup > ${LOGS}/backup.log 2>&1
-0,15,30,45 * * * * ${OMNIHOME}/bin/turbosync > ${LOGS}/turbosync.log 2>&1
-EOF
-	crontab ${TEMP}
+	# Add Sunday full, if missing
+	X=$(crontab -l | grep "rm ${OMNIHOME}/snapshots")
+	if [[ ${?} -gt 0 ]]
+	then
+		crontab -l > ${TEMP}
+		echo "05 4 * * sun rm ${OMNIHOME}/snapshots/*" >> ${TEMP}
+		crontab ${TEMP}
+	fi
+	# Add daily backups, if missing
+	X=$(crontab -l | grep "${OMNIHOME}/bin/backup")
+	if [[ ${?} -gt 0 ]]
+	then
+		crontab -l > ${TEMP}
+		echo "10 4 * * * ${OMNIHOME}/bin/backup > ${LOGS}/backup.log 2>&1" >> ${TEMP}
+		crontab ${TEMP}
+	fi
+	# Add TurboSync, if missing
+	X=$(crontab -l | grep "${OMNIHOME}/bin/turbosync")
+	if [[ ${?} -gt 0 ]]
+	then
+		crontab -l > ${TEMP}
+		echo "0,15,30,45 * * * * ${OMNIHOME}/bin/turbosync > ${LOGS}/turbosync.log 2>&1" >> ${TEMP}
+		crontab ${TEMP}
+	fi
+	rm -f ${TEMP}
 }
 
 if [[ ${1} = "quiet" ]]
 then
 	build
-	rm ${TEMP}
 	exit 0
 fi
 
@@ -57,7 +75,7 @@ while true; do
 		1) build
 			crontab ${TEMP}
 			TITLE="Scheduling Complete"
-			DESC="Your cron schedule has been setup with the default settings.  This will run a full backup every Sunday and a differential backup every other day at 4:10 AM.  TurboSync will run every 15 minutes."
+			DESC="Your cron schedule has been setup with the default settings if they weren't already present.  This will run a full backup every Sunday and a differential backup every other day at 4:10 AM.  TurboSync will run every 15 minutes."
 			msgbox
 			;;
 		2)
