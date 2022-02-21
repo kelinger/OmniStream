@@ -32,7 +32,7 @@ do
 		--clear \
 		--cancel-label "Exit" \
 		--default-item "${SELECTION}" \
-		--menu "Please select the command to run:" ${HEIGHT} ${WIDTH} 0 \
+		--menu "These commands (left) can also be run directly from the shell.  Please select the command to run:" ${HEIGHT} ${WIDTH} 0 \
 		"omni up" "refresh containers and bring up new ones" \
 		"omni down" "take down all containers" \
 		"omni restart" "restart all containers" \
