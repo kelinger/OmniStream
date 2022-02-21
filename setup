@@ -285,7 +285,10 @@ echo For installation report, run:
 echo "	cat ${OMNIHOME}/install-report"
 echo
 echo =========================================================================
-echo "  Please log out and back into your server for changes to take affect"
+echo "  Please log out and back into your server for changes to take effect"
+echo
+echo "Once you log back in, run the \"omni menu\" command to bring up options for"
+echo "    customization and starting your containers for the first time."
 echo =========================================================================
 
 REPORT=${OMNIHOME}/install-report
