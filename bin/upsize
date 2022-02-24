@@ -6,14 +6,14 @@ source ~/.config/omnistream.conf
 
 cd ${UPLOADCACHE}
 #sudo find . -type d -empty -delete
-mkdir -p ${UPLOADCACHE}/Media
+mkdir -p ${UPLOADCACHE}/$(basename ${MEDIA})
 
 COUNT=$(find ${UPLOADCACHE} ! -path "*Downloads*" -type f | wc -l )
 if [[ ${COUNT} -gt 0 ]]
 then
 	find ${UPLOADCACHE} ! -path "*Downloads*" -type f -exec ls -sh --color=yes "{}" \; | column |cat -n
 	echo ----
-	du -sh ${UPLOADCACHE}/Media
+	du -sh ${UPLOADCACHE}/$(basename ${MEDIA})
 else
 	echo "Queue is empty"
 fi

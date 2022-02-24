@@ -33,7 +33,7 @@ crontab -l > ${HOME}/cron
 # Create the server's home backup.  Some files specified may not exist.
 
 echo -n "/tmp/${SERVER}-backup.tar.gz --> "
-sudo tar -cpf /tmp/${SERVER}-backup.tar.gz \
+sudo tar -czpf /tmp/${SERVER}-backup.tar.gz \
        --exclude=.cache \
        --exclude=.iterm* \
        --exclude=thinclient_drives \
