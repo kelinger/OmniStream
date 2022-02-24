@@ -41,6 +41,7 @@ do
 		"update" "run updates for operating system" \
 		"rstats" "monitor active rclone transfers" \
 		"upsize" "view the queue of pending cloud uploads" \
+		"plexstats" "Information about your Plex library" \
 		2>&1 1>&3)
 	EXIT_STATUS=${?}
 	exec 3>&-
@@ -82,6 +83,10 @@ do
 			;;
 		"rstats" )
 			docker exec -ti omnimount /root/rstats
+			;;
+		"plexstats" )
+			result=$(plexstats)
+			display_result "Plex Stats"
 			;;
 		"upsize" )
 			result=$(upsize)

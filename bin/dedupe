@@ -1,3 +1,5 @@
 #!/bin/bash
 
-rclone dedupe GoogleCrypt:/Media/ -v
+source ${HOME}/.config/omnistream.conf
+
+rclone dedupe --dedupe-mode newest ${RCLONEMOUNT}:/$(basename ${MEDIA})/ -v
