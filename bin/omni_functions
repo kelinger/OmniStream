@@ -99,13 +99,13 @@ omni() {
 		ls
 		;;
 	components)
-		source setup-components
+		setup-components
 		;;
 	controls)
-		source omni-controls
+		omni-controls
 		;;
 	utilities | utils)
-		source omni-utilities
+		omni-utilities
 		;;
 	rebuild)
 		cd "${OMNIHOME}" || exit
@@ -118,7 +118,7 @@ omni() {
 		cd "${CURDIR}" || exit
 		;;
 	reload)
-		source "${OMNIHOME}"/bin/omni_init
+		"${OMNIHOME}"/bin/omni_init
 		;;
 	update)
 		cd "${OMNIHOME}" || exit
