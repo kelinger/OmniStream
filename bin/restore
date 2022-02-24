@@ -63,6 +63,11 @@ SERVER=${SERVERS[${CHOICE}*2]}
 cd "${MERGEMOUNT}/Backups/${SERVER}/"
 SERVERBAK=$(ls *-backup.tar.gz)
 
+clear
+echo Stopping all containers except \"omnimount\"
+echo
+docker stop $(docker ps -q |grep -v $(docker ps -qf "name=omnimount"))
+
 if [[ ! -z ${SERVERBAK} ]]
 then
 	TITLE="Home directory restore"
@@ -145,6 +150,7 @@ then
 	fi
 	rm ${TEMP}
 fi
+
 if [[ ! -z ${SERVERTARGET} ]]
 then
 	mkdir -p ${SERVERTARGET}

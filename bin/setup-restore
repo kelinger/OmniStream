@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# Install dialog, if missing
+
+hash dialog 2>/dev/null || { echo Installing dialog \(one time\) ; sudo apt update > /dev/null ; sudo apt install dialog -y > /dev/null ; }
+
+# Dialog functions
+
+TEMP=/tmp/answer${$}
+
+get_text() {
+        dialog --title "${TITLE}" --clear --no-cancel --inputbox "${DESC}" 0 0 "${DEFAULT}" 2> ${TEMP}-Input
+        VALUE=$(cat ${TEMP}-Input)
+        rm ${TEMP}-Input
+}
+
+yesno() {
+        dialog --title "${TITLE}" --clear --yesno "${DESC}" 0 0
+        VALUE=${?}
+}
+
+noyes() {
+        dialog --title "${TITLE}" --clear --defaultno --yesno "${DESC}" 0 0
+        VALUE=${?}
+}
+
+msgbox() {
+	dialog --title "${TITLE}" --clear --msgbox "${DESC}" 0 0
+	VALUE=${?}
+}
+
+# Load Omni variables
+
+source ${HOME}/.config/omnistream.conf
+
+TITLE="Restore backup?"
+DESC="Are you restoring from backup?  If YES, then the restoration dialog will open next and you can choose whether to restore your HOME environment as well as your CONFIGS from a previous OmniSTream installation.  If you have not yet configured rclone, select NO.
+
+Do you want to restore a backup?"
+noyes
+
+if [[ ${VALUE} = 0 ]]
+	omni up
+	restore
+fi
+

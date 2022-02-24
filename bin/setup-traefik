@@ -135,6 +135,8 @@ Select NO to just use the basic Traefik routing and certificate management."
 yesno
 if [[ ${VALUE} != 0 ]]
 then
+	o- 002-traefik-cf.yaml > /dev/null 2>&1
+	o+ 002-traefik.yaml
         quit2
 fi
 
