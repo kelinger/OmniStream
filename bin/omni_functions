@@ -117,6 +117,9 @@ omni() {
 		docker system prune -a -f --volumes
 		cd "${CURDIR}" || exit
 		;;
+	reload)
+		source "${OMNIHOME}"/bin/omni_init
+		;;
 	update)
 		cd "${OMNIHOME}" || exit
 		echo Updating OmniStream from GIT

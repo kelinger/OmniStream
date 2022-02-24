@@ -2,4 +2,4 @@
 OMNIHOME=${HOME}/OmniStream
 complete -W "$(ls ${OMNIHOME}/components)" o+
 complete -W "$(ls ${OMNIHOME}/enabled)" o-
-complete -W "start stop up down status stats restart services setup apps bin home logs mounts rebuild update clean pull help" omni
+complete -W "start stop up down edit status stats restart services setup apps configs bin home menu dns logs mounts components controls utilities rebuild update clean reload pull refresh repair help version" omni
