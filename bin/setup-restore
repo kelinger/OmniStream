@@ -32,6 +32,7 @@ msgbox() {
 # Load Omni variables
 
 source ${HOME}/.config/omnistream.conf
+source ${OMNIHOME}/bin/omni_functions
 
 TITLE="Restore backup?"
 DESC="Are you restoring from backup?  If YES, then the restoration dialog will open next and you can choose whether to restore your HOME environment as well as your CONFIGS from a previous OmniSTream installation.  If you have not yet configured rclone, select NO.
