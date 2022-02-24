@@ -151,7 +151,7 @@ TARGET=/tmp
 if [[ ! -z ${SERVERTARGET} ]]
 then
 	mkdir -p ${SERVERTARGET}
-	(pv -n "${MERGEMOUNT}/Backups/${SERVER}/${SERVERBAK}" | tar xpf - --unlink-first --recursive-unlink --directory=${SERVERTARGET}) 2>&1 | dialog --guage "Restoring ${SERVER}..." 6 50
+	(pv -n "${MERGEMOUNT}/Backups/${SERVER}/${SERVERBAK}" | sudo tar xpf - --unlink-first --recursive-unlink --directory=${SERVERTARGET}) 2>&1 | dialog --guage "Restoring ${SERVER}..." 6 50
 fi
 
 for i in ${FULLBAK}

@@ -169,7 +169,7 @@ else
 		sleep 15
 		echo -n retrying...
 		curl -fsSL https://get.docker.com -o /tmp/get-docker.sh > /dev/null 2>&1
-		sudo sh /tmp/get-docker.sh 2>&1
+		sudo sh /tmp/get-docker.sh > /dev/null 2>&1
 	done
 
 	if [[ ${?} = 0 ]]
