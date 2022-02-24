@@ -185,6 +185,8 @@ clear
 cd ${OMNIHOME}
 if [[ ! -z ${SERVERTARGET} ]]
 then
+	echo Resetting OmniStream
+	echo
 	git fetch
 	git reset --hard HEAD
 	git merge '@{u}'
