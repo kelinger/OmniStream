@@ -145,18 +145,15 @@ then
 	fi
 	rm ${TEMP}
 fi
-COUNTER=1
-TARGET=${CONFIGS}
 if [[ ! -z ${SERVERTARGET} ]]
 then
 	mkdir -p ${SERVERTARGET}
 	(pv -n "${MERGEMOUNT}/Backups/${SERVER}/${SERVERBAK}" | sudo tar xzpf - --unlink-first --recursive-unlink --directory=/) 2>&1 | dialog --guage "Restoring ${SERVER}..." 6 50
-	cd ${OMNIHOME}
-	git fetch
-	git reset --hard HEAD
-	git merge '@{u}'
 fi
 
+COUNTER=1
+TARGET=${CONFIGS}
+mkdir -p ${TARGET}
 for i in ${FULLBAK}
 do
 	for j in ${CHOICE}
@@ -185,4 +182,11 @@ then
 fi
 
 clear
-echo Restoration complete!
+cd ${OMNIHOME}
+if [[ ! -z ${SERVERTARGET} ]]
+then
+	git fetch
+	git reset --hard HEAD
+	git merge '@{u}'
+fi
+echo Restoration complete!k
