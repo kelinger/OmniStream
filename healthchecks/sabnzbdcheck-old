@@ -17,8 +17,8 @@ if [[ ${X} -ne 0 ]];
 then
 	# At least one of at, atd, and netstat are missing
 	echo $(date) - ${APP} - Installing at and net-tools and starting atd >> ${LOG}
-	apk update
-	apk add --update at net-tools util-linux grep
+	apt update
+	apt install at net-tools -y
 	atd
 fi
 
