@@ -2,6 +2,7 @@
 
 source ${HOME}/.config/omnistream.conf
 
+mkdir -p ${CONFIGS}/${OAUTHNAME}
 cat > ${CONFIGS}/${OAUTHNAME}/authdomains << EOF
 rule.traefik.action = auth
 rule.traefik.rule = Host(\`${TRAEFIKNAME}.${MYDOMAIN}\`)
@@ -57,3 +58,5 @@ rule.apache.rule = Host(\`${APACHENAME}.${MYDOMAIN}\`)
 rule.rediscom.action = auth
 rule.rediscom.rule = Host(\`${REDISCOMNAME}.${MYDOMAIN}\`)
 EOF
+
+sudo chown -R ${USERID}:${GROUPID} ${CONFIGS}/${OAUTHNAME}

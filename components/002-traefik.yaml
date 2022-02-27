@@ -58,7 +58,7 @@
       COOKIE_DOMAIN: ${MYDOMAIN}
       INSECURE_COOKIE: "false"
       AUTH_HOST: ${OAUTHNAME}.${MYDOMAIN}
-      WHITELIST: "ken@omniscient.solutions"
+      WHITELIST: ${OAUTHUSER}
       LOG_LEVEL: info
       LIFETIME: 2592000 # 30 days
       DEFAULT_ACTION: allow
