@@ -1,0 +1,59 @@
+#!/bin/bash
+
+source ${HOME}/.config/omnistream.conf
+
+cat > ${CONFIGS}/${OAUTHNAME}/authdomains << EOF
+rule.traefik.action = auth
+rule.traefik.rule = Host(\`${TRAEFIKNAME}.${MYDOMAIN}\`)
+
+rule.nzbget.action = auth
+rule.nzbget.rule = Host(\`${NZBGETNAME}.${MYDOMAIN}\`)
+
+rule.sabnzbd.action = auth
+rule.sabnzbd.rule = Host(\`${SABNZBDNAME}.${MYDOMAIN}\`)
+
+rule.hydra.action = auth
+rule.hydra.rule = Host(\`${HYDRANAME}.${MYDOMAIN}\`)
+
+rule.radarr.action = auth
+rule.radarr.rule = Host(\`${RADARRNAME}.${MYDOMAIN}\`)
+
+rule.sonarr.action = auth
+rule.sonarr.rule = Host(\`${SONARRNAME}.${MYDOMAIN}\`)
+
+rule.lidarr.action = auth
+rule.lidarr.rule = Host(\`${LIDARRNAME}.${MYDOMAIN}\`)
+
+rule.medusa.action = auth
+rule.medusa.rule = Host(\`${MEDUSANAME}.${MYDOMAIN}\`)
+
+rule.organizr.action = auth
+rule.organizr.rule = Host(\`${ORGANIZRNAME}.${MYDOMAIN}\`)
+
+rule.jackett.action = auth
+rule.jackett.rule = Host(\`${JACKETTNAME}.${MYDOMAIN}\`)
+
+rule.bazarr.action = auth
+rule.bazarr.rule = Host(\`${BAZARRNAME}.${MYDOMAIN}\`)
+
+rule.ombi.action = auth
+rule.ombi.rule = Host(\`${OMBINAME}.${MYDOMAIN}\`)
+
+rule.monitorr.action = auth
+rule.monitorr.rule = Host(\`${MONITORRNAME}.${MYDOMAIN}\`)
+
+rule.heimdall.action = auth
+rule.heimdall.rule = Host(\`${HEIMDALLNAME}.${MYDOMAIN}\`)
+
+rule.netdata.action = auth
+rule.netdata.rule = Host(\`${NETDATANAME}.${MYDOMAIN}\`)
+
+rule.speed.action = auth
+rule.speed.rule = Host(\`${SPEEDNAME}.${MYDOMAIN}\`)
+
+rule.apache.action = auth
+rule.apache.rule = Host(\`${APACHENAME}.${MYDOMAIN}\`)
+
+rule.rediscom.action = auth
+rule.rediscom.rule = Host(\`${REDISCOMNAME}.${MYDOMAIN}\`)
+EOF
