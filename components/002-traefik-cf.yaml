@@ -101,6 +101,7 @@
       SECRET: ${OAUTHSUPERSECRET}
       CONFIG: /configs/authdomains
       COOKIE_DOMAIN: ${MYDOMAIN}
+      COOKIE-NAME: _forward_auth_csrf_${HOSTNAME}
       INSECURE_COOKIE: "false"
       AUTH_HOST: ${OAUTHNAME}.${MYDOMAIN}
       WHITELIST: "ken@omniscient.solutions"
