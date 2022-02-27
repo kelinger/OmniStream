@@ -24,6 +24,7 @@
       - traefik.http.routers.monitorr.tls=true
       - traefik.http.routers.monitorr.tls.certresolver=lets-encrypt
       - traefik.http.services.monitorr.loadbalancer.server.port=80
+      - traefik.http.routers.monitorr.middlewares=oauth
     volumes:
       - ${CONFIGS}/${MONITORRNAME}:/app
       - /etc/localtime:/etc/localtime:ro

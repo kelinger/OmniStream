@@ -40,9 +40,8 @@
       ## Services - API
       - "traefik.http.routers.traefik.service=api@internal"
       ## Middlewares
-      - "traefik.http.routers.traefik.middlewares=auth"
+      - "traefik.http.routers.traefik.middlewares=oauth"
       - "traefik.http.middlewares.auth.basicauth.usersFile=/config/users"
-        #- "traefik.http.routers.traefik.middlewares=chain-oauth@file"
     command:
       ##### Uncomment the next line for testing #####
       #- --certificatesresolvers.lets-encrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory # Uncomment for testing
@@ -81,3 +80,44 @@
       interval: 10s
       timeout: 2s
       retries: 3
+
+#
+# OAuth - Forward Authentication
+#
+
+  oauth:
+    image: thomseddon/traefik-forward-auth:latest
+    container_name: ${OAUTHNAME}
+    hostname: ${OAUTHNAME}
+    domainname: ${MYDOMAIN}
+    restart: unless-stopped
+    networks:
+      - OmniNet
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      PROVIDERS_GOOGLE_CLIENT_ID: ${OAUTHID}
+      PROVIDERS_GOOGLE_CLIENT_SECRET: ${OAUTHSECRET}
+      SECRET: ${OAUTHSUPERSECRET}
+      CONFIG: /configs/authdomains
+      COOKIE_DOMAIN: ${MYDOMAIN}
+      INSECURE_COOKIE: "false"
+      AUTH_HOST: ${OAUTHNAME}.${MYDOMAIN}
+      WHITELIST: "ken@omniscient.solutions"
+      LOG_LEVEL: info
+      LIFETIME: 2592000 # 30 days
+      DEFAULT_ACTION: allow
+      DEFAULT_PROVIDER: google
+    labels:
+      - "omni=${OAUTHNAME},${MYDOMAIN},yes,yes,yes"
+      - autoheal=true
+      - traefik.enable=true
+      - traefik.http.middlewares.oauth.forwardauth.address=http://oauth:4181
+      - traefik.http.middlewares.oauth.forwardauth.authResponseHeaders=X-Forwarded-User
+      - traefik.http.middlewares.oauth.forwardauth.trustForwardHeader=true
+      - traefik.http.routers.oauth.rule=Host(`${OAUTHNAME}.${MYDOMAIN}`)
+      - traefik.http.routers.oauth.tls=true
+      - traefik.http.routers.oauth.tls.certresolver=lets-encrypt
+      - traefik.http.services.oauth.loadbalancer.server.port=4181
+    volumes:
+      - ${CONFIGS}/${OAUTHNAME}:/configs:ro

@@ -30,6 +30,7 @@
       - traefik.http.routers.lidarr.tls=true
       - traefik.http.routers.lidarr.tls.certresolver=lets-encrypt
       - traefik.http.services.lidarr.loadbalancer.server.port=8686
+      - traefik.http.routers.lidarr.middlewares=oauth
     networks:
       - OmniNet
     healthcheck:

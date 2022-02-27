@@ -24,6 +24,7 @@
       - traefik.http.routers.hydra.tls=true
       - traefik.http.routers.hydra.tls.certresolver=lets-encrypt
       - traefik.http.services.hydra.loadbalancer.server.port=5076
+      - traefik.http.routers.hydra.middlewares=oauth
     volumes:
       - ${CONFIGS}/${HYDRANAME}:/config
       - ${MERGEMOUNT}:/cloud

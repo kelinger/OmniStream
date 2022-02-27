@@ -22,6 +22,7 @@
       - traefik.http.routers.netdata.tls=true
       - traefik.http.routers.netdata.tls.certresolver=lets-encrypt
       - traefik.http.services.netdata.loadbalancer.server.port=19999
+      - traefik.http.routers.netdata.middlewares=oauth
     volumes:
       - ${CONFIGS}/${NETDATANAME}/config:/etc/netdata
       - ${CONFIGS}/${NETDATANAME}/lib:/var/lib/netdata

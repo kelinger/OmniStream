@@ -30,6 +30,7 @@
       - traefik.http.routers.jackett.tls=true
       - traefik.http.routers.jackett.tls.certresolver=lets-encrypt
       - traefik.http.services.jackett.loadbalancer.server.port=9117
+      - traefik.http.routers.jackett.middlewares=oauth
     networks:
       - OmniNet
     healthcheck:

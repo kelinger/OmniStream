@@ -24,6 +24,7 @@
       - traefik.http.routers.ombi.tls=true
       - traefik.http.routers.ombi.tls.certresolver=lets-encrypt
       - traefik.http.services.ombi.loadbalancer.server.port=3579
+      - traefik.http.routers.ombi.middlewares=oauth
     volumes:
       - ${CONFIGS}/${ORGANIZRNAME}:/config
     networks:

@@ -20,6 +20,7 @@
       - traefik.http.routers.speed.tls=true
       - traefik.http.routers.speed.tls.certresolver=lets-encrypt
       - traefik.http.services.speed.loadbalancer.server.port=3000
+      - traefik.http.routers.speed.middlewares=oauth
     networks:
       - OmniNet
     healthcheck:
