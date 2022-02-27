@@ -3,6 +3,13 @@
 source ${HOME}/.config/omnistream.conf
 
 mkdir -p ${CONFIGS}/${OAUTHNAME}
+
+if [[ ${USEOAUTH} = "false" ]] || [[ -z ${USEOAUTH} ]]
+then
+	echo -n > ${CONFIGS}/${OAUTHNAME}/authdomains
+	exit
+fi
+
 cat > ${CONFIGS}/${OAUTHNAME}/authdomains << EOF
 rule.traefik.action = auth
 rule.traefik.rule = Host(\`${TRAEFIKNAME}.${MYDOMAIN}\`)

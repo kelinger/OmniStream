@@ -66,6 +66,7 @@ TRAEFIKNAME=traefik
 TRANSNAME=transmission
 UNSYNCED=${HOME}/OmniStream/mnt/unsynced
 UPLOADCACHE=${HOME}/OmniStream/mnt/uploadcache
+USEOAUTH=false
 WATCHNAME=watchtower
 
 # Since Docker processes " as part of the paths, we don't actually store it in the variables.  However, BASH does require
@@ -186,6 +187,7 @@ SQLSERVERNAME=${SQLSERVERNAME}
 TAUTULLINAME=${TAUTULLINAME}
 TRAEFIKNAME=${TRAEFIKNAME}
 TRANSNAME=${TRANSNAME}
+USEOAUTH=${USEOAUTH}
 WATCHNAME=${WATCHNAME}
 
 ############################
