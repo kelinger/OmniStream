@@ -79,7 +79,7 @@ while IFS='' read -r line || [[ -n "${line}" ]]; do
 	eval ${newline} >/dev/null 2>&1
 done <${ENV}
 
-[[ -z ${OAUTHUSER} ]] && OAUTHUSER=${MYEMAIL}
+[[ -z ${OAUTHUSER} ]] && OAUTHUSER=${MYEMAIL,,}
 
 get_text() {
         dialog --title "${TITLE}" --clear --no-cancel --inputbox "${DESC}" 16 51 "${DEFAULT}" 2> ${TEMP}-Input
@@ -166,7 +166,7 @@ OAUTHNAME=${OAUTHNAME}
 OAUTHID=${OAUTHID}
 OAUTHSECRET=${OAUTHSECRET}
 OAUTHSUPERSECRET=${OAUTHSUPERSECRET}
-OAUTHUSER=${OAUTHUSER}
+OAUTHUSER=${OAUTHUSER,,}
 OMBINAME=${OMBINAME}
 OMNIHOME=${OMNIHOME}
 ORGANIZRNAME=${ORGANIZRNAME}
