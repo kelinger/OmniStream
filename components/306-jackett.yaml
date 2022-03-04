@@ -2,7 +2,7 @@
 # Jackett - Download proxy server
 #
   jackett:
-    image: linuxserver/jackett
+    image: lscr.io/linuxserver/jackett
     container_name: ${JACKETTNAME}
     hostname: ${JACKETTNAME}
     domainname: ${MYDOMAIN}
@@ -16,10 +16,9 @@
       - PUID=${USERID}
       - PGID=${GROUPID}
       - TZ=${TIMEZONE}
+      - AUTO_UPDATE=true
       - UMASK_SET=022
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /bin/netstat:/bin/netstat:ro
       - ${CONFIGS}/${JACKETTNAME}:/config
       - ${MERGEMOUNT}:/cloud
     labels:
