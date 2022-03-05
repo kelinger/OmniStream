@@ -10,8 +10,6 @@
     depends_on:
       traefik:
         condition: service_healthy
-      omnimount:
-        condition: service_healthy
     environment:
       - PUID=${USERID}
       - PGID=${GROUPID}
@@ -20,7 +18,8 @@
       - UMASK_SET=022
     volumes:
       - ${CONFIGS}/${JACKETTNAME}:/config
-      - ${MERGEMOUNT}:/cloud
+      - ${LOGS}:/config/logs
+      - ${OMNIHOME}/healthchecks/jackettcheck:/jackettcheck
     labels:
       - "omni=${JACKETTNAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
@@ -33,7 +32,7 @@
     networks:
       - OmniNet
     healthcheck:
-      test: ["CMD-SHELL", "netstat -ntlp | grep :9117"]
+      test: ["CMD-SHELL", "/jackettcheck"]
       interval: 10s
       timeout: 2s
       retries: 3

@@ -19,11 +19,12 @@
       - UMASK_SET=022
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /bin/netstat:/bin/netstat:ro
       - ${CONFIGS}/${DELUGENAME}:/config
       - ${LOGS}/deluged.log:/config/deluged.log
+      - ${LOGS}:/logs
       - ${DOWNLOADS}:/downloads
       - ${MERGEMOUNT}:/cloud
+      - ${OMNIHOME}/healthchecks/delugecheck:/delugecheck
     ports:
       - 55956:55956/tcp
       - 55956:55956/udp
@@ -41,7 +42,7 @@
       - traefik.http.routers.deluge.tls.certresolver=lets-encrypt
       - traefik.http.services.deluge.loadbalancer.server.port=8112
     healthcheck:
-      test: ["CMD-SHELL", "netstat -ntlp | grep :8112"]
+      test: ["CMD-SHELL", "/delugecheck"]
       interval: 10s
       timeout: 2s
       retries: 3

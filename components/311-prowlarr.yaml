@@ -1,0 +1,37 @@
+#
+# Jackett - Download proxy server
+#
+  jackett:
+    image: lscr.io/linuxserver/prowlarr:develop
+    container_name: ${PROWLARRNAME}
+    hostname: ${PROWLARRNAME}
+    domainname: ${MYDOMAIN}
+    restart: unless-stopped
+    depends_on:
+      traefik:
+        condition: service_healthy
+    environment:
+      - PUID=${USERID}
+      - PGID=${GROUPID}
+      - TZ=${TIMEZONE}
+      - UMASK_SET=022
+    volumes:
+      - ${CONFIGS}/${PROWLARRNAME}:/config
+      - ${LOGS}:/config/logs
+      - ${OMNIHOME}/healthchecks/prowlarrcheck:/prowlarrcheck
+    labels:
+      - "omni=${PROWLARRNAME},${MYDOMAIN},yes,yes,yes"
+      - autoheal=true
+      - traefik.enable=true
+      - traefik.http.routers.prowlarr.rule=Host(`${PROWLARRNAME}.${MYDOMAIN}`)
+      - traefik.http.routers.prowlarr.tls=true
+      - traefik.http.routers.prowlarr.tls.certresolver=lets-encrypt
+      - traefik.http.services.prowlarr.loadbalancer.server.port=9696
+      - traefik.http.routers.prowlarr.middlewares=oauth
+    networks:
+      - OmniNet
+    healthcheck:
+      test: ["CMD-SHELL", "/prowlarrcheck"]
+      interval: 10s
+      timeout: 2s
+      retries: 3
