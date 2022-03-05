@@ -19,6 +19,7 @@ then
 	echo $(date) - ${APP} - Installing at and net-tools and starting atd >> ${LOG}
 	apk update
 	apk add --update at net-tools util-linux grep
+	printf "root\nabc" > /etc/at.allow
 	atd
 fi
 
