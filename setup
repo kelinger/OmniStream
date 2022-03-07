@@ -150,6 +150,7 @@ else
 		echo
 		exit 12
 	fi
+	git config pull.rebase false
 fi
 
 # Install Docker
