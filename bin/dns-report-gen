@@ -37,12 +37,12 @@ The following domain names are needed for your current setup.  Please make sure 
 are created at your DNS host before starting OmniStream.
 ------------------------------------------------------------------------------------------
 " > ${REPORT}
-cat /tmp/dns-enabled | sed 's/\t/,|,/g' | column -s ',' -t >> ${REPORT} 2>/dev/null
+cat /tmp/dns-enabled 2>/dev/null | sed 's/\t/,|,/g' | column -s ',' -t >> ${REPORT}
 
 echo "
 The following domain names are not used in your current setup and do not need DNS
 entries.  However, you may want to create entries for those you plan on using later.
 ------------------------------------------------------------------------------------------
 " >> ${REPORT}
-diff --new-line-format="" --unchanged-line-format="" /tmp/dns-components /tmp/dns-enabled | sed 's/\t/,|,/g' | column -s ',' -t >> ${REPORT} 2>/dev/null
+diff --new-line-format="" --unchanged-line-format="" /tmp/dns-components /tmp/dns-enabled 2>/dev/null | sed 's/\t/,|,/g' | column -s ',' -t >> ${REPORT}
 rm /tmp/dns-components /tmp/dns-enabled > /dev/null 2>&1
