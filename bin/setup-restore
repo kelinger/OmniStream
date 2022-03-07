@@ -43,6 +43,8 @@ noyes
 if [[ ${VALUE} = 0 ]]
 then
 	omni up
+	echo Waiting for mounts
+	sleep 10
 	restore
 fi
 
