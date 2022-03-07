@@ -16,6 +16,8 @@
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - ${CONFIGS}/${PORTAINERNAME}:/data
+    ports:
+      - 8000:8000
     labels:
       - "omni=${PORTAINERNAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
