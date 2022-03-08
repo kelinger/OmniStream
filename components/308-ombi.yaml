@@ -26,7 +26,7 @@
       - traefik.http.services.ombi.loadbalancer.server.port=3579
       - traefik.http.routers.ombi.middlewares=oauth
     volumes:
-      - ${CONFIGS}/${ORGANIZRNAME}:/config
+      - ${CONFIGS}/${OMBINAME}:/config
     networks:
       - OmniNet
     healthcheck:
