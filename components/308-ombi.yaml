@@ -1,9 +1,9 @@
 #
 # Ombi - Content request and user management
 #
-  Ombi:
+  ombi:
     restart: always
-    image: linuxserver/ombi
+    image: lscr.io/linuxserver/ombi
     container_name: ${OMBINAME}
     hostname: ${OMBINAME}
     domainname: ${MYDOMAIN}
@@ -27,10 +27,12 @@
       - traefik.http.routers.ombi.middlewares=oauth
     volumes:
       - ${CONFIGS}/${OMBINAME}:/config
+      - ${LOGS}:/config/logs
+      - ${OMNIHOME}/healthchecks/ombicheck:/ombicheck
     networks:
       - OmniNet
     healthcheck:
-      test: ["CMD-SHELL", "netstat -ntlp | grep :3579"]
+      test: ["CMD-SHELL", "/ombicheck"]
       interval: 10s
       timeout: 2s
       retries: 3
