@@ -2,7 +2,7 @@
 # Portainer - manages the Docker environment
 #
   portainer:
-    image: portainer/portainer
+    image: portainer/portainer-ce
     container_name: ${PORTAINERNAME}
     hostname: ${PORTAINERNAME}
     domainname: ${MYDOMAIN}
