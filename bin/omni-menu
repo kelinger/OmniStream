@@ -47,7 +47,7 @@ main_menu() {
 			1) omni-control;;
 			2) omni-utilities;;
 			3) setup-again;;
-			9) rm -f ${TEMP}*
+			9 | "") rm -f ${TEMP}*
 				clear
 				exit;;
 		esac
