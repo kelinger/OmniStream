@@ -2,7 +2,7 @@
 # Deluge - Torrent download engine
 #
   deluge:
-    image: linuxserver/deluge:latest #145
+    image: lscr.io/linuxserver/deluge #145
     container_name: ${DELUGENAME}
     hostname: ${DELUGENAME}
     domainname: ${MYDOMAIN}

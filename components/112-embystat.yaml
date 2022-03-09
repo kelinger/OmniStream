@@ -2,7 +2,7 @@
 # EmbyStat - Reports on Emby stats
 #
   embystat:
-    image: linuxserver/embystat
+    image: lscr.io/linuxserver/embystat
     container_name: ${EMBYSTATNAME}
     hostname: ${EMBYSTATNAME}
     domainname: ${MYDOMAIN}

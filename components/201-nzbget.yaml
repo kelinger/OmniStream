@@ -2,7 +2,7 @@
 # NZBget - Usenet Downloader
 #
   nzbget:
-    image: linuxserver/nzbget
+    image: lscr.io/linuxserver/nzbget
     container_name: ${NZBGETNAME}
     hostname: ${NZBGETNAME}
     domainname: ${MYDOMAIN}

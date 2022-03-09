@@ -1,5 +1,8 @@
+#
+# OpenVPN-AS:  VPN server to allow tunnels to Docker from anywhere
+#
   openvpn-as:
-    image: linuxserver/openvpn-as
+    image: ghcr.io/linuxserver/openvpn-as
     container_name: ${OVPNNAME}
     hostname: ${OVPNNAME}
     domainname: ${MYDOMAIN}
@@ -18,7 +21,7 @@
       - PUID=${USERID}
       - PGID=${GROUPID}
       - TZ=${TIMEZONE}
-      - INTERFACE=eth0 #optional
+      - INTERFACE=eth0
     labels:
       - "omni=${OVPNNAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true

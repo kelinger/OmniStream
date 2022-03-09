@@ -1,5 +1,8 @@
+#
+# MariaDB:  MySQL-compatible relational database
+#
   mariadb:
-    image: linuxserver/mariadb
+    image: mariadb
     container_name: ${MARIADBNAME}
     hostname: ${MARIADBNAME}
     restart: always
@@ -15,7 +18,7 @@
         protocol: tcp
         mode: host
     environment:
-      - MYSQL_ROOT_PASSWORD=secret123
+      - MARIADB_ROOT_PASSWORD=secret123
       - PUID=${USERID}
       - PGID=${GROUPID}
       - TZ=${TIMEZONE}

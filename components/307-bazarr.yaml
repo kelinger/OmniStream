@@ -2,7 +2,7 @@
 # Bazarr - Subtitle management
 #
   bazarr:
-    image: linuxserver/bazarr
+    image: lscr.io/linuxserver/bazarr
     container_name: ${BAZARRNAME}
     hostname: ${BAZARRNAME}
     domainname: ${MYDOMAIN}

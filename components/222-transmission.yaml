@@ -2,7 +2,7 @@
 # Deluge - Torrent download engine
 #
   transmission:
-    image: linuxserver/transmission
+    image: lscr.io/linuxserver/transmission
     container_name: ${TRANSNAME}
     hostname: ${TRANSNAME}
     domainname: ${MYDOMAIN}

@@ -1,7 +1,7 @@
 #
-# Jackett - Download proxy server
+# Prowlarr - Download proxy server
 #
-  jackett:
+  prowlarr:
     image: lscr.io/linuxserver/prowlarr:develop
     container_name: ${PROWLARRNAME}
     hostname: ${PROWLARRNAME}

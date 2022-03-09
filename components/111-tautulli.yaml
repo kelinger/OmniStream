@@ -2,7 +2,7 @@
 # Tautulli - Reports on Plex stats
 #
   tautulli:
-    image: linuxserver/tautulli:latest
+    image: lscr.io/linuxserver/tautulli
     container_name: ${TAUTULLINAME}
     hostname: ${TAUTULLINAME}
     domainname: ${MYDOMAIN}

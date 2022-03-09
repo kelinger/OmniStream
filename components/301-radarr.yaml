@@ -2,7 +2,7 @@
 # Radarr - Movie catalog and management
 #
   radarr:
-    image: linuxserver/radarr
+    image: lscr.io/linuxserver/radarr
     container_name: ${RADARRNAME}
     hostname: ${RADARRNAME}
     domainname: ${MYDOMAIN}

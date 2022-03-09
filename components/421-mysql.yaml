@@ -1,3 +1,6 @@
+#
+# MySQL:  Widely used relational database
+#
   mysql:
     image: mysql
     container_name: ${MYSQLNAME}

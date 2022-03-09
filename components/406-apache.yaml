@@ -1,3 +1,6 @@
+#
+# Apache:  Powerful web server
+#
   apache:
     image: php:apache
     container_name: ${APACHENAME}

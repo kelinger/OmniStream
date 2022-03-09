@@ -2,7 +2,7 @@
 # Sonarr - TV Show catalog and management
 #
   sonarr:
-    image: linuxserver/sonarr:latest
+    image: lscr.io/linuxserver/sonarr
     container_name: ${SONARRNAME}
     hostname: ${SONARRNAME}
     domainname: ${MYDOMAIN}

@@ -2,7 +2,7 @@
 # Medusa - TV Show catalog and management
 #
   medusa:
-    image: binhex/arch-medusa
+    image: lscr.io/linuxserver/medusa
     container_name: ${MEDUSANAME}
     hostname: ${MEDUSANAME}
     domainname: ${MYDOMAIN}

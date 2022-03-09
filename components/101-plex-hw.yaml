@@ -2,7 +2,7 @@
 # Plex - Media streaming server with Intel hardware GPU
 #
   plex:
-    image: plexinc/pms-docker:beta
+    image: plexinc/pms-docker:latest
     container_name: ${PLEXNAME}
     hostname: ${PLEXNAME}
     domainname: ${MYDOMAIN}

@@ -3,6 +3,3 @@ networks:
     name: OmniNet
   default:
     driver: bridge
-volumes:
-  netdatalib:
-  netdatacache:

@@ -1,3 +1,6 @@
+#
+# Heimdall - Launchpad for web apps
+#
   heimdall:
     image: lscr.io/linuxserver/heimdall
     container_name: ${HEIMDALLNAME}

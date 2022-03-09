@@ -2,8 +2,7 @@
 # Monitorr - webfront to live display the status of any webapp or service
 #
   monitorr:
-    restart: always
-    image: unless-stopped
+    image: monitorr/monitorr
     container_name: ${MONIORRNAME}
     hostname: ${MONIORRNAME}
     domainname: ${MYDOMAIN}
@@ -27,7 +26,6 @@
       - traefik.http.routers.monitorr.middlewares=oauth
     volumes:
       - ${CONFIGS}/${MONITORRNAME}:/app
-      - /etc/localtime:/etc/localtime:ro
     networks:
       - OmniNet
     healthcheck:

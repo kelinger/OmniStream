@@ -2,7 +2,7 @@
 # SABnzbd - Usenet Downloader
 #
   sabnzbd:
-    image: linuxserver/sabnzbd
+    image: lscr.io/linuxserver/sabnzbd
     container_name: ${SABNZBDNAME}
     hostname: ${SABNZBDNAME}
     domainname: ${MYDOMAIN}
