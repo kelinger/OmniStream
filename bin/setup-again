@@ -45,7 +45,7 @@ main_menu() {
 			5) make-env;;
 			6) setup-media;;
 			7) sudo dpkg-reconfigure tzdata;;
-			9) rm -f ${TEMP}*
+			9 | "" ) rm -f ${TEMP}*
 				clear
 				exit;;
 		esac
