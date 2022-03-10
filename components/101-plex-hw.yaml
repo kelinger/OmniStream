@@ -19,6 +19,7 @@
       - TZ=${TIMEZONE}
       - VERSION=latest
       - UMASK_SET=022
+      - PLEX_CLAIM=${PLEXCLAIM}
     labels:
       - "omni=${PLEXNAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
