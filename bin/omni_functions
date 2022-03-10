@@ -21,6 +21,7 @@ omni() {
 		./bin/make-env rebuild
 		echo
 		"${OMNIHOME}"/bin/check-dns
+		[[ -f "${OMNIHOME}/enabled/221-deluge.yaml" ]] && touch ${LOGS}/deluged.log
 		/usr/local/bin/docker-compose up -d --remove-orphans "${@:2}"
 		cd "${CURDIR}" || exit
 		test -x ${OMNIHOME}/plugins/up-end && ${OMNIHOME}/plugins/up-end
@@ -112,6 +113,7 @@ omni() {
 		"${OMNIHOME}"/bin/make-env rebuild
 		echo
 		"${OMNIHOME}"/bin/check-dns
+		[[ -f "${OMNIHOME}/enabled/221-deluge.yaml" ]] && touch ${LOGS}/deluged.log
 		/usr/local/bin/docker-compose up --remove-orphans --build -d
 		docker exec -ti ${SABNZBDNAME} /config/extras.sh >/dev/null 2>&1
 		docker system prune -a -f --volumes
@@ -129,6 +131,7 @@ omni() {
 		echo Determining DNS assignments
 		"${OMNIHOME}"/bin/dns-report-gen > /dev/null 2>&1
 		echo
+		[[ -f "${OMNIHOME}/enabled/221-deluge.yaml" ]] && touch ${LOGS}/deluged.log
 		echo Updating Docker containers with latest versions
 		/usr/local/bin/docker-compose pull
 		echo
@@ -201,7 +204,6 @@ function o+ {
 			ls ../components/*.yaml
 		elif [[ -f ${OMNIHOME}/components/${PARAM} ]]; then
 			ln -sf ../components/"${PARAM}" "${PARAM}"
-			[[ ${PARAM} = "221-deluge.yaml" ]] && touch ${LOGS}/deluged.log
 			echo "${PARAM}": Enabled
 		else
 			echo Error: "${PARAM}" not found
