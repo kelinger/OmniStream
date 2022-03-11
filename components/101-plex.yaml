@@ -14,10 +14,9 @@
         condition: service_healthy
     environment:
       - ADVERTISE_IP=https://${PLEXNAME}.${MYDOMAIN}
-      - PUID=${USERID}
-      - PGID=${GROUPID}
+      - PLEX_UID=${USERID}
+      - PLEX_GID=${GROUPID}
       - TZ=${TIMEZONE}
-      - VERSION=latest
       - UMASK_SET=022
       - PLEX_CLAIM=${PLEXCLAIM}
     labels:
