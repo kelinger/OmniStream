@@ -23,7 +23,7 @@ msgbox() {
 
 quit() {
 	clear
-	echo Rclone setup canceled.  No files have been changed.  To restart rclone setup, run \"set-rclone\" from the shell.
+	echo Rclone setup canceled.  No files have been changed.  To restart rclone setup, run \"setup-rclone\" from the shell.
 	echo
 	exit
 }

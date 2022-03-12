@@ -1,0 +1,92 @@
+#!/bin/bash
+
+source ~/.config/omnistream.conf
+source ${OMNIHOME}/bin/omni_functions
+
+TEMP=/tmp/answer${$}
+
+get_text() {
+        dialog --title "${TITLE}" --clear --no-cancel --inputbox "${DESC}" 16 51 "${DEFAULT}" 2> ${TEMP}-Input
+        VALUE=$(cat ${TEMP}-Input)
+        rm ${TEMP}-Input
+}
+
+yesno() {
+        dialog --title "${TITLE}" --clear --yesno "${DESC}" 16 51
+        VALUE=${?}
+}
+
+msgbox() {
+	dialog --title "${TITLE}" --clear --msgbox "${DESC}" 0 0
+	VALUE=${?}
+}
+
+quit() {
+	clear
+	echo Plex setup canceled.  No files have been changed.  To restart Plex setup, run \"setup-plex\" from the shell.
+	echo
+	exit
+}
+
+TITLE="Plex Setup"
+DESC="When setting up Plex for the first time, you have the option of obtaining a Plex Token via the web which then will automatically join the new server to your Plex account.  This greatly simplifies the setup and security processes.  If Plex is already setup or you restore a working Plex from backup, this token is ignored.
+
+Once you obtain a token, you have 4 minutes to start Plex before the token expires.  To use this utility, you must already have a working Rclone configured and your media directory mounted.
+
+Do you wish to register a new system with Plex?"
+yesno
+if [[ ${VALUE} = 255 ]]
+then
+	quit
+elif [[ ${VALUE} = 0 ]]
+then
+	CHOICE=0
+	ENABLED=$(ls ${OMNIHOME}/enabled)	# Backup current enabled containers
+	[[ -f ${OMNIHOME}/enabled/002-traefik.yaml ]] && TR="002-traefik.yaml" || TR="002-traefik-cf.yaml" 
+	while true; do
+		dialog \
+			--no-cancel \
+			--default-item ${CHOICE} \
+			--backtitle "OmniStream" \
+			--title "OmniStream Plex Setup" \
+			--menu "Select an option:" 0 0 0 \
+			1 "Obtain Plex Token" \
+			2 "Start minimal OmniStream for Plex" \
+			3 "Clear Plex Token" \
+			4 "Restart production OmniStream" \
+			9 "Exit" 2>${TEMP}
+
+		CHOICE=$(cat ${TEMP})
+  		case ${CHOICE} in
+			1) TITLE="Plex Claim Token"
+			       	DESC="Open a browser and connect to https://www.plex.tv/claim/.  Copy the Plex claim code and paste it below."
+				DEFAULT="${PLEXCLAIM}"
+				get_text
+				PLEXCLAIM="${VALUE}"
+				sed -i 's/.*PLEXCLAIM=.*/PLEXCLAIM='${PLEXCLAIM}'/' ~/.config/omnistream.conf
+				;;
+			2) clear
+				omni down
+				o- ${ENABLED}
+				o+ 001-header.yaml ${TR} 003-omnimount.yaml 101-plex.yaml 999-footer.yaml
+				omni up
+				;;
+			3)  sed -i 's/.*PLEXCLAIM=.*/PLEXCLAIM=/' ~/.config/omnistream.conf
+				TITLE="Done!"
+				DESC="Plex claim token has been cleared from your config."
+				msgbox
+				;;
+			4) clear
+				o- 101-plex.yaml
+				o+ ${ENABLED}
+				omni up
+				;;
+			9 | "" ) rm -f ${TEMP}*
+				o- 101-plex.yaml
+				o+ ${ENABLED}
+				clear
+				exit;;
+		esac
+	done
+fi
+clear
