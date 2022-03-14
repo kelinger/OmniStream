@@ -197,4 +197,4 @@ then
 	git reset --hard HEAD
 	git merge '@{u}'
 fi
-echo Restoration complete!k
+echo Restoration complete!

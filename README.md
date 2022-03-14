@@ -38,6 +38,7 @@ Documentation:  https://omnistream.cloud
 ### Cataloging Tools
 * Radarr - Movie cataloging and downloading
 * Sonarr - TV Show cataloging and downloading
+* Prowlarr - Search centralization and management for other ---arr containers
 * Lidarr
 * Medusa
 * Organizr
