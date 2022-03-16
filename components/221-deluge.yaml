@@ -17,6 +17,7 @@
       - PGID=${GROUPID}
       - TZ=${TIMEZONE}
       - UMASK_SET=022
+      - MEDIA=${MEDIA}
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/${DELUGENAME}:/config

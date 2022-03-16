@@ -63,11 +63,6 @@ SERVER=${SERVERS[${CHOICE}*2]}
 cd "${MERGEMOUNT}/Backups/${SERVER}/"
 SERVERBAK=$(ls *-backup.tar.gz)
 
-clear
-echo Stopping all containers except \"omnimount\"
-echo
-docker stop $(docker ps -q |grep -v $(docker ps -qf "name=omnimount"))
-
 if [[ ! -z ${SERVERBAK} ]]
 then
 	TITLE="Home directory restore"
@@ -151,9 +146,14 @@ then
 	rm ${TEMP}
 fi
 
+clear
+echo Stopping all containers except \"omnimount\"
+echo
+docker stop $(docker ps -q |grep -v $(docker ps -qf "name=omnimount"))
 if [[ ! -z ${SERVERTARGET} ]]
 then
 	mkdir -p ${SERVERTARGET}
+
 	(pv -n "${MERGEMOUNT}/Backups/${SERVER}/${SERVERBAK}" | sudo tar xzpf - --unlink-first --recursive-unlink --directory=/) 2>&1 | dialog --guage "Restoring ${SERVER}..." 6 50
 fi
 
@@ -197,4 +197,4 @@ then
 	git reset --hard HEAD
 	git merge '@{u}'
 fi
-echo Restoration complete!
+echo Restoration complete!  You can restart OmniStream with the \"omni up\" command.

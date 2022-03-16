@@ -32,4 +32,10 @@ then
 	exit 2			# Rclone mount failed
 fi
 
+if ! [[ -d ${MOUNT}/$(basename ${MEDIA}) ]]
+then
+	echo $(date) - ${APP} - MEDIA missing >> ${LOG}
+	exit 2			# Rclone mount emptt
+fi
+
 exit 0

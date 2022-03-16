@@ -16,6 +16,7 @@
       - PGID=${GROUPID}
       - PUID=${USERID}
       - TZ=${TIMEZONE}
+      - MEDIA=${MEDIA}
     labels:
       - "omni=${RADARRNAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
