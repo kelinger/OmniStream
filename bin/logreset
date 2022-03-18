@@ -1,0 +1,10 @@
+#!/bin/bash
+
+source ${HOME}/.config/omnistream.conf
+for i in ${LOGS}/*
+do
+	FILE="$(basename "${i}")"
+	if [[ "${FILE}" != "api.log" ]] && [[ "${FILE::13}" != "plex-standard" ]]; then
+		echo -n > "${i}"
+	fi
+done
