@@ -7,6 +7,6 @@ sudo apt update
 sudo apt upgrade -y
 sudo apt autoremove -y
 sudo apt autoclean
-${OMNIHOME}/bin/update-rclone
+${OMNIHOME}/bin/update-rclone current
 
 [[ -f ${OMNIHOME}/plugins/update-end ]] && source ${OMNIHOME}/plugins/update-end
