@@ -128,6 +128,7 @@ MYEMAIL=${MYEMAIL}
 TIMEZONE=$(cat /etc/timezone)
 USERID=$(id -u)
 DIFFBAK="${DIFFBAK}"
+TURBOMAX=${TURBOMAX}
 
 ############################
 #     Mount Variables      #
@@ -193,7 +194,6 @@ SQLSERVERNAME=${SQLSERVERNAME}
 TAUTULLINAME=${TAUTULLINAME}
 TRAEFIKNAME=${TRAEFIKNAME}
 TRANSNAME=${TRANSNAME}
-TURBOMAX=${TURBOMAX}
 USEOAUTH=${USEOAUTH}
 WATCHNAME=${WATCHNAME}
 
@@ -228,4 +228,4 @@ mkdir -p ${CONFIGS} ${DOWNLOADS} ${LOGS}
 sudo cp ${RCLONEHOME}/rclone.conf ${CONFIGS}/omnimount/
 sudo chown ${USERID}:${GROUPID} ${CONFIGS}/omnimount/rclone.conf
 
-echo done
+echo Environment updated
