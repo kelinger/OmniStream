@@ -114,6 +114,7 @@ omni() {
 		echo
 		"${OMNIHOME}"/bin/check-dns
 		[[ -f "${OMNIHOME}/enabled/221-deluge.yaml" ]] && touch ${LOGS}/deluged.log
+		[[ $(find "${OMNIHOME}/enabled" -name "*transvpn.yaml") ]] && touch ${LOGS}/transmission.log
 		/usr/local/bin/docker-compose up --remove-orphans --build -d
 		docker exec -ti ${SABNZBDNAME} /config/extras.sh >/dev/null 2>&1
 		docker system prune -a -f --volumes
@@ -132,6 +133,7 @@ omni() {
 		"${OMNIHOME}"/bin/dns-report-gen > /dev/null 2>&1
 		echo
 		[[ -f "${OMNIHOME}/enabled/221-deluge.yaml" ]] && touch ${LOGS}/deluged.log
+		[[ $(find "${OMNIHOME}/enabled" -name "*transvpn.yaml") ]] && touch ${LOGS}/transmission.log
 		echo Updating Docker containers with latest versions
 		/usr/local/bin/docker-compose pull
 		echo

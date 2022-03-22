@@ -12,6 +12,7 @@
       - RCLONEMOUNT=${RCLONEMOUNT}
       - UNSYNCED=${UNSYNCED}
       - UPLOADCACHE=${UPLOADCACHE}
+      - TURBOMAX=${TURBOMAX}
       - TZ=${TIMEZONE}
     volumes:
       - ${CONFIGS}/omnimount:/config
