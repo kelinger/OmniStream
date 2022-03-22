@@ -1,7 +1,7 @@
 #!/bin/bash
 
-APP=Deluge
-PORT=8112
+APP=TransVPN
+PORT=9091
 MOUNT="/cloud"
 LOG="/logs/health"
 
