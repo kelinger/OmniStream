@@ -31,7 +31,7 @@ fi
 if ! [[ -d ${MOUNT}/$(basename ${MEDIA}) ]]
 then
 	echo $(date) - ${APP} - MEDIA missing >> ${LOG}
-	exit 2			# Rclone mount emptt
+	exit 2			# Rclone mount empty
 fi
 
 exit 0

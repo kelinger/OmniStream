@@ -12,8 +12,8 @@ if [[ ${X} -ne 0 ]];
 then
 	# netstat is missing
 	echo $(date) - ${APP} - Installing net-tools >> ${LOG}
-	apk update
-	apk add --update net-tools util-linux grep
+	apt update
+	apt install net-tools -y
 fi
 
 ${NS} -ntlp | grep :${PORT}
