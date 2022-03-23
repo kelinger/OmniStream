@@ -3,8 +3,8 @@
 #
   monitorr:
     image: monitorr/monitorr
-    container_name: ${MONIORRNAME}
-    hostname: ${MONIORRNAME}
+    container_name: ${MONITORRNAME}
+    hostname: ${MONITORRNAME}
     domainname: ${MYDOMAIN}
     restart: unless-stopped
     depends_on:
@@ -19,7 +19,7 @@
       - "omni=${OMBINAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
       - traefik.enable=true
-      - traefik.http.routers.monitorr.rule=Host(`${MONIORRNAME}.${MYDOMAIN}`)
+      - traefik.http.routers.monitorr.rule=Host(`${MONITORRNAME}.${MYDOMAIN}`)
       - traefik.http.routers.monitorr.tls=true
       - traefik.http.routers.monitorr.tls.certresolver=lets-encrypt
       - traefik.http.services.monitorr.loadbalancer.server.port=80
