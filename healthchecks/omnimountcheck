@@ -12,4 +12,8 @@ then
 	exit 2			# Rclone mount failed
 fi
 
+if ! [[ -d /mnt/$(basename ${RCLONEMOUNT})/$(basename ${MEDIA}) ]];
+then
+	exit 3			# Media missing
+fi
 exit 0

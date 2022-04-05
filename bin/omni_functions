@@ -75,6 +75,10 @@ omni() {
 		cd "${OMNIHOME}"/bin || exit
 		ls
 		;;
+	media)
+		cd "${MEDIA}" || exit
+		ls
+		;;
 	configs)
 		cd "${CONFIGS}" || exit
 		ls
