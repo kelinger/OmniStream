@@ -15,7 +15,7 @@
       - PGID=${GROUPID}
       - TZ=${TIMEZONE}
     volumes:
-      - ${CONFIGS}/heimdall:/config
+      - ${CONFIGS}/${HEIMDALLNAME}:/config
     labels:
       - "omni=${HEIMDALLNAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
