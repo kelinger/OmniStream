@@ -1,6 +1,7 @@
 .env
 docker-compose.yaml
 dns-report
+benchmarks
 components/8*.yaml
 components/9[0-8]*.yaml
 [cC]onfigs

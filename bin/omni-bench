@@ -1,0 +1,10 @@
+#!/bin/bash
+
+THREADS=${1}
+source ~/.config/omnistream.conf
+
+cd /tmp
+sysbench fileio --file-total-size=15G --file-test-mode=rndrw --time=300 --max-requests=0 --threads=${THREADS} prepare
+sysbench fileio --file-total-size=15G --file-test-mode=rndrw --time=300 --max-requests=0 --threads=${THREADS} run > ${OMNIHOME}/benchmarks
+sysbench fileio --file-total-size=15G --file-test-mode=rndrw --time=300 --max-requests=0 --threads=${THREADS} cleanup
+sysbench cpu --threads=${THREADS} run >> ${OMNIHOME}/benchmarks
