@@ -13,7 +13,7 @@ if [[ ${COUNT} -gt 0 ]]
 then
 	find ${UPLOADCACHE} ! -path "*Downloads*" -type f -exec ls -sh --color=yes "{}" \; | column |cat -n
 	echo ----
-	du -sh ${UPLOADCACHE}/$(basename ${MEDIA})
+	du -sh ${UPLOADCACHE}/$(basename ${MEDIA}) ${UPLOADCACHE}/Backups
 else
 	echo "Queue is empty"
 fi
