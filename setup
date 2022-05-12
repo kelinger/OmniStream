@@ -25,7 +25,7 @@ then
 	echo
 	if [[ ${REPLY} =~ ^[Yy]$ ]]
 	then
-		read -e -p "Desired username: " -i "yourname" PU
+		read -e -p "Desired username: " PU
 		# Create user
 		adduser ${PU}
 		# Grant sudo
