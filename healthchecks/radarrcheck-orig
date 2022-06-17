@@ -4,17 +4,17 @@ APP=Radarr
 PORT=7878
 MOUNT="/cloud"
 LOG="/config/logs/health"
-NS=$(whereis netstat)
+NS=$(which netstat)
 
 if [[ ${?} -ne 0 ]];
 then
 	# No netstat so install it and create new log file
 	echo $(date) - ${APP} - Installing net-tools >> ${LOG}
-	apk update
-	apk add --update net-tools util-linux grep
+	apt update
+	apt install net-tools -y
 fi
 
-/bin/netstat -ntlp | grep :${PORT}
+${NS} -ntlp | grep :${PORT}
 if [[ ${?} -ne  0 ]];
 then
 	echo $(date) - ${APP} service not running >> ${LOG}
@@ -26,6 +26,12 @@ if [[ ${?} -ne  0 ]];
 then
 	echo $(date) - ${APP} - Rclone mount failed >> ${LOG}
 	exit 2			# Rclone mount failed
+fi
+
+if ! [[ -d ${MOUNT}/$(basename ${MEDIA}) ]]
+then
+	echo $(date) - ${APP} - MEDIA missing >> ${LOG}
+	exit 2			# Rclone mount empty
 fi
 
 exit 0
