@@ -17,6 +17,7 @@ ADD_DNS=false
 DELETE_DNS=false
 TEMP=/tmp/answer${$}
 DIFFBAK="emby jellyfin plex"
+AUTH=auth@docker
 
 touch ${ENV}
 
@@ -130,6 +131,7 @@ TIMEZONE=$(cat /etc/timezone)
 USERID=$(id -u)
 DIFFBAK="${DIFFBAK}"
 TURBOMAX=${TURBOMAX}
+AUTH=${AUTH}
 
 ############################
 #     Mount Variables      #

@@ -27,7 +27,7 @@
       - traefik.http.routers.prowlarr.tls=true
       - traefik.http.routers.prowlarr.tls.certresolver=lets-encrypt
       - traefik.http.services.prowlarr.loadbalancer.server.port=9696
-      - traefik.http.routers.prowlarr.middlewares=oauth
+      - traefik.http.routers.prowlarr.middlewares=${AUTH}
     networks:
       - OmniNet
     healthcheck:

@@ -24,7 +24,7 @@
       - traefik.http.routers.apache.tls=true
       - traefik.http.routers.apache.tls.certresolver=lets-encrypt
       - traefik.http.services.apache.loadbalancer.server.port=80
-      - traefik.http.routers.apache.middlewares=oauth
+      - traefik.http.routers.apache.middlewares=${AUTH}
     healthcheck:
       test: ["CMD-SHELL", "netstat -ntlp | grep :80"]
       interval: 10s

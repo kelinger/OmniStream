@@ -32,6 +32,6 @@
       - traefik.http.routers.medusa.tls=true
       - traefik.http.routers.medusa.tls.certresolver=lets-encrypt
       - traefik.http.services.medusa.loadbalancer.server.port=8081
-      - traefik.http.routers.medusa.middlewares=oauth
+      - traefik.http.routers.medusa.middlewares=${AUTH}
     networks:
       - OmniNet

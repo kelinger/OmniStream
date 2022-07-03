@@ -1,0 +1,157 @@
+#!/bin/bash
+
+source ~/.config/omnistream.conf
+source ${OMNIHOME}/bin/omni_init > /dev/null 2>&1
+
+TEMP=/tmp/answer${$}
+
+get_text() {
+        dialog --title "${TITLE}" --clear --no-cancel --inputbox "${DESC}" 0 0 "${DEFAULT}" 2> ${TEMP}-Input
+        VALUE=$(cat ${TEMP}-Input)
+        rm ${TEMP}-Input
+}
+
+yesno() {
+        dialog --title "${TITLE}" --clear --yesno "${DESC}" 0 0
+        VALUE=${?}
+}
+
+msgbox() {
+	dialog --title "${TITLE}" --clear --msgbox "${DESC}" 0 0
+	VALUE=${?}
+}
+
+passwordbox() {
+        dialog --title "${TITLE}" --clear --insecure --passwordbox "${DESC}" 0 0 "${DEFAULT}" 2> ${TEMP}-Input
+        VALUE="$(cat ${TEMP}-Input)"
+        rm ${TEMP}-Input
+}
+
+quit() {
+	clear
+	echo Credential setup canceled.  No files have been changed.  To restart Credential setup, run \"setup-creds\" from the shell.
+	echo
+	exit
+}
+
+mkdir -p ${CONFIGS}/${TRAEFIKNAME}/acme
+touch ${CONFIGS}/${TRAEFIKNAME}/acme/acme.json #${CONFIGS}/${TRAEFIKNAME}/traefik.log ${CONFIGS}/${TRAEFIKNAME}/traefik_secure.toml ${CONFIGS}/${TRAEFIKNAME}/traefik.toml
+chmod 600 ${CONFIGS}/${TRAEFIKNAME}/acme/acme.json
+
+TITLE="Credential Configuration"
+DESC="OmniStream apps can use their own authentication, a common user defined here, or an external authentication such as Google.
+
+Select NO only if you are going to restore from a backup."
+yesno
+if [[ ${VALUE} != 0 ]]
+then
+	quit
+fi
+
+while true
+do
+	TITLE="Set Traefik Admin Password"
+	DESC="Please enter the password you would like to use to secure the Traefik console's admin account."
+	passwordbox
+
+	PW1="${VALUE}"
+
+	DESC="Just to be sure, please enter it one more time:"
+	passwordbox
+	PW2="${VALUE}"
+
+	if [[ "${PW1}" != "${PW2}" ]]
+	then
+		TITLE="Password Mismatch!"
+		DESC="Your two passwords do not match.  Please make sure you enter the same password both times.
+
+		Do you want to try again?"
+		yesno
+		if [[ ${VALUE} != 0 ]]
+		then
+			quit
+		fi
+	else
+		break
+	fi
+done
+
+AUTH="$(htpasswd -nb admin ${PW1})"
+
+cat > ${CONFIGS}/${TRAEFIKNAME}/traefik.toml << EOF
+[entryPoints]
+  [entryPoints.web]
+    address = ":80"
+    [entryPoints.web.http.redirections.entryPoint]
+      to = "websecure"
+      scheme = "https"
+  [entryPoints.websecure]
+    address = ":443"
+
+[api]
+  dashboard = true
+[certificatesResolvers.lets-encrypt.acme]
+  email = "${MYEMAIL}"
+  storage = "acme.json"
+  [certificatesResolvers.lets-encrypt.acme.tlsChallenge]
+
+[providers.docker]
+  watch = true
+  network = "web"
+
+[providers.file]
+  filename = "traefik_secure.toml"
+EOF
+
+cat > ${CONFIGS}/${TRAEFIKNAME}/traefik_secure.toml << EOF
+[http.middlewares.simpleAuth.basicAuth]
+  users = [
+    "${AUTH}"
+  ]
+
+[http.routers.api]
+  rule = "Host(\`${TRAEFIKNAME}.${MYDOMAIN}\`)"
+  entrypoints = ["websecure"]
+  middlewares = ["simpleAuth"]
+  service = "api@internal"
+  [http.routers.api.tls]
+    certResolver = "lets-encrypt"
+EOF
+
+echo ${AUTH} > ${CONFIGS}/${TRAEFIKNAME}/users
+mkdir -p ${CONFIGS}/${TRAEFIKNAME}/external_sites
+
+TITLE="Traefik Advanced"
+DESC="Do you wish to enhance Traefik with an advanced configuration that integrates with CloudFlare (DNS hosting and site caching)?  This is a bit more complex and requires you to already have a CloudFlare account.
+
+Select NO to just use the basic Traefik routing and certificate management."
+yesno
+if [[ ${VALUE} != 0 ]]
+then
+	o- 002-traefik-cf.yaml > /dev/null 2>&1
+	o+ 002-traefik.yaml
+        quit2
+fi
+
+TITLE="Traefik Advanced - CloudFlare Email"
+DESC="Please enter the email address you use to login to CloudFlare:"
+[[ ${CF_EMAIL} = "" ]] && DEFAULT=${MYEMAIL} || DEFAULT=${CF_EMAIL}
+get_text
+CF_EMAIL=${VALUE}
+unset DEFAULT
+
+TITLE="Traefik Advanced - CloudFlare Global Key"
+DESC="Please enter or paste the Global API Key from CloudFlare.  This can be retrieved from https://dash.cloudflare.com/profile/api-tokens.
+
+On a Mac, the paste is usually command-V.  In Windows, this is typically shift-Insert or control-shift-V."
+passwordbox
+CF_KEY=${VALUE}
+
+sed -i 's/.*'CF_EMAIL'=.*/'CF_EMAIL'='${CF_EMAIL}'/' ~/.config/omnistream.conf
+sed -i 's/.*'CF_KEY'=.*/'CF_KEY'='${CF_KEY}'/' ~/.config/omnistream.conf
+sed -i 's/.*'ADD_DNS'=.*/'ADD_DNS=true'/' ~/.config/omnistream.conf
+sed -i 's/.*'DELETE_DNS'=.*/'DELETE_DNS=true'/' ~/.config/omnistream.conf
+
+clear
+o- 002-traefik.yaml > /dev/null 2>&1
+o+ 002-traefik-cf.yaml

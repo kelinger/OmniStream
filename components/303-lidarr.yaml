@@ -22,6 +22,7 @@
       - ${LOGS}:/config/logs
       - ${MERGEMOUNT}:/cloud
       - /bin/netstat:/bin/netstat:ro
+      - ${OMNIHOME}/healthchecks/lidarrcheck:/lidarrcheck
     labels:
       - "omni=${LIDARRNAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
@@ -30,11 +31,11 @@
       - traefik.http.routers.lidarr.tls=true
       - traefik.http.routers.lidarr.tls.certresolver=lets-encrypt
       - traefik.http.services.lidarr.loadbalancer.server.port=8686
-      - traefik.http.routers.lidarr.middlewares=oauth
+      - traefik.http.routers.lidarr.middlewares=${AUTH}
     networks:
       - OmniNet
     healthcheck:
-      test: ["CMD-SHELL", "netstat -ntlp | grep :8686 && mountpoint /cloud"]
+      test: ["CMD", "/lidarrcheck"]
       interval: 10s
       timeout: 2s
       retries: 3

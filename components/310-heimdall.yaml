@@ -24,6 +24,6 @@
       - traefik.http.routers.${HEIMDALLNAME}.tls=true
       - traefik.http.routers.${HEIMDALLNAME}.tls.certresolver=lets-encrypt
       - traefik.http.services.${HEIMDALLNAME}.loadbalancer.server.port=80
-      - traefik.http.routers.${HEIMDALLNAME}.middlewares=oauth
+      - traefik.http.routers.${HEIMDALLNAME}.middlewares=${AUTH}
     networks:
       - OmniNet

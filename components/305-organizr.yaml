@@ -23,7 +23,7 @@
       - traefik.http.routers.organizr.tls=true
       - traefik.http.routers.organizr.tls.certresolver=lets-encrypt
       - traefik.http.services.organizr.loadbalancer.server.port=80
-      - traefik.http.routers.organizr.middlewares=oauth
+      - traefik.http.routers.organizr.middlewares=${AUTH}
     volumes:
       - ${CONFIGS}/${ORGANIZRNAME}:/config
     networks:

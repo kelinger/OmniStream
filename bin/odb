@@ -4,7 +4,7 @@ source ~/.config/omnistream.conf
 DIRECTION=${1}
 APP=${2}
 
-if [[ ${APP} = "plex" ]] && [[ ${DIRECTION} = "backup" ]]
+if  { [[ ${APP} = "plex" ]] || [[ ${APP} = "all" ]]; } && [[ ${DIRECTION} = "backup" ]]
 then
 	echo
 	echo Stopping containers:
@@ -45,7 +45,7 @@ then
 	echo
 	exit 0
 fi
-if [[ ${APP} = "emby" ]] && [[ ${DIRECTION} = "backup" ]]
+if { [[ ${APP} = "emby" ]] || [[ ${APP} = "all" ]]; } && [[ ${DIRECTION} = "backup" ]]
 then
 	echo
 	echo Stopping containers:

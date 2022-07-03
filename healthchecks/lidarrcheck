@@ -1,0 +1,31 @@
+#!/bin/bash
+
+APP=Lidarr
+PORT=8686
+MOUNT="/cloud"
+LOG="/config/logs/health"
+NS=$(whereis netstat)
+
+if [[ ${?} -ne 0 ]];
+then
+	# No netstat so install it and create new log file
+	echo $(date) - ${APP} - Installing net-tools >> ${LOG}
+	apk update
+	apk add --update net-tools util-linux grep
+fi
+
+/bin/netstat -ntlp | grep :${PORT}
+if [[ ${?} -ne  0 ]];
+then
+	echo $(date) - ${APP} service not running >> ${LOG}
+	exit 1			# Port not open
+fi
+
+mountpoint ${MOUNT}
+if [[ ${?} -ne  0 ]];
+then
+	echo $(date) - ${APP} - Rclone mount failed >> ${LOG}
+	exit 2			# Rclone mount failed
+fi
+
+exit 0

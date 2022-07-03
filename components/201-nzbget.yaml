@@ -29,7 +29,7 @@
       - traefik.http.routers.nzbget.tls=true
       - traefik.http.routers.nzbget.tls.certresolver=lets-encrypt
       - traefik.http.services.nzbget.loadbalancer.server.port=6789
-      - traefik.http.routers.nzbget.middlewares=oauth
+      - traefik.http.routers.nzbget.middlewares=${AUTH}
     healthcheck:
       test: ["CMD-SHELL", "netstat -ntlp | grep :6789"]
       interval: 10s

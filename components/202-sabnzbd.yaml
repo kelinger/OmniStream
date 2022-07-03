@@ -25,7 +25,7 @@
       - traefik.http.routers.sabnzbd.tls=true
       - traefik.http.routers.sabnzbd.tls.certresolver=lets-encrypt
       - traefik.http.services.sabnzbd.loadbalancer.server.port=8080
-      - traefik.http.routers.sabnzbd.middlewares=oauth
+      - traefik.http.routers.sabnzbd.middlewares=${AUTH}
     volumes:
       - ${CONFIGS}/${SABNZBDNAME}:/config
       - ${MERGEMOUNT}:/cloud

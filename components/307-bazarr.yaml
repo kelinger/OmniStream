@@ -24,7 +24,7 @@
       - traefik.http.routers.bazarr.tls=true
       - traefik.http.routers.bazarr.tls.certresolver=lets-encrypt
       - traefik.http.services.bazarr.loadbalancer.server.port=6767
-      - traefik.http.routers.bazarr.middlewares=oauth
+      - traefik.http.routers.bazarr.middlewares=${AUTH}
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/${BAZARRNAME}:/config

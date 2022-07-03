@@ -40,7 +40,7 @@
       ## Services - API
       - "traefik.http.routers.traefik.service=api@internal"
       ## Middlewares
-      - "traefik.http.routers.traefik.middlewares=oauth"
+      - "traefik.http.routers.traefik.middlewares=${AUTH}"
       - "traefik.http.middlewares.auth.basicauth.usersFile=/config/users"
     command:
       ##### Uncomment the next line for testing #####
