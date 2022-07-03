@@ -1,0 +1,14 @@
+#!/bin/bash
+
+source ~/.config/omnistream.conf
+source ${OMNIHOME}/bin/omni_init > /dev/null 2>&1
+
+if [[ ${AUTH} = "oauth" ]]
+then
+	sed -i 's/^'AUTH'=.*/'AUTH=auth@docker'/' ~/.config/omnistream.conf
+	echo OmniStream app authentication switched to \"basic\"
+else
+	sed -i 's/^'AUTH'=.*/'AUTH=oauth'/' ~/.config/omnistream.conf
+	echo OmniStream app authentication switched to \"oauth\"
+fi
+
