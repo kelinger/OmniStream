@@ -200,6 +200,7 @@ preload() {
 function o+ {
 	CURDIR=$(pwd)
 	cd "${OMNIHOME}"/enabled || exit
+	source ${OMNIHOME}/bin/dns_functions
 	for i in "$@"; do
 		PARAM=${1}
 		if [[ -z ${PARAM} ]]; then
@@ -211,11 +212,63 @@ function o+ {
 		elif [[ -f ${OMNIHOME}/components/${PARAM} ]]; then
 			ln -sf ../components/"${PARAM}" "${PARAM}"
 			echo "${PARAM}": Enabled
+			if [[ ${ADD_DNS} = true ]]; then
+				LINE=$(cat ${OMNIHOME}/components/${PARAM} | grep "omni=" |cut -f2 -d'"' | cut -f2 -d'=')
+				HOST=$(echo ${LINE} | cut -f1 -d',')
+				if [[ "${HOST:0:1}" == "$" ]]; then
+					HOST=$(echo $(eval echo ${HOST}))
+				fi
+				DOMAIN=$(echo ${LINE} | cut -f2 -d',')
+				if [[ "${DOMAIN:0:1}" == "$" ]]; then
+					DOMAIN=$(echo $(eval echo ${DOMAIN}))
+				fi
+				ADD=$(echo ${LINE} | cut -f3 -d',')
+				ADD="${ADD^^}"
+				DEL=$(echo ${LINE} | cut -f4 -d',')
+				DEL="${DEL^^}"
+				CACHE=$(echo ${LINE} | cut -f5 -d',')
+				CACHE="${CACHE^^}"
+				FQDN=${HOST}.${DOMAIN}
+				RECORD=$(echo $ZONEDUMP | jq -r --arg FQDN "$FQDN" 'select(.name==$FQDN)')
+				RECORDID=$(echo $RECORD | jq '.id' |tr -d '"')
+				if [[ ${ADD} == "YES" ]]; then
+					if [[ -z "${RECORDID}" ]]; then
+						createrecord ${ZONEID} ${HOST} ${CACHE}
+						echo -n ${GREEN}"Created ${FQDN} "
+						if [[ ${CACHE} == "YES" ]]; then
+							echo "(cached)"${STD}
+						else
+							echo ${RED}"(uncached)"${STD}
+						fi
+					else
+						IP=$(echo $RECORD | jq '.content' |tr -d '"')
+						TYPE=$(echo $RECORD | jq '.type' |tr -d '"')
+						PROXIED=$(echo $RECORD | jq '.proxied' |tr -d '"')
+						CACHE2=false
+						if [[ ${CACHE} = "YES" ]]
+						then
+							CACHE2=true
+						fi
+						if [[ ${IP} != ${MYIP} ]] || [[ ${TYPE} != "A" ]] || [[ ${CACHE2} != ${PROXIED} ]]
+						then
+							updaterecord ${ZONEID} ${FQDN} ${RECORDID} ${CACHE2}
+							echo -n ${GREEN}"Updated ${FQDN} "
+							if [[ ${CACHE} == "YES" ]]; then
+								echo "(cached)"${STD}
+							else
+								echo ${RED}"(uncached)"${STD}
+							fi
+						fi
+					fi
+
+				fi
+
+			fi
 		else
 			echo Error: "${PARAM}" not found
 			echo
 			echo Please choose from the following components:
-			ls "${OMNIHOME}"/components/*.yaml
+			(cd ${OMNIHOME}/enabled && ls *.yaml)
 		fi
 		shift
 	done
@@ -225,6 +278,7 @@ function o+ {
 
 function o-() {
 	CURDIR=$(pwd)
+	source ${OMNIHOME}/bin/dns_functions
 	cd "${OMNIHOME}"/enabled || exit
 	for i in "$@"; do
 		PARAM=${1}
@@ -234,11 +288,45 @@ function o-() {
 		elif [[ -f ${OMNIHOME}/enabled/${PARAM} ]]; then
 			rm "${PARAM}"
 			echo "${PARAM}": Disabled
+			if [[ ${DELETE_DNS} = true ]]; then
+				LINE=$(cat ${OMNIHOME}/components/${PARAM} | grep "omni=" |cut -f2 -d'"' | cut -f2 -d'=')
+				HOST=$(echo ${LINE} | cut -f1 -d',')
+				if [[ "${HOST:0:1}" == "$" ]]; then
+					HOST=$(echo $(eval echo ${HOST}))
+				fi
+				DOMAIN=$(echo ${LINE} | cut -f2 -d',')
+				if [[ "${DOMAIN:0:1}" == "$" ]]; then
+					DOMAIN=$(echo $(eval echo ${DOMAIN}))
+				fi
+				ADD=$(echo ${LINE} | cut -f3 -d',')
+				ADD="${ADD^^}"
+				DEL=$(echo ${LINE} | cut -f4 -d',')
+				DEL="${DEL^^}"
+				CACHE=$(echo ${LINE} | cut -f5 -d',')
+				CACHE="${CACHE^^}"
+				FQDN=${HOST}.${MYDOMAIN}
+				RECORD=$(echo $ZONEDUMP | jq -r --arg FQDN "$FQDN" 'select(.name==$FQDN)')
+				RECORDID=$(echo $RECORD | jq '.id' |tr -d '"')
+				echo -n ${BLUE}
+				printf %-20s "${HOST}"
+				if [[ ${DEL} = "YES" ]]
+				then
+					if [[ -z ${RECORDID} ]]
+					then
+						echo ${YELLOW}"not registered"${STD}
+					else
+						deleterecord ${ZONEID} ${RECORDID}
+						echo ${GREEN}"Removed record ${RECORDID}"${STD}
+					fi
+				else
+					echo ${YELLOW}"skipped"${STD}
+				fi
+			fi
 		else
 			echo Error: "${PARAM}" not found
 			echo
 			echo Please choose from the following components:
-			ls "${OMNIHOME}"/enabled/*.yaml
+			(cd ${OMNIHOME}/enabled && ls *.yaml)
 		fi
 		shift
 	done
