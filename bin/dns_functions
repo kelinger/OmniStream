@@ -1,0 +1,84 @@
+#!/bin/bash
+
+# Configs variables used (from omnistream.conf)
+
+#	ADD_DNS:  true to enable this script
+#	CF_EMAIL:  email address used to register with CloudFlare
+#	CF_KEY:  API key for CloudFlare account
+#	MYDOMAIN:  Domain registered with CloudFlare
+
+# Additional variables (assigned below)
+
+#	MYIP:  Public IP address of this server
+
+function zoneid() {
+#	Return ZONEID for managed CloudFlare ZONE
+
+	echo $(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=${MYDOMAIN}&status=active" \
+	-H "X-Auth-Email: ${CF_EMAIL}" \
+	-H "X-Auth-Key: ${CF_KEY}" \
+	-H "Content-Type: application/json" | jq -r '{"result"}[] | .[0] | .id')
+}
+
+function deleterecord() {
+#	Deletes a CloudFlare DNS Record for given record ID
+#		${1} is the ZoneID
+#		${2} is the DNS record ID to delete
+
+	local __ZONEID=${1}
+	local __RECORD=${2}
+
+	RESULT=$(curl -s -X DELETE "https://api.cloudflare.com/client/v4/zones/${__ZONEID}/dns_records/${__RECORD}" \
+	-H "X-Auth-Email: ${CF_EMAIL}" \
+	-H "X-Auth-Key: ${CF_KEY}" \
+	-H "Content-Type: application/json")
+}
+
+function createrecord() {
+#	Creates a new CloudFlare DNS A Record for given subdomain
+#		${1} is the ZoneID
+#		${2} is the DNS record to create
+#		${3} is whether it is cached or not
+
+	local __ZONEID=${1}
+	local __RECORD=${2}
+	local __CACHED=${3}
+	PROXY="true"
+
+	if [[ "${__CACHED}" == "NO" ]];
+	then
+		PROXY="false"
+	fi
+
+	RESULT=$(curl -s -X POST "https://api.cloudflare.com/client/v4/zones/${__ZONEID}/dns_records" \
+	-H "X-Auth-Email: ${CF_EMAIL}" \
+	-H "X-Auth-Key: ${CF_KEY}" \
+	-H "Content-Type: application/json" \
+	--data '{"type":"A","name":"'"${__RECORD}"'","content":"'"${MYIP}"'","proxied":'${PROXY}'}')
+}
+
+function updaterecord() {
+#	Updates an existing CloudFlare DNS A Record for given subdomain a record ID
+#		${1} is the ZoneID
+#		${2} is the DNS record to create (subdomain)
+#		${3} is the CloudFlare DNS record identifier
+#		${4} is the Cache
+
+	local __ZONEID=${1}
+	local __RECORD=${2}
+	local __ID=${3}
+	local __PROXY=${4}
+
+	RESULT=$(curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/${__ZONEID}/dns_records/${__ID}" \
+	-H "X-Auth-Email: ${CF_EMAIL}" \
+	-H "X-Auth-Key: ${CF_KEY}" \
+	-H "Content-Type: application/json" \
+	--data '{"type":"A","name":"'"${__RECORD}"'","content":"'"${MYIP}"'","proxied":'${__PROXY}'}')
+}
+
+ZONEID="$(zoneid)"
+MYIP=$(dig +short txt ch whoami.cloudflare @1.0.0.1 | tr -d '"')
+ZONEDUMP=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/${ZONEID}/dns_records?type=A" \
+	-H "X-Auth-Email: ${CF_EMAIL}" \
+	-H "X-Auth-Key: ${CF_KEY}" \
+	-H "Content-Type: application/json"|jq '.result[]|{id,name,type,content,proxied,ttl}')

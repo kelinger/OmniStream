@@ -24,9 +24,14 @@ for i in components enabled; do
 		DEL="${DEL^^}"
 		CACHE=$(echo ${LINE} | cut -f5 -d',')
 		CACHE="${CACHE^^}"
+		CACHE2=unproxied
+		if [[ ${CACHE} = "YES" ]]
+		then
+			CACHE2=proxied
+		fi
 		FQDN=${HOST}.${DOMAIN}
 		if [[ ${ADD} == "YES" ]]; then
-			echo "${FQDN},A,${IP}" >> /tmp/dns-$i
+			echo "${FQDN},A,${IP},${CACHE2}" >> /tmp/dns-$i
 		fi
 	done
 done
