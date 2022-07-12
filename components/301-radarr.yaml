@@ -31,7 +31,6 @@
       - ${CONFIGS}/${RADARRNAME}:/config
       - ${LOGS}:/config/logs
       - ${MERGEMOUNT}:/cloud
-      - /usr/bin/killall:/usr/bin/killall:ro
       - ${OMNIHOME}/healthchecks/radarrcheck:/radarrcheck
     networks:
       - OmniNet
