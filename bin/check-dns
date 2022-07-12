@@ -41,7 +41,7 @@ for LINE in $(cat *.yaml |grep "omni=" |cut -f2 -d'"' | cut -f2 -d'='); do
 		if [[ -z "${RECORDID}" ]]; then
 			createrecord ${ZONEID} ${HOST} ${CACHE}
 			echo -n ${GREEN}"Created ${FQDN} "
-			if [[ ${CACHE} == "YES" ]]; then
+			if [[ ${CACHE} == "YES" ]] && [[ ${CF_CACHE} = true ]]; then
 				echo "(cached)"${STD}
 			else
 				echo ${RED}"(uncached)"${STD}
@@ -51,7 +51,7 @@ for LINE in $(cat *.yaml |grep "omni=" |cut -f2 -d'"' | cut -f2 -d'='); do
 			TYPE=$(echo $RECORD | jq '.type' |tr -d '"')
 			PROXIED=$(echo $RECORD | jq '.proxied' |tr -d '"')
 			CACHE2=false
-			if [[ ${CACHE} = "YES" ]]
+			if [[ ${CACHE} = "YES" ]] && [[ ${CF_CACHE} = true ]]
 			then
 				CACHE2=true
 			fi
@@ -59,7 +59,7 @@ for LINE in $(cat *.yaml |grep "omni=" |cut -f2 -d'"' | cut -f2 -d'='); do
 			then
 				updaterecord ${ZONEID} ${FQDN} ${RECORDID} ${CACHE2}
 				echo -n ${GREEN}"Updated ${FQDN} "
-				if [[ ${CACHE} == "YES" ]]; then
+				if [[ ${CACHE2} = true ]]; then
 					echo "(cached)"${STD}
 				else
 					echo ${RED}"(uncached)"${STD}

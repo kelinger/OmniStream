@@ -18,6 +18,7 @@ DELETE_DNS=false
 TEMP=/tmp/answer${$}
 DIFFBAK="emby jellyfin plex"
 AUTH=auth@docker
+CF_CACHE=true
 
 touch ${ENV}
 
@@ -116,6 +117,7 @@ cat >${ENV} <<EOF
 ############################
 
 ADD_DNS=${ADD_DNS}
+CF_CACHE=${CF_CACHE}
 CF_EMAIL=${CF_EMAIL}
 CF_KEY=${CF_KEY}
 CONFIGS=${CONFIGS}
