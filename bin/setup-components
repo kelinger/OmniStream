@@ -45,23 +45,35 @@ edit_components() {
 
 	CHOICE=$(cat ${TEMP})
 	COUNTER=1
+	COMMAND1="o- "
+	COMMAND2="o+ "
 	for i in ${COMPONENTS}
   	do
 		CODE=${i:0:3}
 		if ! [[ ${CODE} =~ ^(001|999)$ ]]
 		then
-			COMMAND="o- ${i}"
+			FOUND=0
 			for j in ${CHOICE}
 			do
 				if [ ${COUNTER} = ${j} ]
 				then
-					COMMAND="o+ ${i}"
+					COMMAND2="${COMMAND2} ${i}"
+					FOUND=1
 				fi
 			done
-			eval ${COMMAND} > /dev/null
+			if [[ ${FOUND} = 0 ]]
+			then
+				COMMAND1="${COMMAND1} ${i}"
+			fi
 			COUNTER=$((COUNTER+1))
 		fi
 	done
+	echo ${COMMAND1}
+	eval ${COMMAND1} > /dev/null
+	echo
+	echo ${COMMAND2}
+	eval ${COMMAND2} > /dev/null
+
 	"${OMNIHOME}"/bin/omni_complete # Update Auto-complete
 	exit
 }
