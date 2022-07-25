@@ -17,11 +17,9 @@
       - PUID=${USERID}
       - TZ=${TIMEZONE}
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/${LIDARRNAME}:/config
       - ${LOGS}:/config/logs
       - ${MERGEMOUNT}:/cloud
-      - /bin/netstat:/bin/netstat:ro
       - ${OMNIHOME}/healthchecks/lidarrcheck:/lidarrcheck
     labels:
       - "omni=${LIDARRNAME},${MYDOMAIN},yes,yes,yes"
