@@ -24,7 +24,7 @@ fi
 mountpoint ${MOUNT}
 if [[ ${?} -ne  0 ]];
 then
-	echo $(date) - ${APP} - OmniMount failed >> "${LOG}"
+	echo $(date) - ${APP} - OmniMount missing >> "${LOG}"
 	exit 2			# OmniMount failed
 fi
 
