@@ -9,7 +9,7 @@ NS=$(which netstat)
 if [[ ${?} -ne 0 ]];
 then
 	# No netstat so install it and create new log file
-	echo $(date) - ${APP} - Installing net-tools >> ${LOG}
+	echo $(date) - ${APP} - Installing net-tools >> "${LOG}"
 	apt update
 	apt install net-tools -y
 fi
@@ -17,20 +17,20 @@ fi
 ${NS} -ntlp | grep :${PORT}
 if [[ ${?} -ne  0 ]];
 then
-	echo $(date) - ${APP} service not running >> ${LOG}
+	echo $(date) - ${APP} service not running >> "${LOG}"
 	exit 1			# Port not open
 fi
 
 mountpoint ${MOUNT}
 if [[ ${?} -ne  0 ]];
 then
-	echo $(date) - ${APP} - OmniMount failed >> ${LOG}
+	echo $(date) - ${APP} - OmniMount failed >> "${LOG}"
 	exit 2			# OmniMount failed
 fi
 
 if ! [[ -f ${MOUNT}/omnimounted ]];
 then
-	echo $(date) - ${APP} - Media failure >> ${LOG}
+	echo $(date) - ${APP} - Media failure >> "${LOG}"
 	exit 3			# External mapping present but no cloud
 fi
 
