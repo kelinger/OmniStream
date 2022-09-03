@@ -3,7 +3,7 @@
 APP=Emby
 PORT=8096
 MOUNT="/Media"
-LOG="/logs/health"
+LOG="/config/logs/health"
 NS=$(which netstat)
 
 if [[ ${?} -ne 0 ]];

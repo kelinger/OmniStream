@@ -3,7 +3,7 @@
 APP=Plex
 PORT=32400
 MOUNT="/Media"
-LOG="/logs/health"
+LOG="/config/Library/Application Support/Plex Media Server/Logs/health"
 NS=$(which netstat)
 
 if [[ ${?} -ne 0 ]];
