@@ -16,4 +16,11 @@ if ! [[ -d /mnt/$(basename ${RCLONEMOUNT})/$(basename ${MEDIA}) ]];
 then
 	exit 3			# Media missing
 fi
+
+if [[ -f ${MEDIA}/omnimounted ]];
+then
+	echo $(date) - ${APP} - Media failure >> ${LOG}
+	exit 4			# External mapping present but no cloud
+fi
+
 exit 0
