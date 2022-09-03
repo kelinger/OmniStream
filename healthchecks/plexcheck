@@ -28,7 +28,7 @@ then
 	exit 2			# OmniMount failed
 fi
 
-if [[ -f ${MEDIA}/omnimounted ]];
+if ! [[ -f ${MOUNT}/omnimounted ]];
 then
 	echo $(date) - ${APP} - Media failure >> ${LOG}
 	exit 3			# External mapping present but no cloud
