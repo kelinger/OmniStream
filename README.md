@@ -2,11 +2,6 @@
 
 OmniStream is a collection of Docker containers and utilities/commands for building a personal streaming server with your own media residing on cloud providers' data storage platform.  You can pick from an assortment of options and containers and have full control to tweak settings and processes without have any former knowledge of Docker and a minimal skillset in Linux.
 
----
-WARNING - Most code is written; this is being ported into a GIT project and it is strongly recommended that you do NOT clone this project until this message is removed.  Until then, it is quite possible that anything downloaded from here will not yet be a complete project.
-
----
-
 ## TL;DR
 Download and install on a fresh Debian-like system with
 `wget tinyurl.com/omniSetup -O /tmp/setup && chmod 700 /tmp/setup && /tmp/setup`
