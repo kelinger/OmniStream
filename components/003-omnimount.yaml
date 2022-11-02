@@ -35,4 +35,4 @@
       test: ["CMD-SHELL", "/omnimountcheck"]
       interval: 10s
       timeout: 5s
-      retries: 1
+      retries: 3
