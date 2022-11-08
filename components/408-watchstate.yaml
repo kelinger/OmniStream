@@ -2,19 +2,20 @@
 # Watchstate - Sync watch state between different media servers
 #
   watchstate:
-    image: arabcoders/watchstate:latest
+    image: ghcr.io/arabcoders/watchstate:latest
     container_name: watchstate
     hostname: watchstate
     domainname: ${MYDOMAIN}
     restart: unless-stopped
+    user: "${USERID}:${GROUPID}"
     environment:
-      - WS_UID=${USERID}
-      - WS_GID=${GROUPID}
+      #- WS_UID=${USERID}
+      #- WS_GID=${GROUPID}
       - WS_TZ=${TIMEZONE}
-      - WS_LOGGER_FILE_ENABLE=1
-      - WS_CRON_IMPORT=1
-      - WS_CRON_EXPORT=1
-      - WS_CRON_PUSH=1
+      #- WS_LOGGER_FILE_ENABLE=ERROR
+      #- WS_CRON_IMPORT=true
+      #- WS_CRON_EXPORT=true
+      #- WS_CRON_PUSH=true
     labels:
       - "omni=watchstate,${MYDOMAIN},yes,yes,yes"
       - autoheal=true
@@ -23,8 +24,8 @@
       - ${CONFIGS}/watchstate:/config
     networks:
       - OmniNet
-    healthcheck:
-      test: ["CMD-SHELL", "netstat -ntlp | grep :80"]
-      interval: 10s
-      timeout: 2s
-      retries: 3
+   healthcheck:
+    test: ["CMD-SHELL", "netstat -ntlp | grep :9000"]
+    interval: 10s
+    timeout: 2s
+    retries: 3
