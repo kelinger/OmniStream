@@ -17,7 +17,7 @@
       - WS_CRON_EXPORT=true
       - WS_CRON_PUSH=true
     labels:
-      - "omni=watchstate,${MYDOMAIN},yes,yes,yes"
+      - "omni=watchstate,${MYDOMAIN},no,yes,no"
       - autoheal=true
       - traefik.enable=false
     volumes:
