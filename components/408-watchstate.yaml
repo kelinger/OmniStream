@@ -12,7 +12,7 @@
       - WS_UID=${USERID}
       - WS_GID=${GROUPID}
       - WS_TZ=${TIMEZONE}
-      - WS_LOGGER_FILE_ENABLE=ERROR
+      - WS_LOGGER_FILE_ENABLE=INFO
       - WS_CRON_IMPORT=true
       - WS_CRON_EXPORT=true
       - WS_CRON_PUSH=true

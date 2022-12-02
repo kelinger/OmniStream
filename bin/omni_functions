@@ -177,6 +177,9 @@ omni() {
 		echo ${GREEN}"	omni apps "${YELLOW}"- switches you to the components (enabled) local directory"
 		echo ${GREEN}"	omni configs "${YELLOW}"- switches you to the configs directory"
 		echo ${GREEN}"	omni home "${YELLOW}"- switches you to the OmniStream core files directory"
+		echo
+		echo "Documentation: https://www.omnistream.cloud/"
+		echo "Project page:  https://github.com/kelinger/OmniStream"
 		echo ${STD}
 		;;
 	esac

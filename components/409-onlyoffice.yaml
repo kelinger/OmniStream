@@ -1,0 +1,37 @@
+#
+# OnlyOffice - Office Online
+#
+  onlyoffice:
+    image: onlyoffice/documentserver:latest
+    container_name: onlyoffice
+    hostname: onlyoffice
+    domainname: ${MYDOMAIN}
+    restart: always
+    depends_on:
+      traefik:
+        condition: service_healthy
+      nextcloud:
+        condition: service_healthy
+    environment:
+      - PGID=${GROUPID}
+      - PUID=${USERID}
+      - TZ=${TIMEZONE}
+    labels:
+      - "omni=onlyoffice,${MYDOMAIN},yes,yes,yes"
+      - autoheal=true
+      - traefik.enable=true
+      - traefik.http.routers.onlyoffice.rule=Host(`onlyoffice.${MYDOMAIN}`)
+      - traefik.http.routers.onlyoffice.tls=true
+      - traefik.http.routers.onlyoffice.tls.certresolver=lets-encrypt
+      - traefik.http.services.onlyoffice.loadbalancer.server.port=80
+    volumes:
+      - ${CONFIGS}/onlyoffice/logs:/var/log/onlyoffice
+      - ${CONFIGS}/onlyoffice/data:/var/www/onlyoffice/Data
+      - ${CONFIGS}/onlyoffice/lib:/var/lib/onlyoffice
+      - ${CONFIGS}/onlyoffice/db:/var/lib/postgresql
+        #- ${CONFIGS}/onlyoffice/documentserver:/etc/onlyoffice/documentserver
+      - ${MERGEMOUNT}:/cloud:rw
+      - /etc/localtime:/etc/localtime:ro
+      - /bin/netstat:/bin/netstat:ro
+    networks:
+      - OmniNet
