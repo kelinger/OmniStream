@@ -6,10 +6,10 @@ OmniStream is a collection of Docker containers and utilities/commands for build
 Download and install on a fresh Debian-like system with
 `wget tinyurl.com/omniSetup -O /tmp/setup && chmod 700 /tmp/setup && /tmp/setup`
 
-Documentation:  https://omnistream.cloud
-Repository:	https://github.com/kelinger/OmniStream
-Discussions:	https://github.com/kelinger/OmniStream/discussions
-Report bugs:	https://github.com/kelinger/OmniStream/issues
+- Documentation:  https://omnistream.cloud
+- Repository:   https://github.com/kelinger/OmniStream
+- Discussions:  https://github.com/kelinger/OmniStream/discussions
+- Report bugs:  https://github.com/kelinger/OmniStream/issues
 
 ---
 
