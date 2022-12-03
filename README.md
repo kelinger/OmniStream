@@ -7,6 +7,9 @@ Download and install on a fresh Debian-like system with
 `wget tinyurl.com/omniSetup -O /tmp/setup && chmod 700 /tmp/setup && /tmp/setup`
 
 Documentation:  https://omnistream.cloud
+Repository:	https://github.com/kelinger/OmniStream
+Discussions:	https://github.com/kelinger/OmniStream/discussions
+Report bugs:	https://github.com/kelinger/OmniStream/issues
 
 ---
 
@@ -29,25 +32,27 @@ Documentation:  https://omnistream.cloud
 ### BitTorrent Engines
 * Deluge
 * Transmission
-* Transmission VPN - like transmission but forces downloads through a VPN so as not to share your server's IP
 ### Cataloging Tools
 * Radarr - Movie cataloging and downloading
 * Sonarr - TV Show cataloging and downloading
-* Prowlarr - Search centralization and management for other ---arr containers
-* Lidarr
+* Lidarr - Music library management
 * Medusa
 * Organizr
 * Jackett
 * Bazarr
-* Monitorr
 * Ombi
+* Monitorr
+* Prowlarr - Search centralization and management for other ---arr containers
 ### Utilities and extras
-* NextCloud
-* NetData - server and container statistics and monitoring
 * Portainer - Full stack Docker management
+* NetData - server and container statistics and monitoring
+* NextCloud - Suite of cloud apps similar to Google, Microsoft, Dropbox, and other offerings
 * OVPN - OpenVPN server
-* Apache - Host your own web projects
 * Speed - Test the speed to and from your server to your client (true speed test between your endpoints)
+* Apache - Host your own web projects
+* Portainer Agent - Manage multiple servers with Portainer by adding this to remote servers
+* WatchState - Sync watch status between Plex, Emby, and Jellyfin
+* OnlyOffice - Web-based Office apps that can be integrated into NextCloud (create/edit online)
 ### Databases
 * MySQL
 * MariaDB
