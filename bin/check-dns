@@ -31,7 +31,7 @@ for LINE in $(cat *.yaml |grep "omni=" |cut -f2 -d'"' | cut -f2 -d'='); do
 	DEL="${DEL^^}"
 	CACHE=$(echo ${LINE} | cut -f5 -d',')
 	CACHE="${CACHE^^}"
-	FQDN=${HOST}.${DOMAIN}
+	FQDN="${HOST}.${DOMAIN}"
 	#RECORD=$(jq -r --arg FQDN "$FQDN" 'select(.name==$FQDN)' /tmp/zonedump )
 	RECORD=$(echo $ZONEDUMP | jq -r --arg FQDN "$FQDN" 'select(.name==$FQDN)')
 	RECORDID=$(echo $RECORD | jq '.id' |tr -d '"')
