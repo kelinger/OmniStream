@@ -22,14 +22,14 @@ omni() {
 		echo
 		"${OMNIHOME}"/bin/check-dns
 		[[ -f "${OMNIHOME}/enabled/221-deluge.yaml" ]] && touch ${LOGS}/deluged.log
-		/usr/local/bin/docker-compose up -d --remove-orphans "${@:2}"
+		/usr/local/bin/docker-compose -p omnistream up -d --remove-orphans "${@:2}"
 		cd "${CURDIR}" || exit
 		test -x ${OMNIHOME}/plugins/up-end && ${OMNIHOME}/plugins/up-end
 		;;
 	down | stop)
 		test -x ${OMNIHOME}/plugins/down-start && ${OMNIHOME}/plugins/down-start
 		cd "${OMNIHOME}" || exit
-		/usr/local/bin/docker-compose down "${@:2}"
+		/usr/local/bin/docker-compose -p omnistream down "${@:2}"
 		echo
 		"${OMNIHOME}"/bin/del-dns
 		cd "${CURDIR}" || exit
@@ -50,7 +50,7 @@ omni() {
 		;;
 	status)
 		cd "${OMNIHOME}" || exit
-		/usr/local/bin/docker-compose ps "${@:2}"
+		/usr/local/bin/docker-compose -p omnistream ps "${@:2}"
 		cd "${CURDIR}" || exit
 		;;
 	stats)
@@ -58,7 +58,7 @@ omni() {
 		;;
 	restart)
 		cd "${OMNIHOME}" || exit
-		/usr/local/bin/docker-compose restart "${@:2}"
+		/usr/local/bin/docker-compose -p omnistream restart "${@:2}"
 		cd "${CURDIR}" || exit
 		;;
 	services)
@@ -96,7 +96,7 @@ omni() {
 		;;
 	logs)
 		cd "${OMNIHOME}" || exit
-		/usr/local/bin/docker-compose logs -f "${@:2}"
+		/usr/local/bin/docker-compose -p omnistream logs -f "${@:2}"
 		cd "${CURDIR}" || exit
 		;;
 	mounts)
@@ -119,7 +119,7 @@ omni() {
 		"${OMNIHOME}"/bin/check-dns
 		[[ -f "${OMNIHOME}/enabled/221-deluge.yaml" ]] && touch ${LOGS}/deluged.log
 		[[ $(find "${OMNIHOME}/enabled" -name "*transvpn.yaml") ]] && touch ${LOGS}/transmission.log
-		/usr/local/bin/docker-compose up --remove-orphans --build -d
+		/usr/local/bin/docker-compose -p omnistream up --remove-orphans -d --build
 		docker exec -ti ${SABNZBDNAME} /config/extras.sh >/dev/null 2>&1
 		docker system prune -a -f --volumes
 		cd "${CURDIR}" || exit
@@ -139,10 +139,10 @@ omni() {
 		[[ -f "${OMNIHOME}/enabled/221-deluge.yaml" ]] && touch ${LOGS}/deluged.log
 		[[ $(find "${OMNIHOME}/enabled" -name "*transvpn.yaml") ]] && touch ${LOGS}/transmission.log
 		echo Updating Docker containers with latest versions
-		/usr/local/bin/docker-compose pull
+		/usr/local/bin/docker-compose -p omnistream pull 
 		echo
 		echo Ensuring running environment matches latest versions and configs
-		/usr/local/bin/docker-compose up --remove-orphans --build -d
+		/usr/local/bin/docker-compose -p omnistream up --remove-orphans --build -d
 		echo
 		echo Clearing leftovers
 		docker system prune -a -f --volumes
@@ -154,7 +154,7 @@ omni() {
 		;;
 	pull)
 		cd "${OMNIHOME}" || exit
-		/usr/local/bin/docker-compose up --no-start
+		/usr/local/bin/docker-compose up -p omnistream --no-start
 		cd "${CURDIR}" || exit
 		;;
 	*)

@@ -7,15 +7,15 @@
     hostname: watchstate
     domainname: ${MYDOMAIN}
     restart: unless-stopped
-    user: "${USERID}:${GROUPID}"
+    user: "${USERID:-1000}:${GROUPID:-1000}"
     environment:
       - WS_UID=${USERID}
       - WS_GID=${GROUPID}
       - WS_TZ=${TIMEZONE}
       - WS_LOGGER_FILE_ENABLE=INFO
-      - WS_CRON_IMPORT=true
-      - WS_CRON_EXPORT=true
-      - WS_CRON_PUSH=true
+      - WS_CRON_IMPORT=1
+      - WS_CRON_EXPORT=1
+      - WS_CRON_PUSH=1
     labels:
       - "omni=watchstate,${MYDOMAIN},no,yes,no"
       - autoheal=true
