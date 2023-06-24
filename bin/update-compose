@@ -15,17 +15,17 @@ done
 if [[ ${?} = 0 ]]
 then
 	chmod +x docker-compose-linux-x86_64
-	sudo mv docker-compose-linux-x86_64 /usr/local/bin/docker-compose
-	echo Done
+	Y=$(./docker-compose-linux-x86_64 -v)
+	if [[ ${X} = ${Y} ]];
+	then
+		rm docker-compose-linux-x86_64
+		echo No update necessary
+	else
+		sudo mv docker-compose-linux-x86_64 /usr/local/bin/docker-compose
+		echo Updated - ${Y}
+	fi
 else
 	echo Failed!
 	exit 14
 fi
 
-Y=$(docker-compose -v)
-if [[ ${X} = ${Y} ]];
-then
-	echo No update necessary
-else
-	echo Updated - ${Y}
-fi

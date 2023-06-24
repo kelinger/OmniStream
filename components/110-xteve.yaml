@@ -1,0 +1,29 @@
+#
+# xTeVe - IPTV Proxy
+#
+  xteve:
+    image: alturismo/xteve
+    container_name: xteve
+    hostname: xteve
+    domainname: ${MYDOMAIN}
+    restart: unless-stopped
+    depends_on:
+      traefik:
+        condition: service_healthy
+    environment:
+      - TZ=${TIMEZONE}
+    labels:
+      - "omni=xteve,${MYDOMAIN},yes,yes,yes"
+      - autoheal=true
+      - traefik.enable=true
+      - traefik.http.routers.xteve.rule=Host(`xteve.${MYDOMAIN}`)
+      - traefik.http.routers.xteve.tls=true
+      - traefik.http.routers.xteve.tls.certresolver=lets-encrypt
+      - traefik.http.services.xteve.loadbalancer.server.port=34400
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${CONFIGS}/xteve:/root/.xteve:rw
+      - ${CONFIGS}/xteve/_config:/config:rw
+      - /tmp/xteve:/tmp/xteve
+    networks:
+      - OmniNet
