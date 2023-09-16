@@ -7,9 +7,6 @@
     hostname: ${PROWLARRNAME}
     domainname: ${MYDOMAIN}
     restart: unless-stopped
-    depends_on:
-      traefik:
-        condition: service_healthy
     environment:
       - PUID=${USERID}
       - PGID=${GROUPID}

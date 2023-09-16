@@ -8,8 +8,6 @@
     domainname: ${MYDOMAIN}
     restart: unless-stopped
     depends_on:
-      traefik:
-        condition: service_healthy
       omnimount:
         condition: service_healthy
     environment:

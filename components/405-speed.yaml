@@ -9,9 +9,6 @@
     hostname: ${SPEEDNAME}
     domainname: ${MYDOMAIN}
     restart: unless-stopped
-    depends_on:
-      traefik:
-        condition: service_healthy
     labels:
       - "omni=${SPEEDNAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
@@ -20,7 +17,7 @@
       - traefik.http.routers.speed.tls=true
       - traefik.http.routers.speed.tls.certresolver=lets-encrypt
       - traefik.http.services.speed.loadbalancer.server.port=3000
-      - traefik.http.routers.speed.middlewares=${AUTH}
+        #- traefik.http.routers.speed.middlewares=${AUTH}
     networks:
       - OmniNet
     healthcheck:

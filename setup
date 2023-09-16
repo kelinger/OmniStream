@@ -125,9 +125,6 @@ for i in ${APPLIST}; do
 	fi
 done
 
-python3 -m pip install --user pipx > /dev/null 2>&1
-python3 -m pipx ensurepath > /dev/null 2>&1
-
 # Clone OmniStream to HOME
 
 cd ~
@@ -232,13 +229,6 @@ sudo systemctl start vnstat > /dev/null 2>&1
 sudo systemctl enable vnstat > /dev/null 2>&1
 sudo sed -i 's/^#user_allow_other/user_allow_other/g' /etc/fuse.conf
 ${OMNIHOME}/bin/update-rclone current > /dev/null 2>&1
-docker network create \
-	--driver=bridge \
-	-o "com.docker.network.bridge.enable_ip_masquerade"="true" \
-	-o "com.docker.network.bridge.enable_icc"="true" \
-	-o "com.docker.network.driver.mtu"="1500" \
-	-o "com.docker.network.bridge.host_binding_ipv4"="0.0.0.0" \
-	OmniNet > /dev/null 2>&1
 cd /tmp
 wget https://github.com/harelba/q/releases/download/v3.1.6/q-text-as-data-3.1.6-1.x86_64.deb
 sudo dpkg -i q-text-as-data-3.1.6-1.x86_64.deb > /dev/null 2>&1
