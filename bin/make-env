@@ -75,6 +75,12 @@ UPLOADCACHE=${HOME}/OmniStream/mnt/uploadcache
 USEOAUTH=false
 WATCHNAME=watchtower
 
+# Set default NFS overrides
+
+USENFS=false
+NFSREMOTE=
+NFSLOCAL=
+
 # Since Docker processes " as part of the paths, we don't actually store it in the variables.  However, BASH does require
 #	the " if the string is going to have odd characters.  As a result, we have to load the existing environment line
 #	by line and insert the " around the values.
@@ -146,6 +152,14 @@ RCLONEMOUNT=${RCLONEMOUNT}
 UNSYNCED=${UNSYNCED}
 UPLOADCACHE=${UPLOADCACHE}
 MEDIA=${MEDIA}
+
+############################
+#      NFS OVERRIDES       #
+############################
+
+USENFS=${USENFS}
+NFSREMOTE=${NFSREMOTE}
+NFSLOCAL=${NFSLOCAL}
 
 ############################
 #   Container/Host names   #

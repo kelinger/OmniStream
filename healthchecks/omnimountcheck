@@ -1,23 +1,31 @@
 #!/bin/bash
 
+if [[ ! ${USENFS} = true ]]
+then
+	REMOTE=$(basename ${RCLONEMOUNT})
+else
+	REMOTE=$(basename ${NFSLOCAL})
+fi
+
+
 mountpoint -q /mnt/$(basename ${MERGEMOUNT})
 if [[ ${?} -ne  0 ]];
 then
 	exit 1			# MergerFS mount failed
 fi
 
-mountpoint -q /mnt/$(basename ${RCLONEMOUNT})
+mountpoint -q /mnt/$(basename ${REMOTE})
 if [[ ${?} -ne  0 ]];
 then
 	exit 2			# Rclone mount failed
 fi
 
-if ! [[ -d /mnt/$(basename ${RCLONEMOUNT})/$(basename ${MEDIA}) ]];
+if ! [[ -d /mnt/$(basename ${REMOTE})/$(basename ${MEDIA}) ]];
 then
 	exit 3			# Media missing
 fi
 
-if ! [[ -f /mnt/$(basename ${RCLONEMOUNT})/$(basename ${MEDIA})/omnimounted ]];
+if ! [[ -f /mnt/$(basename ${REMOTE})/$(basename ${MEDIA})/omnimounted ]];
 then
 	exit 4			# External mapping present but no cloud
 fi

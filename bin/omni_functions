@@ -32,6 +32,8 @@ omni() {
 		/usr/local/bin/docker-compose -p omnistream down "${@:2}"
 		echo
 		"${OMNIHOME}"/bin/del-dns
+		sudo umount -f ${MERGEMOUNT} ${OMNIHOME}/mnt/${RCLONEMOUNT} ${OMNIHOME}/mnt/${NFSLOCAL} > /dev/null 2>&1
+		sudo rmdir ${MERGEMOUNT} ${OMNIHOME}/mnt/${RCLONEMOUNT} ${OMNIHOME}/mnt/${NFSLOCAL} > /dev/null 2>&1
 		cd "${CURDIR}" || exit
 		test -x ${OMNIHOME}/plugins/down-end && ${OMNIHOME}/plugins/down-end
 		;;
