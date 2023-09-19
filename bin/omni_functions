@@ -53,7 +53,8 @@ omni() {
 	status)
 		cd "${OMNIHOME}" || exit
 		#/usr/bin/docker compose -p omnistream ps "${@:2}"
-		docker compose -p omnistream ps | awk -F "  +" '{$1=$1}1' OFS="\t" | prettytable 7 yellow
+		#docker compose -p omnistream ps | awk -F "  +" '{$1=$1}1' OFS="\t" | prettytable 7 yellow
+		docker ps | awk -F "  +" '{$1=$1}1' OFS="\t" | prettytable 7 yellow
 		cd "${CURDIR}" || exit
 		;;
 	stats)
