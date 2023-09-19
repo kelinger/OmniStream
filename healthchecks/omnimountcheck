@@ -7,7 +7,6 @@ else
 	REMOTE=$(basename ${NFSLOCAL})
 fi
 
-
 mountpoint -q /mnt/$(basename ${MERGEMOUNT})
 if [[ ${?} -ne  0 ]];
 then
