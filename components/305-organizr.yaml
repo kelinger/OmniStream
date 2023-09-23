@@ -2,7 +2,6 @@
 # Organizr - Default web site
 #
   Organizr:
-    restart: always
     image: organizr/organizr:latest
     container_name: ${ORGANIZRNAME}
     hostname: ${ORGANIZRNAME}
