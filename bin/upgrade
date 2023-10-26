@@ -1,0 +1,18 @@
+#!/bin/bash
+
+#	This script will be used to force upgrades to components originally installed
+#	as part of OmniStream.  Only those requiring specific changes that won't be
+#	completed by the APT process will appear hear.
+
+#	FUSE - fuse will not directly upgrade from 2 to 3 without explicitly being called
+#		by "apt install fuse3".  Uninstalling fuse2 may break some dependencies but
+#		installing fuse3 this way will trigger fuse's own upgrade process.
+#		25-Oct-2023
+
+FUSE=$(fusermount --version)
+if [[ ${FUSE%% *} != "fusermount3" ]];
+then
+	echo Performing one-time upgrade of fuse to version 3
+	sudo apt update
+	sudo apt install fuse3 -y
+fi
