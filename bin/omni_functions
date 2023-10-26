@@ -14,6 +14,7 @@ omni() {
 	CURDIR=$(pwd)
 	case "${COMMAND}" in
 	up | start)
+		upgrade
 		test -x ${OMNIHOME}/plugins/up-start && ${OMNIHOME}/plugins/up-start
 		cd "${OMNIHOME}" || exit
 		git pull
@@ -132,6 +133,7 @@ omni() {
 		"${OMNIHOME}"/bin/omni_init
 		;;
 	update)
+		upgrade
 		cd "${OMNIHOME}" || exit
 		echo Updating OmniStream from GIT
 		git pull > /dev/null 2>&1

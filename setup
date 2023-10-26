@@ -93,7 +93,7 @@ APPLIST=" \
 	curl \
 	dialog \
 	dnsutils \
-	fuse \
+	fuse3 \
 	git-core \
 	htop \
 	jq \
