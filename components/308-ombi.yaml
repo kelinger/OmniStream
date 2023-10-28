@@ -2,7 +2,6 @@
 # Ombi - Content request and user management
 #
   ombi:
-    restart: always
     image: lscr.io/linuxserver/ombi
     container_name: ${OMBINAME}
     hostname: ${OMBINAME}
