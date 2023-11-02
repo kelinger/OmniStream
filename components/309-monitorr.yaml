@@ -16,7 +16,7 @@
       - TZ=${TIMEZONE}
       - UMASK_SET=022
     labels:
-      - "omni=${OMBINAME},${MYDOMAIN},yes,yes,yes"
+      - "omni=${MONITORRNAME},${MYDOMAIN},yes,yes,yes"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.monitorr.rule=Host(`${MONITORRNAME}.${MYDOMAIN}`)
