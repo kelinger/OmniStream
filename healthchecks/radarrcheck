@@ -28,4 +28,10 @@ then
 	exit 2			# Rclone mount failed
 fi
 
+if ! [[ -f ${MOUNT}/$(basename ${MEDIA})/omnimounted ]];
+then
+	echo $(date) - ${APP} - Media failure >> "${LOG}"
+	exit 3			# External mapping present but no cloud
+fi
+
 exit 0
