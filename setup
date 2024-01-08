@@ -101,9 +101,8 @@ APPLIST=" \
 	net-tools \
 	parallel \
 	pigz \
+	pipx \
 	pv \
-	python3-pip \
-	python3-venv \
 	rsync \
 	software-properties-common \
 	speedometer \
