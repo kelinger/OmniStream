@@ -2,7 +2,7 @@
 # Traefik - Maps containers to public FQDNs accessable via https with valid certs
 #
   traefik:
-    image: traefik:latest
+    image: traefik:2.11.2
     container_name: ${TRAEFIKNAME}
     hostname: ${TRAEFIKNAME}
     domainname: ${MYDOMAIN}

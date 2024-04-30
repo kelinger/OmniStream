@@ -16,3 +16,8 @@ then
 	sudo apt update
 	sudo apt install fuse3 -y
 fi
+
+if [ $(dpkg-query -W -f='${Status}' neofetch 2>/dev/null | grep -c "ok installed") -eq 0 ];
+then
+  sudo apt-get install neofetch;
+fi

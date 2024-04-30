@@ -16,6 +16,7 @@
       - WS_CRON_IMPORT=1
       - WS_CRON_EXPORT=1
       - WS_CRON_PUSH=1
+      - WS_CRON_PROGRESS=1
     labels:
       - "omni=watchstate,${MYDOMAIN},no,yes,no"
       - autoheal=true

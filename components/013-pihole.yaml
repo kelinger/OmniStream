@@ -1,0 +1,33 @@
+#
+# Pi-Hole
+#
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    hostname:  pihole
+    domainname:  ${MYDOMAIN}
+    restart: unless-stopped
+    environment:
+      - TZ=${TIMEZONE}
+      - UMASK_SET=022
+      - WEBPASSWORD=P@ssw0rd
+      - FTLCONF_LOCAL_IPV4=192.168.1.70
+      - VIRTUAL_HOST=pihole.omniscient.solutions
+      - IPv6=true
+    volumes:
+      - ${CONFIGS}/pihole/pihole:/etc/pihole
+      - ${CONFIGS}/pihole/dns:/etc/dnsmasq.d
+    ports:
+      - target: 53
+        published: 53
+        protocol: udp
+        mode: host
+    labels:
+      - "omni=pihole,${MYDOMAIN},yes,yes,yes"
+      - traefik.enable=true
+      - traefik.http.routers.pihole.rule=Host(`pihole.${MYDOMAIN}`)
+      - traefik.http.routers.pihole.tls=true
+      - traefik.http.routers.pihole.tls.certresolver=lets-encrypt
+      - traefik.http.services.pihole.loadbalancer.server.port=80
+    networks:
+      - OmniNet

@@ -1,0 +1,28 @@
+#
+# Threadfin - IPTV Proxy
+#
+  threadfin:
+    image: fyb3roptik/threadfin
+    container_name: threadfin
+    hostname: threadfin
+    domainname: ${MYDOMAIN}
+    restart: unless-stopped
+    environment:
+      - TZ=${TIMEZONE}
+      - PUID-${USERID}
+      - PGID=${GROUPID}
+      - THREADFIN_BRANCH=beta
+    labels:
+      - "omni=threadfin,${MYDOMAIN},yes,yes,yes"
+      - autoheal=true
+      - traefik.enable=true
+      - traefik.http.routers.threadfin.rule=Host(`threadfin.${MYDOMAIN}`)
+      - traefik.http.routers.threadfin.tls=true
+      - traefik.http.routers.threadfin.tls.certresolver=lets-encrypt
+      - traefik.http.services.threadfin.loadbalancer.server.port=34400
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${CONFIGS}/threadfin:/home/threadfin/conf
+      - /tmp/threadfin:/tmp/threadfin:rw
+    networks:
+      - OmniNet

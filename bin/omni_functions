@@ -54,8 +54,8 @@ omni() {
 	status)
 		cd "${OMNIHOME}" || exit
 		#/usr/bin/docker compose -p omnistream ps "${@:2}"
-		#docker compose -p omnistream ps | awk -F "  +" '{$1=$1}1' OFS="\t" | prettytable 7 yellow
-		docker ps | awk -F "  +" '{$1=$1}1' OFS="\t" | prettytable 7 yellow
+		docker compose -p omnistream ps | awk -F "  +" '{$1=$1}1' OFS="\t" | prettytable 7 yellow
+		#docker ps | awk -F "  +" '{$1=$1}1' OFS="\t" | prettytable 7 yellow
 		cd "${CURDIR}" || exit
 		;;
 	stats)
@@ -145,10 +145,10 @@ omni() {
 		[[ -f "${OMNIHOME}/enabled/221-deluge.yaml" ]] && touch ${LOGS}/deluged.log
 		[[ $(find "${OMNIHOME}/enabled" -name "*transvpn.yaml") ]] && touch ${LOGS}/transmission.log
 		echo Updating Docker containers with latest versions
-		/usr/local/bin/docker-compose -p omnistream pull 
+		/usr/bin/docker compose -p omnistream pull 
 		echo
 		echo Ensuring running environment matches latest versions and configs
-		/usr/local/bin/docker-compose -p omnistream up --remove-orphans --build -d
+		/usr/bin/docker compose -p omnistream up --remove-orphans --build -d
 		echo
 		echo Clearing leftovers
 		docker system prune -a -f --volumes
