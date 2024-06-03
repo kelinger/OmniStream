@@ -1,5 +1,9 @@
 networks:
   OmniNet:
     name: OmniNet
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: 2001:2133::/112
   default:
     driver: bridge

@@ -15,5 +15,5 @@ OmniStream functions loaded into local environment.
 Installed version from:  $(git -C ${OMNIHOME} log --pretty="format:%cr" -n1)
 
 OmniStream Home:  omnistream.cloud
-(C) 2022 - All Rights Reserved
+(C) 2022-2024 - All Rights Reserved
 "

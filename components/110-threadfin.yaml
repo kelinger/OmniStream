@@ -11,7 +11,7 @@
       - TZ=${TIMEZONE}
       - PUID-${USERID}
       - PGID=${GROUPID}
-      - THREADFIN_BRANCH=beta
+        #- THREADFIN_BRANCH=beta
     labels:
       - "omni=threadfin,${MYDOMAIN},yes,yes,yes"
       - autoheal=true
