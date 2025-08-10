@@ -17,6 +17,7 @@
       - WS_CRON_EXPORT=1
       - WS_CRON_PUSH=1
       - WS_CRON_PROGRESS=1
+      - WS_PUSH_ENABLED=true
     labels:
       - "omni=watchstate,${MYDOMAIN},no,yes,no"
       - autoheal=true
@@ -26,7 +27,7 @@
     networks:
       - OmniNet
     healthcheck:
-      test: ["CMD-SHELL", "netstat -ntlp | grep :9000"]
+      test: ["CMD-SHELL", "netstat -ntlp | grep :8080"]
       interval: 10s
       timeout: 2s
       retries: 3

@@ -86,6 +86,7 @@ do
 		sudo tar -cpf "/tmp/${BACKUPNAME}.tar.gz" \
 			--listed-incremental "${OMNIHOME}/snapshots/${FILENAME}.snar" \
 			--use-compress-program=pigz \
+       			--exclude=Media/localhost \
 			--exclude=.cache \
 			"${FILENAME}" > /dev/null 2>&1
 		sudo chown ${USERID}:${GROUPID} "/tmp/${BACKUPNAME}.tar.gz" "${OMNIHOME}/snapshots/${FILENAME}.snar"

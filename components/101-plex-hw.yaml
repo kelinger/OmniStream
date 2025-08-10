@@ -18,7 +18,7 @@
       - UMASK_SET=022
       - PLEX_CLAIM=${PLEXCLAIM}
     labels:
-      - "omni=${PLEXNAME},${MYDOMAIN},yes,yes,yes"
+      - "omni=${PLEXNAME},${MYDOMAIN},yes,yes,no"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.plex.rule=Host(`${PLEXNAME}.${MYDOMAIN}`)
@@ -28,7 +28,7 @@
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/${PLEXNAME}:/config
-      - /tmp:/transcode
+      - /tmp/plex-transcode:/transcode
       - ${MEDIA}:/Media
       - ${OMNIHOME}/healthchecks/plexcheck:/plexcheck
       - "${LOGS}:/config/Library/Application Support/Plex Media Server/Logs/"

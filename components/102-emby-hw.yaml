@@ -16,7 +16,7 @@
       - GID=${GROUPID}
       - GIDLIST=${GPUGIDS}
     labels:
-      - "omni=${EMBYNAME},${MYDOMAIN},yes,yes,yes"
+      - "omni=${EMBYNAME},${MYDOMAIN},yes,yes,no"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.emby.rule=Host(`${EMBYNAME}.${MYDOMAIN}`)
@@ -27,7 +27,7 @@
       - ${CONFIGS}/${EMBYNAME}:/config
       - ${MEDIA}:/Media
       - /etc/localtime:/etc/localtime:ro
-      - /tmp/Emby-transcode:/transcode
+      - /tmp/emby-transcode:/transcode
       - ${OMNIHOME}/healthchecks/embycheck:/embycheck
       - ${LOGS}:/config/logs
     devices:

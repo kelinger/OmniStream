@@ -17,7 +17,7 @@
       - PUID=${USERID}
       - TZ=${TIMEZONE}
     labels:
-      - "omni=${BAZARRNAME},${MYDOMAIN},yes,yes,yes"
+      - "omni=${BAZARRNAME},${MYDOMAIN},yes,yes,no"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.bazarr.rule=Host(`${BAZARRNAME}.${MYDOMAIN}`)

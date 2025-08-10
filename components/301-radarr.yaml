@@ -16,7 +16,7 @@
       - TZ=${TIMEZONE}
       - MEDIA=${MEDIA}
     labels:
-      - "omni=${RADARRNAME},${MYDOMAIN},yes,yes,yes"
+      - "omni=${RADARRNAME},${MYDOMAIN},yes,yes,no"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.radarr.rule=Host(`${RADARRNAME}.${MYDOMAIN}`)

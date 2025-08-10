@@ -2,7 +2,7 @@
 # Traefik - Maps containers to public FQDNs accessable via https with valid certs
 #
   traefik:
-    image: traefik:2.11.2
+    image: traefik:2.11.8 #:2.11.25
     container_name: ${TRAEFIKNAME}
     hostname: ${TRAEFIKNAME}
     domainname: ${MYDOMAIN}
@@ -26,7 +26,7 @@
       - ${LOGS}:/logs
       - ${OMNIHOME}/healthchecks/traefikcheck:/traefikcheck
     labels:
-      - "omni=${TRAEFIKNAME},${MYDOMAIN},yes,yes,yes"
+      - "omni=${TRAEFIKNAME},${MYDOMAIN},yes,yes,no"
       - "autoheal=true"
       - "traefik.enable=true"
       # HTTP-to-HTTPS Redirect
@@ -110,7 +110,7 @@
       DEFAULT_ACTION: allow
       DEFAULT_PROVIDER: google
     labels:
-      - "omni=${OAUTHNAME},${MYDOMAIN},yes,yes,yes"
+      - "omni=${OAUTHNAME},${MYDOMAIN},yes,yes,no"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.middlewares.oauth.forwardauth.address=http://oauth:4181

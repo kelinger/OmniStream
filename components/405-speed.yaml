@@ -10,7 +10,7 @@
     domainname: ${MYDOMAIN}
     restart: unless-stopped
     labels:
-      - "omni=${SPEEDNAME},${MYDOMAIN},yes,yes,yes"
+      - "omni=${SPEEDNAME},${MYDOMAIN},yes,yes,no"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.speed.rule=Host(`${SPEEDNAME}.${MYDOMAIN}`)

@@ -4,7 +4,7 @@ source ${HOME}/.config/omnistream.conf
 [[ -f ${OMNIHOME}/plugins/update-start ]] && source ${OMNIHOME}/plugins/update-start
 
 sudo apt update
-sudo apt upgrade -y
+sudo apt upgrade
 sudo apt autoremove -y
 sudo apt autoclean
 ${OMNIHOME}/bin/update-rclone current

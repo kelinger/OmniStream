@@ -10,7 +10,7 @@
     environment:
       - TZ=${TIMEZONE}
     labels:
-      - "omni=xteve,${MYDOMAIN},yes,yes,yes"
+      - "omni=xteve,${MYDOMAIN},yes,yes,no"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.xteve.rule=Host(`xteve.${MYDOMAIN}`)

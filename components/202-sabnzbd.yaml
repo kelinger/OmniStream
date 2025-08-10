@@ -16,7 +16,7 @@
       - TZ=${TIMEZONE}
       - MEDIA=${MEDIA}
     labels:
-      - "omni=${SABNZBDNAME},${MYDOMAIN},yes,yes,yes"
+      - "omni=${SABNZBDNAME},${MYDOMAIN},yes,yes,no"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.sabnzbd.rule=Host(`${SABNZBDNAME}.${MYDOMAIN}`)

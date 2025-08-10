@@ -16,7 +16,7 @@
       - TZ=${TIMEZONE}
       - MEDIA=${MEDIA}
     labels:
-      - "omni=${SONARRNAME},${MYDOMAIN},yes,yes,yes"
+      - "omni=${SONARRNAME},${MYDOMAIN},yes,yes,no"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.sonarr.rule=Host(`${SONARRNAME}.${MYDOMAIN}`)

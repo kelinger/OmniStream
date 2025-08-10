@@ -12,7 +12,7 @@
       - PGID=${GROUPID}
       - TZ=${TIMEZONE}
     labels:
-      - "omni=${TAUTULLINAME},${MYDOMAIN},yes,yes,yes"
+      - "omni=${TAUTULLINAME},${MYDOMAIN},yes,yes,no"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.tautulli.rule=Host(`${TAUTULLINAME}.${MYDOMAIN}`)

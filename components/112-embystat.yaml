@@ -12,7 +12,7 @@
       - PGID=${GROUPID}
       - TZ=${TIMEZONE}
     labels:
-      - "omni=${EMBYSTATNAME},${MYDOMAIN},yes,yes,yes"
+      - "omni=${EMBYSTATNAME},${MYDOMAIN},yes,yes,no"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.embystat.rule=Host(`${EMBYSTATNAME}.${MYDOMAIN}`)

@@ -17,7 +17,7 @@
       - ${LOGS}:/config/logs
       - ${OMNIHOME}/healthchecks/prowlarrcheck:/prowlarrcheck
     labels:
-      - "omni=${PROWLARRNAME},${MYDOMAIN},yes,yes,yes"
+      - "omni=${PROWLARRNAME},${MYDOMAIN},yes,yes,no"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.prowlarr.rule=Host(`${PROWLARRNAME}.${MYDOMAIN}`)
