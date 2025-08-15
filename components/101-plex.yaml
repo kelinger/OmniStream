@@ -20,7 +20,7 @@
       - UMASK_SET=022
       - PLEX_CLAIM=${PLEXCLAIM}
     labels:
-      - "omni=${PLEXNAME},${MYDOMAIN},yes,yes,yes"
+      - "omni=${PLEXNAME},${MYDOMAIN},yes,yes,no"
       - autoheal=true
       - traefik.enable=true
       - traefik.http.routers.plex.rule=Host(`${PLEXNAME}.${MYDOMAIN}`)

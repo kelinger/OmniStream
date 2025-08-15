@@ -8,7 +8,8 @@ source ${HOME}/.config/omnistream.conf
 
 [[ ":$PATH:" != *":OmniStream/bin:"* ]] && PATH="${HOME}/OmniStream/bin:${PATH}"
 
-neofetch # Depricated; need to switch to fastfetch on Debian 13+
+
+fastfetch
 
 echo "
 OmniStream functions loaded into local environment.
