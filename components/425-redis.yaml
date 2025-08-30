@@ -2,7 +2,7 @@
     image: redis:latest
     container_name: ${REDISNAME}
     hostname: ${REDISNAME}
-    restart: always
+    restart: unless-stopped
     networks:
       - OmniNet
     ports:
@@ -26,7 +26,7 @@
     container_name: ${REDISCOMNAME}
     hostname: ${REDISCOMNAME}
     domainname: ${MYDOMAIN}
-    restart: always
+    restart: unless-stopped
     depends_on:
       traefik:
         condition: service_healthy

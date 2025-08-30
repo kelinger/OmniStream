@@ -6,7 +6,7 @@
     container_name: onlyoffice
     hostname: onlyoffice
     domainname: ${MYDOMAIN}
-    restart: always
+    restart: unless-stopped
     depends_on:
       traefik:
         condition: service_healthy

@@ -5,7 +5,7 @@
     image: mariadb
     container_name: ${MARIADBNAME}
     hostname: ${MARIADBNAME}
-    restart: always
+    restart: unless-stopped
     volumes:
       - ${CONFIGS}/${MARIADBNAME}:/var/lib/mysql
       - /etc/localtime:/etc/localtime:ro

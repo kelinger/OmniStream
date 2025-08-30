@@ -19,9 +19,14 @@
       - WS_CRON_PROGRESS=1
       - WS_PUSH_ENABLED=true
     labels:
-      - "omni=watchstate,${MYDOMAIN},no,yes,no"
+      - "omni=watchstate,${MYDOMAIN},yes,yes,no"
       - autoheal=true
-      - traefik.enable=false
+      - traefik.enable=true
+      - traefik.http.routers.watchstate.rule=Host(`watchstate.${MYDOMAIN}`)
+      - traefik.http.routers.watchstate.tls=true
+      - traefik.http.routers.watchstate.tls.certresolver=lets-encrypt
+      - traefik.http.services.watchstate.loadbalancer.server.port=8080
+      - traefik.http.routers.watchstate.middlewares=${AUTH}
     volumes:
       - ${CONFIGS}/watchstate:/config
     networks:

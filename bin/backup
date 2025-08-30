@@ -13,6 +13,8 @@ SERVER=$(hostname)
 SERVER=${SERVER,,}
 APILOG="${LOGS}/api.log"
 OMNIHOME="${HOME}/OmniStream"
+TMP="${MERGEMOUNT}/tmp"
+mkdir -p "${TMP}"
 
 # Make sure there's a place to store backup index for full versus differential
 mkdir -p ${OMNIHOME}/snapshots
@@ -32,8 +34,8 @@ crontab -l > ${HOME}/cron
 
 # Create the server's home backup.  Some files specified may not exist.
 
-echo -n "/tmp/${SERVER}-backup.tar.gz --> "
-sudo tar -czpf /tmp/${SERVER}-backup.tar.gz \
+echo -n "${TMP}/${SERVER}-backup.tar.gz --> "
+sudo tar -czpf ${TMP}/${SERVER}-backup.tar.gz \
        --exclude=.cache \
        --exclude=.iterm* \
        --exclude=thinclient_drives \
@@ -45,8 +47,8 @@ sudo tar -czpf /tmp/${SERVER}-backup.tar.gz \
        --exclude=${CONFIGS} \
        --exclude=${OMNIHOME}/snapshots \
        ${HOME} > /dev/null 2>&1
-sudo chown ${USERID}:${GROUPID} /tmp/${SERVER}-*.tar.gz
-rmove "/tmp/${SERVER}-backup.tar.gz" "/Backups/${SERVER}/${SERVER}-backup.tar.gz"
+sudo chown ${USERID}:${GROUPID} ${TMP}/${SERVER}-*.tar.gz
+rmove "${TMP}/${SERVER}-backup.tar.gz" "/Backups/${SERVER}/${SERVER}-backup.tar.gz"
 rm ${HOME}/cron
 
 cd ${CONFIGS}
@@ -62,8 +64,8 @@ do
 	echo -n "${FILENAME} --> "
 	if [[ ${FILE} = 1 ]]
 	then
-		cp "${f}" /tmp/
-		rmove "/tmp/${FILENAME}" "/Backups/${SERVER}/$(basename ${CONFIGS})/${FILENAME}"
+		cp "${f}" ${TMP}/
+		rmove "${TMP}/${FILENAME}" "/Backups/${SERVER}/$(basename ${CONFIGS})/${FILENAME}"
 	else
 		if [[ ${DIFF} = 1 ]]
 		then
@@ -83,16 +85,16 @@ do
 			# Remove previous DIFF, if it exists
 			rm ${MERGEMOUNT}"/Backups/${SERVER}/$(basename ${CONFIGS})/${FILENAME}-diff.tar.gz" > /dev/null 2>&1
 		fi
-		sudo tar -cpf "/tmp/${BACKUPNAME}.tar.gz" \
+		sudo tar -cpf "${TMP}/${BACKUPNAME}.tar.gz" \
 			--listed-incremental "${OMNIHOME}/snapshots/${FILENAME}.snar" \
 			--use-compress-program=pigz \
        			--exclude=Media/localhost \
 			--exclude=.cache \
 			"${FILENAME}" > /dev/null 2>&1
-		sudo chown ${USERID}:${GROUPID} "/tmp/${BACKUPNAME}.tar.gz" "${OMNIHOME}/snapshots/${FILENAME}.snar"
+		sudo chown ${USERID}:${GROUPID} "${TMP}/${BACKUPNAME}.tar.gz" "${OMNIHOME}/snapshots/${FILENAME}.snar"
 		[[ ${SNAR} = 1 ]] && mv "${OMNIHOME}/snapshots/${FILENAME}.bak" "${OMNIHOME}/snapshots/${FILENAME}.snar"
 		[[ ${DIFF} = 0 ]] && rm "${OMNIHOME}/snapshots/${FILENAME}.snar"
-		rmove "/tmp/${BACKUPNAME}.tar.gz" "/Backups/${SERVER}/$(basename ${CONFIGS})/${BACKUPNAME}.tar.gz"
+		rmove "${TMP}/${BACKUPNAME}.tar.gz" "/Backups/${SERVER}/$(basename ${CONFIGS})/${BACKUPNAME}.tar.gz"
 	fi
 done
 

@@ -6,7 +6,7 @@
     container_name: ${PORTAINERNAME}
     hostname: ${PORTAINERNAME}
     domainname: ${MYDOMAIN}
-    restart: always
+    restart: unless-stopped
     depends_on:
       traefik:
         condition: service_healthy

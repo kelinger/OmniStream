@@ -3,7 +3,7 @@
 #
   postgres:
     image: postgres:latest
-    restart: always
+    restart: unless-stopped
     container_name: ${POSTGRESNAME}
     hostname: ${POSTGRESNAME}
     environment:

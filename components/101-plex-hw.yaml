@@ -28,7 +28,7 @@
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/${PLEXNAME}:/config
-      - /tmp/plex-transcode:/transcode
+      - ${OMNIHOME}/plex-transcode:/transcode
       - ${MEDIA}:/Media
       - ${OMNIHOME}/healthchecks/plexcheck:/plexcheck
       - "${LOGS}:/config/Library/Application Support/Plex Media Server/Logs/"

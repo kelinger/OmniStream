@@ -2,7 +2,7 @@
     image: mcr.microsoft.com/mssql/server:2019-latest
     container_name: ${SQLSERVERNAME}
     hostname: ${SQLSERVERNAME}
-    restart: always
+    restart: unless-stopped
     networks:
       - OmniNet
     ports:
