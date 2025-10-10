@@ -19,7 +19,6 @@
       - UMASK_SET=022
       - MEDIA=${MEDIA}
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/${DELUGENAME}:/config
       - ${LOGS}/deluged.log:/config/deluged.log
       - ${LOGS}:/logs

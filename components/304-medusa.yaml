@@ -17,7 +17,6 @@
       - PUID=${USERID}
       - TZ=${TIMEZONE}
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/${MEDUSANAME}:/config
       - ${HOME}/logs:/config/logs
       - ${MERGEMOUNT}:/cloud

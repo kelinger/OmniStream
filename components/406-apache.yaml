@@ -14,7 +14,6 @@
       - OmniNet
     volumes:
       - ${CONFIGS}/${APACHENAME}:/var/www/html
-      - /etc/localtime:/etc/localtime:ro
       - /bin/netstat:/bin/netstat:ro
     labels:
       - "omni=${APACHENAME},${MYDOMAIN},yes,yes,yes"

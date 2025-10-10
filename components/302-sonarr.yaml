@@ -25,7 +25,6 @@
       - traefik.http.services.sonarr.loadbalancer.server.port=8989
       - traefik.http.routers.sonarr.middlewares=${AUTH}
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/${SONARRNAME}:/config
       - ${LOGS}:/config/logs
       - ${MERGEMOUNT}:/cloud

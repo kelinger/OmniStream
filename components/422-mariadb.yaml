@@ -8,7 +8,6 @@
     restart: unless-stopped
     volumes:
       - ${CONFIGS}/${MARIADBNAME}:/var/lib/mysql
-      - /etc/localtime:/etc/localtime:ro
       - /bin/netstat:/bin/netstat:ro
     networks:
       - OmniNet

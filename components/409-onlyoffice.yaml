@@ -31,7 +31,6 @@
       - ${CONFIGS}/onlyoffice/db:/var/lib/postgresql
         #- ${CONFIGS}/onlyoffice/documentserver:/etc/onlyoffice/documentserver
       - ${MERGEMOUNT}:/cloud:rw
-      - /etc/localtime:/etc/localtime:ro
       - /bin/netstat:/bin/netstat:ro
     networks:
       - OmniNet

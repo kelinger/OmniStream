@@ -26,7 +26,6 @@
       - traefik.http.routers.plex.tls.certresolver=lets-encrypt
       - traefik.http.services.plex.loadbalancer.server.port=32400
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/${PLEXNAME}:/config
       - ${OMNIHOME}/plex-transcode:/transcode
       - ${MEDIA}:/Media

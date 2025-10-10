@@ -28,7 +28,6 @@
     volumes:
       - ${CONFIGS}/${HYDRANAME}:/config
       - ${MERGEMOUNT}:/cloud
-      - /etc/localtime:/etc/localtime:ro
       - /bin/netstat:/bin/netstat:ro
     networks:
       - OmniNet

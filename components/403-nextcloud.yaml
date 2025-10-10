@@ -33,7 +33,6 @@
     volumes:
       - ${CONFIGS}/${NEXTCLOUDNAME}:/var/www/html
       - ${MERGEMOUNT}:/cloud:rw
-      - /etc/localtime:/etc/localtime:ro
       - /bin/netstat:/bin/netstat:ro
     networks:
       - OmniNet

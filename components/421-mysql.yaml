@@ -15,7 +15,6 @@
       - 3306:3306
     volumes:
       - ${CONFIGS}/${MYSQLNAME}:/var/lib/mysql
-      - /etc/localtime:/etc/localtime:ro
       - /bin/netstat:/bin/netstat:ro
     labels:
       - "omni=${MYSQLNAME},${MYDOMAIN},yes,yes,no"

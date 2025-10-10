@@ -20,7 +20,6 @@
       - traefik.http.routers.tautulli.tls.certresolver=lets-encrypt
       - traefik.http.services.tautulli.loadbalancer.server.port=8181
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/${TAUTULLINAME}:/config
       - ${CONFIGS}/${PLEXNAME}/Library/Application Support/Plex Media Server/Logs:/logs:ro
     networks:

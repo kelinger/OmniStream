@@ -26,7 +26,6 @@
       - traefik.http.services.bazarr.loadbalancer.server.port=6767
       - traefik.http.routers.bazarr.middlewares=${AUTH}
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - ${CONFIGS}/${BAZARRNAME}:/config
       - ${MERGEMOUNT}:/cloud
     networks:

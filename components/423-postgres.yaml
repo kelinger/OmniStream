@@ -13,7 +13,6 @@
       PGDATA: /var/lib/postgresql/data
     volumes:
       - ${CONFIGS}/${POSTGRESNAME}:/var/lib/postgresql/data
-      - /etc/localtime:/etc/localtime:ro
       - /bin/netstat:/bin/netstat:ro
     labels:
       - "omni=${POSTGRESNAME},${MYDOMAIN},yes,yes,no"

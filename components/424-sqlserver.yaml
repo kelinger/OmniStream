@@ -14,7 +14,6 @@
       - ${CONFIGS}/${SQLSERVERNAME}/data:/var/opt/mssql/data
       - ${CONFIGS}/${SQLSERVERNAME}/log:/var/opt/mssql/log
       - ${CONFIGS}/${SQLSERVERNAME}/secrets:/var/opt/mssql/secrets
-      - /etc/localtime:/etc/localtime:ro
       - /bin/netstat:/bin/netstat:ro
     labels:
       - "omni=${SQLSERVERNAME},${MYDOMAIN},yes,yes,no"

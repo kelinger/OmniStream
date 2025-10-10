@@ -9,7 +9,6 @@
       - "6379:6379"
     volumes:
       - ${CONFIGS}/${REDISNAME}:/data
-      - /etc/localtime:/etc/localtime:ro
       - /bin/netstat:/bin/netstat:ro
     labels:
       - "omni=${REDISNAME},${MYDOMAIN},no,no,no"

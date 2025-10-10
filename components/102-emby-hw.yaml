@@ -26,7 +26,6 @@
     volumes:
       - ${CONFIGS}/${EMBYNAME}:/config
       - ${MEDIA}:/Media
-      - /etc/localtime:/etc/localtime:ro
       - /tmp/emby-transcode:/transcode
       - ${OMNIHOME}/healthchecks/embycheck:/embycheck
       - ${LOGS}:/config/logs

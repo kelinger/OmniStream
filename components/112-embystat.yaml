@@ -20,7 +20,6 @@
       - traefik.http.routers.embystat.tls.certresolver=lets-encrypt
       - traefik.http.services.embystat.loadbalancer.server.port=6555
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - /bin/netstat:/bin/netstat:ro
       - ${CONFIGS}/${EMBYSTATNAME}:/config
     networks:
